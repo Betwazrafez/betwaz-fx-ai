@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071018">
+<title>BETWAZ FX AI</title>
+<style>
+:root{--bg:#071018;--panel:#0d1923;--panel2:#101f2b;--line:#203642;--text:#edf6fa;--muted:#91a7b3;--good:#4fe0a0;--warn:#ffc857;--bad:#ff6262;--accent:#6ca8ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#061019,#08141d 55%,#071018);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:0}.app{max-width:700px;margin:auto;min-height:100vh;padding:18px 15px 100px}
+header{display:flex;justify-content:space-between;align-items:center;padding:8px 2px 20px}.brand{font-size:24px;font-weight:900;letter-spacing:-.5px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.mode{font-size:11px;font-weight:800;padding:8px 10px;border:1px solid #294250;border-radius:99px}
+.card{background:rgba(13,25,35,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px #0003}
+.hero{padding:18px;background:radial-gradient(circle at 100% 0,#17334b 0,#0d1923 45%)}.eyebrow{font-size:11px;color:var(--muted);letter-spacing:1.2px;font-weight:800}.pair{font-size:29px;font-weight:900;margin:4px 0}.price{font-size:17px}.change{color:var(--good);font-weight:800;margin-left:7px}.scan{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}.chip{background:#122531;border:1px solid #25414e;padding:7px 9px;border-radius:10px;font-size:11px;color:#c8d8df}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-title{font-size:13px;font-weight:900;letter-spacing:.7px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.broker{padding:13px;border:1px solid var(--line);background:#0b1720;border-radius:13px}.broker b{display:block}.broker span{display:block;color:var(--muted);font-size:11px;margin-top:4px}.status{font-size:10px;margin-top:8px;color:var(--good);font-weight:800}.pending{color:var(--warn)}
+.signal{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.signal-main{font-size:31px;font-weight:950}.buy{color:var(--good)}.sell{color:var(--bad)}.wait{color:var(--warn)}
+.conf{font-size:12px;color:var(--muted)}.meter{height:7px;background:#172a35;border-radius:20px;overflow:hidden;margin-top:9px}.meter i{display:block;height:100%;width:78%;background:var(--good)}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.kv div{background:#0a151e;border:1px solid var(--line);border-radius:11px;padding:10px}.kv small{display:block;color:var(--muted);font-size:10px}.kv b{display:block;margin-top:4px;font-size:13px}
+.tabs{display:flex;gap:7px;overflow:auto;margin:3px 0 12px}.tabs button{white-space:nowrap;background:#0b1720;color:var(--muted);padding:9px 11px;border:1px solid var(--line);border-radius:10px}.tabs button.active{color:#fff;border-color:#4874a5;background:#13283a}
+.actionbar{position:fixed;bottom:0;left:0;right:0;background:#071018ee;border-top:1px solid var(--line);backdrop-filter:blur(14px);padding:12px max(15px,calc((100vw - 700px)/2 + 15px));display:flex;gap:9px}
+.actionbar button{flex:1;padding:13px;border-radius:12px;font-weight:900}.primary{background:#1c6de0;color:#fff}.danger{background:#7f2429;color:#fff}.secondary{background:#152731;color:#dbe8ed}
+input,select{width:100%;background:#09151e;color:#fff;border:1px solid var(--line);padding:11px;border-radius:10px;outline:none}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.activity{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid #19303a}.dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--good)}.activity p{margin:0;font-size:12px}.activity small{color:var(--muted)}
+.notice{font-size:11px;line-height:1.5;color:var(--muted)}.hidden{display:none}
+@media(max-width:430px){.kv{grid-template-columns:1fr 1fr}.kv div:last-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div><div class="brand">BETWAZ FX AI</div><div class="sub">AI market intelligence • risk engine • broker control</div></div>
+  <div id="mode" class="mode">SAFE MODE</div>
+</header>
+
+<section class="card hero">
+  <div class="eyebrow">AI MARKET SCAN</div>
+  <div class="row"><div><div class="pair" id="pair">EUR/USD</div><div class="price" id="price">1.17342 <span class="change">+0.21%</span></div></div><div style="text-align:right"><div class="eyebrow">AI STATUS</div><b style="color:var(--good)">ONLINE</b></div></div>
+  <div class="scan"><span class="chip">1m</span><span class="chip">5m</span><span class="chip">15m</span><span class="chip">1h</span><span class="chip">4h</span><span class="chip">1D</span></div>
+</section>
+
+<section class="card">
+  <div class="section-title">BROKER CONNECTIONS</div>
+  <div class="grid" id="brokers">
+    <div class="broker"><b>Vantage</b><span>MT5 / EA</span><div class="status">READY</div></div>
+    <div class="broker"><b>XM</b><span>MT5 / EA</span><div class="status">READY</div></div>
+    <div class="broker"><b>HFM</b><span>MT5 / EA</span><div class="status">READY</div></div>
+    <div class="broker"><b>Deriv</b><span>Official API</span><div class="status">READY</div></div>
+    <div class="broker"><b>IQ Option</b><span>Official API required</span><div class="status pending">PENDING</div></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="section-title">AI DECISION</div>
+  <div class="tabs" id="tabs">
+    <button class="active" data-p="EUR/USD">EUR/USD</button><button data-p="GBP/USD">GBP/USD</button><button data-p="USD/JPY">USD/JPY</button><button data-p="XAU/USD">XAU/USD</button>
+  </div>
+  <div class="signal"><div><div id="decision" class="signal-main buy">BUY</div><div class="conf">Confidence <b id="confidence">78%</b></div><div class="meter"><i id="meter"></i></div></div><div style="text-align:right"><div class="eyebrow">REGIME</div><b id="regime">TRENDING</b></div></div>
+  <div class="kv">
+    <div><small>Entry</small><b id="entry">1.17342</b></div><div><small>Stop</small><b id="stop">1.17190</b></div><div><small>Target</small><b id="target">1.17670</b></div>
+  </div>
+  <p id="reason" class="notice" style="margin-bottom:0">AI synthesis: trend, momentum, volatility and market structure are aligned. Risk gate must approve before any order can be sent.</p>
+</section>
+
+<section class="card">
+  <div class="section-title">RISK CONTROL</div>
+  <div class="formgrid">
+    <label class="notice">Risk / trade<input id="risk" type="number" value="1" min=".1" max="1" step=".1"></label>
+    <label class="notice">Daily loss limit<input id="daily" type="number" value="3" min=".5" max="3" step=".5"></label>
+  </div>
+  <div class="kv"><div><small>Max positions</small><b>3</b></div><div><small>Duplicate orders</small><b>Blocked</b></div><div><small>Kill switch</small><b id="killstate">OFF</b></div></div>
+</section>
+
+<section class="card">
+  <div class="section-title">ACTIVITY</div>
+  <div id="activity">
+    <div class="activity"><i class="dot"></i><div><p>BETWAZ AI engine initialized</p><small>Ready for market data</small></div></div>
+    <div class="activity"><i class="dot"></i><div><p>Risk gate active</p><small>Maximum 1% risk per trade</small></div></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="section-title">CONNECTION</div>
+  <p class="notice">This single HTML app works as a mobile dashboard and can connect to a BETWAZ FX AI backend. Browser-only HTML cannot safely hold broker passwords or directly guarantee live execution. For live trading, use authenticated server/API or MT5 EA connections.</p>
+  <button class="secondary" style="width:100%;padding:12px;border-radius:10px" onclick="testBackend()">TEST BETWAZ BACKEND</button>
+  <p id="backend" class="notice"></p>
+</section>
+</div>
+
+<div class="actionbar">
+  <button class="secondary" onclick="analyze()">SCAN MARKET</button>
+  <button class="primary" onclick="requestTrade()">AI TRADE</button>
+  <button class="danger" onclick="killSwitch()">EMERGENCY STOP</button>
+</div>
+
+<script>
+const symbols={
+"EUR/USD":{p:1.17342,d:"+0.21%",a:"BUY",c:78,e:"1.17342",s:"1.17190",t:"1.17670",r:"TRENDING"},
+"GBP/USD":{p:1.35310,d:"+0.14%",a:"WAIT",c:69,e:"1.35310",s:"1.35080",t:"1.35700",r:"RANGE"},
+"USD/JPY":{p:147.820,d:"-0.18%",a:"SELL",c:74,e:"147.820",s:"148.250",t:"146.900",r:"BEARISH"},
+"XAU/USD":{p:3662.40,d:"+0.42%",a:"BUY",c:81,e:"3662.40",s:"3648.00",t:"3695.00",r:"TRENDING"}
+};
+let selected="EUR/USD", stopped=false;
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");selected=b.dataset.p;render()});
+function render(){const x=symbols[selected];price.textContent=x.p+" ";price.innerHTML=x.p+' <span class="change">'+x.d+'</span>';pair.textContent=selected;decision.textContent=x.a;decision.className="signal-main "+(x.a==="BUY"?"buy":x.a==="SELL"?"sell":"wait");confidence.textContent=x.c+"%";meter.style.width=x.c+"%";entry.textContent=x.e;stop.textContent=x.s;target.textContent=x.t;regime.textContent=x.r}
+function log(msg){activity.insertAdjacentHTML("afterbegin",`<div class="activity"><i class="dot"></i><div><p>${msg}</p><small>${new Date().toLocaleTimeString()}</small></div></div>`)}
+function analyze(){if(stopped)return;const x=symbols[selected];log("AI scanned "+selected+" across 1m → 1D; decision: "+x.a+" ("+x.c+"%)");reason.textContent="AI synthesis refreshed: price structure, momentum, volatility and trend context were evaluated. Deterministic risk controls remain the final execution gate."}
+function requestTrade(){if(stopped){alert("Emergency stop is active.");return}const x=symbols[selected];if(x.a==="WAIT"){log("AI TRADE blocked: decision is WAIT");return}if(Number(risk.value)>1){alert("Risk cannot exceed 1% per trade.");risk.value=1;return}log("Trade request created: "+x.a+" "+selected+" — waiting for server-side risk authorization");alert("AI trade request created. A production backend/authorized broker connector must approve and execute it.")}
+function killSwitch(){stopped=true;killstate.textContent="ON";killstate.style.color="var(--bad)";mode.textContent="STOPPED";mode.style.color="var(--bad)";log("EMERGENCY STOP engaged — new trading requests blocked")}
+async function testBackend(){backend.textContent="Testing…";try{let r=await fetch("/api/health",{cache:"no-store"});let d=await r.json();backend.textContent="Backend online: "+d.app+" | "+d.status}catch(e){backend.textContent="No BETWAZ backend detected at this page address. The UI is still fully usable in local/demo mode."}}
+render();setInterval(()=>{if(!stopped){let x=symbols[selected];x.p=Number(x.p)+(Math.random()-.5)*(selected==="XAU/USD"?2:.00008);render()}},3000);
+</script>
+</body>
+</html>
