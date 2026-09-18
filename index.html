@@ -41,10 +41,10 @@ input,select{width:100%;background:#09151e;color:#fff;border:1px solid var(--lin
 <section class="card">
   <div class="section-title">BROKER CONNECTIONS</div>
   <div class="grid" id="brokers">
-    <div class="broker"><b>Vantage</b><span>MT5 / EA</span><div class="status">READY</div></div>
-    <div class="broker"><b>XM</b><span>MT5 / EA</span><div class="status">READY</div></div>
-    <div class="broker"><b>HFM</b><span>MT5 / EA</span><div class="status">READY</div></div>
-    <div class="broker"><b>Deriv</b><span>Official API</span><div class="status">READY</div></div>
+    <div class="broker"><b>Vantage</b><span>MT5 / EA</span><div class="status">MT5 READY</div></div>
+    <div class="broker"><b>XM</b><span>MT5 / EA</span><div class="status">MT5 READY</div></div>
+    <div class="broker"><b>HFM</b><span>MT5 / EA</span><div class="status">MT5 READY</div></div>
+    <div class="broker"><b>Deriv</b><span>Official API</span><div class="status">API READY</div></div>
     <div class="broker"><b>IQ Option</b><span>Official API required</span><div class="status pending">PENDING</div></div>
   </div>
 </section>
@@ -106,8 +106,40 @@ function log(msg){activity.insertAdjacentHTML("afterbegin",`<div class="activity
 function analyze(){if(stopped)return;const x=symbols[selected];log("AI scanned "+selected+" across 1m → 1D; decision: "+x.a+" ("+x.c+"%)");reason.textContent="AI synthesis refreshed: price structure, momentum, volatility and trend context were evaluated. Deterministic risk controls remain the final execution gate."}
 function requestTrade(){if(stopped){alert("Emergency stop is active.");return}const x=symbols[selected];if(x.a==="WAIT"){log("AI TRADE blocked: decision is WAIT");return}if(Number(risk.value)>1){alert("Risk cannot exceed 1% per trade.");risk.value=1;return}log("Trade request created: "+x.a+" "+selected+" — waiting for server-side risk authorization");alert("AI trade request created. A production backend/authorized broker connector must approve and execute it.")}
 function killSwitch(){stopped=true;killstate.textContent="ON";killstate.style.color="var(--bad)";mode.textContent="STOPPED";mode.style.color="var(--bad)";log("EMERGENCY STOP engaged — new trading requests blocked")}
-async function testBackend(){backend.textContent="Testing…";try{let r=await fetch("/api/health",{cache:"no-store"});let d=await r.json();backend.textContent="Backend online: "+d.app+" | "+d.status}catch(e){backend.textContent="No BETWAZ backend detected at this page address. The UI is still fully usable in local/demo mode."}}
+const BACKEND_URL="https://betwaz-fx-ai-backend.onrender.com";
+
+async function testBackend(){
+  backend.textContent="Testing BETWAZ FX AI backend…";
+  backend.className="notice";
+  try{
+    const r=await fetch(BACKEND_URL+"/api/health",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+
+    backend.textContent=d.ok
+      ? "Backend online: "+d.app+" | Safe mode active | Live trading disabled"
+      : "Backend responded but is not healthy.";
+
+    backend.className=d.ok ? "notice" : "notice";
+    backend.style.color=d.ok ? "var(--good)" : "var(--bad)";
+
+    if(d.ai_configured){
+      document.querySelector(".hero b[style*='var(--good)']").textContent="AI READY";
+    }else{
+      document.querySelector(".hero b[style*='var(--good)']").textContent="SERVER READY";
+    }
+
+    if(d.live_trading_enabled){
+      mode.textContent="LIVE";
+    }else{
+      mode.textContent=d.emergency_stop ? "SAFE MODE" : "DEMO MODE";
+    }
+  }catch(e){
+    backend.textContent="Backend connection failed. Check the Render service and try again.";
+    backend.style.color="var(--bad)";
+  }
+}
 render();setInterval(()=>{if(!stopped){let x=symbols[selected];x.p=Number(x.p)+(Math.random()-.5)*(selected==="XAU/USD"?2:.00008);render()}},3000);
 </script>
 </body>
-</html>
+      </html>
