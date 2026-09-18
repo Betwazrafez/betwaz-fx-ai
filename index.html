@@ -1,12 +1,11 @@
 <!doctype html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071018">
-<title>BETWAZ FX AI</title>
-
-<style>
+<title>BETWAZ FX AI</title><style>
 :root{
   --bg:#071018;--panel:#0d1923;--panel2:#101f2b;--line:#203642;
   --text:#edf6fa;--muted:#91a7b3;--good:#4fe0a0;--warn:#ffc857;
@@ -34,6 +33,32 @@ header{display:flex;justify-content:space-between;align-items:center;padding:8px
 .pair{font-size:29px;font-weight:900;margin:4px 0}
 .price{font-size:17px}
 .change{color:var(--good);font-weight:800;margin-left:7px}
+.price-live{
+  color:var(--good);
+  font-weight:800;
+}
+.price-loading{
+  color:var(--muted);
+}
+.price-time{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:5px;
+}
+.live-dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--good);
+  margin-right:5px;
+  box-shadow:0 0 8px #4fe0a0;
+}
+.live-dot.offline{
+  background:var(--bad);
+  box-shadow:none;
+}
 .scan{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
 .chip{background:#122531;border:1px solid #25414e;padding:7px 9px;border-radius:10px;font-size:11px;color:#c8d8df}
 .row{display:flex;justify-content:space-between;align-items:center;gap:12px}
@@ -88,37 +113,31 @@ input,select{
   .kv{grid-template-columns:1fr 1fr}
   .kv div:last-child{grid-column:span 2}
 }
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<header>
+</style></head><body><div class="app"><header>
   <div>
     <div class="brand">BETWAZ FX AI</div>
     <div class="sub">AI market intelligence • risk engine • broker control</div>
   </div>
   <div id="mode" class="mode">SAFE MODE</div>
-</header>
-
-<section class="card hero">
-  <div class="eyebrow">AI MARKET SCAN</div>
-
-  <div class="row">
+</header><section class="card hero">
+  <div class="eyebrow">AI MARKET SCAN</div>  <div class="row">
     <div>
-      <div class="pair" id="pair">XAU/USD</div>
-      <div class="price" id="price">Loading live price…</div>
-    </div>
-
-    <div style="text-align:right">
-      <div class="eyebrow">AI STATUS</div>
-      <b id="aiStatus" style="color:var(--good)">CONNECTING</b>
-    </div>
+      <div class="pair" id="pair">XAU/USD</div>  <div class="price price-loading" id="price">
+    <span class="live-dot"></span>
+    Loading live price…
   </div>
 
-  <div class="scan">
+  <span id="priceTime" class="price-time">
+    Waiting for market data…
+  </span>
+</div>
+
+<div style="text-align:right">
+  <div class="eyebrow">AI STATUS</div>
+  <b id="aiStatus" style="color:var(--good)">CONNECTING</b>
+</div>
+
+  </div>  <div class="scan">
     <span class="chip">1m</span>
     <span class="chip">5m</span>
     <span class="chip">15m</span>
@@ -126,213 +145,143 @@ input,select{
     <span class="chip">4h</span>
     <span class="chip">1D</span>
   </div>
-</section>
+</section><section class="card">  <div class="section-title">BROKER CONNECTIONS</div>  <div class="grid" id="brokers"><div class="broker">
+  <b>Vantage</b>
+  <span>Direct broker integration</span>
+  <div class="status">CONNECTOR READY</div>
+</div>
 
-<section class="card">
+<div class="broker">
+  <b>XM</b>
+  <span>Direct broker integration</span>
+  <div class="status">CONNECTOR READY</div>
+</div>
 
-  <div class="section-title">BROKER CONNECTIONS</div>
+<div class="broker">
+  <b>HFM</b>
+  <span>Direct broker integration</span>
+  <div class="status">CONNECTOR READY</div>
+</div>
 
-  <div class="grid" id="brokers">
+<div class="broker">
+  <b>Deriv</b>
+  <span>Official API</span>
+  <div class="status">API READY</div>
+</div>
 
-    <div class="broker">
-      <b>Vantage</b>
-      <span>Direct broker integration</span>
-      <div class="status">CONNECTOR READY</div>
-    </div>
-
-    <div class="broker">
-      <b>XM</b>
-      <span>Direct broker integration</span>
-      <div class="status">CONNECTOR READY</div>
-    </div>
-
-    <div class="broker">
-      <b>HFM</b>
-      <span>Direct broker integration</span>
-      <div class="status">CONNECTOR READY</div>
-    </div>
-
-    <div class="broker">
-      <b>Deriv</b>
-      <span>Official API</span>
-      <div class="status">API READY</div>
-    </div>
-
-    <div class="broker">
-      <b>IQ Option</b>
-      <span>Official API required</span>
-      <div class="status pending">PENDING</div>
-    </div>
+<div class="broker">
+  <b>IQ Option</b>
+  <span>Official API required</span>
+  <div class="status pending">PENDING</div>
+</div>
 
   </div>
-</section>
-
-<section class="card">
-
-  <div class="section-title">AI DECISION</div>
-
-  <div class="tabs" id="tabs">
+</section><section class="card">  <div class="section-title">AI DECISION</div>  <div class="tabs" id="tabs">
     <button data-p="XAU/USD" class="active">XAU/USD</button>
+  </div>  <div class="signal"><div>
+  <div id="decision" class="signal-main wait">WAIT</div>
+
+  <div class="conf">
+    Confidence <b id="confidence">0%</b>
   </div>
 
-  <div class="signal">
-
-    <div>
-      <div id="decision" class="signal-main wait">WAIT</div>
-
-      <div class="conf">
-        Confidence <b id="confidence">0%</b>
-      </div>
-
-      <div class="meter">
-        <i id="meter"></i>
-      </div>
-    </div>
-
-    <div style="text-align:right">
-      <div class="eyebrow">REGIME</div>
-      <b id="regime">UNKNOWN</b>
-    </div>
-
+  <div class="meter">
+    <i id="meter"></i>
   </div>
+</div>
 
-  <div class="kv">
+<div style="text-align:right">
+  <div class="eyebrow">REGIME</div>
+  <b id="regime">UNKNOWN</b>
+</div>
 
-    <div>
-      <small>Entry</small>
-      <b id="entry">—</b>
-    </div>
+  </div>  <div class="kv"><div>
+  <small>Entry</small>
+  <b id="entry">—</b>
+</div>
 
-    <div>
-      <small>Stop</small>
-      <b id="stop">—</b>
-    </div>
+<div>
+  <small>Stop</small>
+  <b id="stop">—</b>
+</div>
 
-    <div>
-      <small>Target</small>
-      <b id="target">—</b>
-    </div>
+<div>
+  <small>Target</small>
+  <b id="target">—</b>
+</div>
 
-  </div>
-
-  <p id="reason" class="notice" style="margin-bottom:0">
+  </div>  <p id="reason" class="notice" style="margin-bottom:0">
     Press SCAN MARKET to request live multi-timeframe analysis.
-  </p>
+  </p></section><section class="card">  <div class="section-title">RISK CONTROL</div>  <div class="formgrid"><label class="notice">
+  Risk / trade
+  <input id="risk" type="number" value="1" min=".1" max="1" step=".1">
+</label>
 
-</section>
+<label class="notice">
+  Daily loss limit
+  <input id="daily" type="number" value="3" min=".5" max="3" step=".5">
+</label>
 
-<section class="card">
+  </div>  <div class="kv"><div>
+  <small>Max positions</small>
+  <b>3</b>
+</div>
 
-  <div class="section-title">RISK CONTROL</div>
+<div>
+  <small>Duplicate orders</small>
+  <b>Blocked</b>
+</div>
 
-  <div class="formgrid">
+<div>
+  <small>Kill switch</small>
+  <b id="killstate">OFF</b>
+</div>
 
-    <label class="notice">
-      Risk / trade
-      <input id="risk" type="number" value="1" min=".1" max="1" step=".1">
-    </label>
-
-    <label class="notice">
-      Daily loss limit
-      <input id="daily" type="number" value="3" min=".5" max="3" step=".5">
-    </label>
-
+  </div></section><section class="card">  <div class="section-title">ACTIVITY</div>  <div id="activity"><div class="activity">
+  <i class="dot"></i>
+  <div>
+    <p>BETWAZ AI engine initialized</p>
+    <small>Waiting for live scan</small>
   </div>
+</div>
 
-  <div class="kv">
-
-    <div>
-      <small>Max positions</small>
-      <b>3</b>
-    </div>
-
-    <div>
-      <small>Duplicate orders</small>
-      <b>Blocked</b>
-    </div>
-
-    <div>
-      <small>Kill switch</small>
-      <b id="killstate">OFF</b>
-    </div>
-
+<div class="activity">
+  <i class="dot"></i>
+  <div>
+    <p>Risk gate active</p>
+    <small>Maximum 1% risk per trade</small>
   </div>
+</div>
 
-</section>
-
-<section class="card">
-
-  <div class="section-title">ACTIVITY</div>
-
-  <div id="activity">
-
-    <div class="activity">
-      <i class="dot"></i>
-      <div>
-        <p>BETWAZ AI engine initialized</p>
-        <small>Waiting for live scan</small>
-      </div>
-    </div>
-
-    <div class="activity">
-      <i class="dot"></i>
-      <div>
-        <p>Risk gate active</p>
-        <small>Maximum 1% risk per trade</small>
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-<section class="card">
-
-  <div class="section-title">CONNECTION</div>
-
-  <p class="notice">
+  </div></section><section class="card">  <div class="section-title">CONNECTION</div>  <p class="notice">
     BETWAZ FX AI connects to its secure backend for live market analysis.
     API keys and broker credentials remain server-side and are never stored
     in this webpage.
-  </p>
+  </p><button
+class="secondary"
+style="width:100%;padding:12px;border-radius:10px"
+onclick="testBackend()">
+TEST BETWAZ BACKEND
+</button>
 
-  <button
-    class="secondary"
-    style="width:100%;padding:12px;border-radius:10px"
-    onclick="testBackend()">
-    TEST BETWAZ BACKEND
-  </button>
-
-  <p id="backend" class="notice"></p>
-
-</section>
-
-</div>
-
-<div class="actionbar">
-
-  <button class="secondary" onclick="analyze()">
+  <p id="backend" class="notice"></p></section></div><div class="actionbar">  <button class="secondary" onclick="analyze()">
     SCAN MARKET
-  </button>
-
-  <button class="primary" onclick="requestTrade()">
+  </button>  <button class="primary" onclick="requestTrade()">
     AI TRADE
-  </button>
-
-  <button class="danger" onclick="killSwitch()">
+  </button>  <button class="danger" onclick="killSwitch()">
     EMERGENCY STOP
-  </button>
-
-</div>
-
-<script>
+  </button></div><script>
 
 const BACKEND_URL =
   "https://betwaz-fx-ai-backend.onrender.com";
 
+const PRICE_REFRESH_MS = 5000;
+
 let selected = "XAU/USD";
 let stopped = false;
 let lastAnalysis = null;
+let priceTimer = null;
+let lastPrice = null;
 
 
 /* -----------------------------
@@ -365,6 +314,138 @@ function escapeHtml(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+}
+
+
+/* -----------------------------
+   LIVE XAU/USD PRICE
+----------------------------- */
+
+async function updateLivePrice(){
+
+  const priceElement =
+    document.getElementById("price");
+
+  const timeElement =
+    document.getElementById("priceTime");
+
+  try{
+
+    const response =
+      await fetch(
+        BACKEND_URL + "/api/market-data",
+        {
+          method:"GET",
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok || !data.ok){
+
+      throw new Error(
+        data.error ||
+        "Market data unavailable"
+      );
+
+    }
+
+    const price =
+      Number(data.price);
+
+    if(!Number.isFinite(price)){
+
+      throw new Error(
+        "Invalid market price"
+      );
+
+    }
+
+    lastPrice = price;
+
+    priceElement.innerHTML =
+      `<span class="live-dot"></span>` +
+      price.toFixed(2);
+
+    priceElement.className =
+      "price price-live";
+
+    let timestamp = "";
+
+    if(data.datetime){
+
+      const parsed =
+        new Date(data.datetime);
+
+      if(!Number.isNaN(parsed.getTime())){
+
+        timestamp =
+          "Market candle: " +
+          parsed.toLocaleString();
+
+      }else{
+
+        timestamp =
+          "Market data: " +
+          data.datetime;
+
+      }
+
+    }
+
+    timeElement.textContent =
+      "Updated " +
+      new Date().toLocaleTimeString() +
+      (timestamp ? " • " + timestamp : "");
+
+  }catch(error){
+
+    priceElement.innerHTML =
+      `<span class="live-dot offline"></span>` +
+      (
+        lastPrice !== null
+          ? lastPrice.toFixed(2)
+          : "Price unavailable"
+      );
+
+    priceElement.className =
+      "price " +
+      (
+        lastPrice !== null
+          ? "price-live"
+          : "price-loading"
+      );
+
+    timeElement.textContent =
+      "Market data connection issue";
+
+  }
+
+}
+
+
+/* -----------------------------
+   START AUTOMATIC PRICE UPDATES
+----------------------------- */
+
+function startLivePrice(){
+
+  updateLivePrice();
+
+  if(priceTimer){
+
+    clearInterval(priceTimer);
+
+  }
+
+  priceTimer =
+    setInterval(
+      updateLivePrice,
+      PRICE_REFRESH_MS
+    );
+
 }
 
 
@@ -456,8 +537,10 @@ function displayAnalysis(data){
 async function analyze(){
 
   if(stopped){
+
     alert("Emergency stop is active.");
     return;
+
   }
 
   const decision =
@@ -498,6 +581,11 @@ async function analyze(){
     }
 
     displayAnalysis(data);
+
+    /* Refresh the displayed price immediately
+       after the AI scan completes. */
+
+    updateLivePrice();
 
   }catch(error){
 
@@ -698,7 +786,8 @@ function killSwitch(){
 
 testBackend();
 
-</script>
+/* Start automatic XAU/USD price updates */
+startLivePrice();
 
-</body>
-  </html>
+</script></body>
+</html>
