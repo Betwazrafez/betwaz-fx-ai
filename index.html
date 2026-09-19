@@ -113,97 +113,7 @@ input,select{
   .kv{grid-template-columns:1fr 1fr}
   .kv div:last-child{grid-column:span 2}
 }
-
-/* BETWAZ FX AI mobile page shell */
-.bw-shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 70px);gap:0}
-.bw-sidebar{position:sticky;top:0;height:calc(100vh - 70px);padding:14px 10px;border-right:1px solid var(--line);background:rgba(7,16,24,.96);overflow:auto}
-.bw-main{min-width:0;padding:14px;max-width:1200px;width:100%;margin:0 auto}
-.bw-menu-title{font-size:11px;letter-spacing:1.4px;color:var(--muted);font-weight:900;padding:10px 10px 6px}
-.bw-nav{display:flex;flex-direction:column;gap:6px}
-.bw-nav button{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--text);padding:11px 12px;border-radius:10px;font-weight:800;cursor:pointer}
-.bw-nav button:hover{background:var(--panel2);border-color:var(--line)}
-.bw-nav button.active{background:var(--panel2);border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
-.bw-subnav{display:none;padding:4px 0 8px 10px}.bw-subnav.show{display:block}
-.bw-subnav button{font-size:13px;padding:9px 10px;color:var(--muted)}
-.bw-page{display:none}.bw-page.active{display:block}
-.bw-pagehead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.bw-pagehead h2{margin:0;font-size:20px}.bw-pagehead p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.bw-broker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.bw-broker-card{cursor:pointer}.bw-broker-card:hover{border-color:var(--accent)}
-.bw-statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.bw-stat{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.bw-stat b{display:block;font-size:18px;margin-top:4px}.bw-stat span{color:var(--muted);font-size:11px}
-.bw-mobilebar{display:none}
-@media(max-width:760px){.bw-shell{display:block}.bw-sidebar{display:none}.bw-main{padding:10px 10px 82px}.bw-mobilebar{display:flex;position:fixed;z-index:50;bottom:0;left:0;right:0;background:rgba(7,16,24,.98);border-top:1px solid var(--line);padding:7px 6px;gap:4px}.bw-mobilebar button{flex:1;border:0;background:transparent;color:var(--muted);font-size:10px;font-weight:900;padding:7px 3px;border-radius:9px}.bw-mobilebar button.active{color:var(--text);background:var(--panel2)}.bw-broker-grid,.bw-statgrid{grid-template-columns:1fr}.bw-pagehead h2{font-size:18px}}
-</style></head><body>
-<div class="bw-shell">
-  <aside class="bw-sidebar">
-    <div class="bw-menu-title">MAIN MENU</div>
-    <nav class="bw-nav" id="bwSideNav">
-      <button data-page="dashboard" class="active">⌂ Dashboard</button>
-      <button data-page="brokers">▣ Brokers</button>
-      <button data-page="markets">◈ Markets</button>
-      <button data-page="ai">✦ AI Trading</button>
-      <button data-page="risk">⚙ Risk & Safety</button>
-      <button data-page="activity">☷ Activity</button>
-      <button data-page="settings">⚙ Settings</button>
-    </nav>
-    <div class="bw-menu-title">BROKER ACCOUNTS</div>
-    <nav class="bw-nav" id="bwBrokerNav">
-      <button data-page="broker-vantage">Vantage Markets</button>
-      <button data-page="broker-xm">XM</button>
-      <button data-page="broker-hfm">HFM</button>
-      <button data-page="broker-deriv">Deriv</button>
-      <button data-page="broker-iq">IQ Option</button>
-    </nav>
-  </aside>
-  <main class="bw-main">
-    <section class="bw-page active" id="bw-page-dashboard"><div class="bw-pagehead"><div><h2>Dashboard</h2><p>BETWAZ FX AI control centre</p></div></div><div class="bw-statgrid"><div class="bw-stat"><span>AI STATUS</span><b>ONLINE</b></div><div class="bw-stat"><span>LIVE TRADING</span><b id="bwDashLive">SAFE / OFF</b></div><div class="bw-stat"><span>SAFETY</span><b id="bwDashSafety">ACTIVE</b></div></div><div id="bwDashboardHost" style="margin-top:12px"></div></section>
-    <section class="bw-page" id="bw-page-brokers"><div class="bw-pagehead"><div><h2>Brokers</h2><p>Select a broker to open its dedicated workspace.</p></div></div><div class="bw-broker-grid">
-      <button class="card bw-broker-card" data-page="broker-vantage"><b>VANTAGE MARKETS</b><div class="notice">Balance • positions • orders • history</div></button>
-      <button class="card bw-broker-card" data-page="broker-xm"><b>XM</b><div class="notice">Account and trading workspace</div></button>
-      <button class="card bw-broker-card" data-page="broker-hfm"><b>HFM</b><div class="notice">Account and trading workspace</div></button>
-      <button class="card bw-broker-card" data-page="broker-deriv"><b>DERIV</b><div class="notice">Account • markets • proposals • history</div></button>
-      <button class="card bw-broker-card" data-page="broker-iq"><b>IQ OPTION</b><div class="notice">Account and trading workspace</div></button>
-    </div></section>
-    <section class="bw-page" id="bw-page-markets"><div class="bw-pagehead"><div><h2>Markets</h2><p>XAU/USD, WTI/USD and USD/ZAR</p></div></div><div id="bwMarketsHost"></div></section>
-    <section class="bw-page" id="bw-page-ai"><div class="bw-pagehead"><div><h2>AI Trading</h2><p>Analysis, signals and execution controls</p></div></div><div id="bwAIHost"></div></section>
-    <section class="bw-page" id="bw-page-risk"><div class="bw-pagehead"><div><h2>Risk & Safety</h2><p>Independent controls remain outside the AI decision.</p></div></div><div id="bwRiskHost"></div></section>
-    <section class="bw-page" id="bw-page-activity"><div class="bw-pagehead"><div><h2>Activity</h2><p>System events, broker events and execution audit.</p></div></div><div id="bwActivityHost"></div></section>
-    <section class="bw-page" id="bw-page-settings"><div class="bw-pagehead"><div><h2>Settings</h2><p>Application and operator settings.</p></div></div><div id="bwSettingsHost"></div></section>
-    <section class="bw-page" id="bw-page-broker-vantage">
-<style>
-.vg-shell{display:grid;gap:12px}.vg-top{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:8px}.vg-tile{background:#0b1220;border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px}.vg-tile span{display:block;font-size:10px;opacity:.6;letter-spacing:.08em}.vg-tile b{display:block;font-size:18px;margin-top:5px}.vg-main{display:grid;grid-template-columns:1fr 310px;gap:12px}.vg-panel{background:#0b1220;border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden}.vg-head{padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center}.vg-tabs{display:flex;gap:4px;overflow:auto;padding:8px;border-bottom:1px solid rgba(255,255,255,.08)}.vg-tab{border:0;background:transparent;color:inherit;padding:9px 12px;border-radius:8px;white-space:nowrap;opacity:.7;cursor:pointer}.vg-tab.active{background:rgba(255,255,255,.1);opacity:1}.vg-chart{height:310px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01));position:relative}.vg-chart:before{content:"XAUUSD • 1H";position:absolute;top:12px;left:14px;font-size:12px;opacity:.7}.vg-chart-grid{width:92%;height:78%;border:1px solid rgba(255,255,255,.06);background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:20% 25%}.vg-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}.vg-buy,.vg-sell{padding:14px;border:0;border-radius:10px;color:#fff;font-weight:800;cursor:pointer}.vg-buy{background:#176b4d}.vg-sell{background:#7b2932}.vg-form{display:grid;gap:9px;padding:12px}.vg-form label{font-size:11px;opacity:.65}.vg-form input,.vg-form select{width:100%;box-sizing:border-box;background:#101827;color:inherit;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px}.vg-table{width:100%;border-collapse:collapse;font-size:12px}.vg-table th,.vg-table td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}.vg-empty{text-align:center;padding:28px 12px;opacity:.6}.vg-mobile{display:none}@media(max-width:850px){.vg-top{grid-template-columns:repeat(2,1fr)}.vg-main{grid-template-columns:1fr}.vg-chart{height:250px}.vg-mobile{display:block}.vg-desktop{display:none}}</style>
-<div class="bw-pagehead"><div><h2>Vantage Markets</h2><p>Professional trading workspace • BETWAZ FX AI</p></div><button class="secondary" data-page="brokers">← Brokers</button></div>
-<div class="vg-shell">
-<div class="vg-top">
-<div class="vg-tile"><span>ACCOUNT</span><b id="vgAccount">Not connected</b><small id="vgServer" style="opacity:.55">MT5 bridge required</small></div>
-<div class="vg-tile"><span>BALANCE</span><b id="bw-vantage-balance">—</b></div>
-<div class="vg-tile"><span>EQUITY</span><b id="bw-vantage-equity">—</b></div>
-<div class="vg-tile"><span>MARGIN</span><b id="vgMargin">—</b></div>
-<div class="vg-tile"><span>FREE MARGIN</span><b id="vgFreeMargin">—</b></div>
-</div>
-<div class="vg-panel"><div class="vg-head"><div><b>VANTAGE / MT5</b><div id="bwVgStatus" class="status pending">WAITING FOR BRIDGE</div></div><div><button id="bwVgRefresh" class="secondary">REFRESH</button> <button id="bwVgOpen" class="primary">OPEN WEBTRADING</button></div></div></div>
-<div class="vg-main">
-<div class="vg-panel">
-<div class="vg-tabs"><button class="vg-tab active" data-vg-tab="chart">Chart</button><button class="vg-tab" data-vg-tab="positions">Positions</button><button class="vg-tab" data-vg-tab="orders">Orders</button><button class="vg-tab" data-vg-tab="history">History</button><button class="vg-tab" data-vg-tab="account">Account</button></div>
-<div id="vgChartTab"><div class="vg-chart"><div class="vg-chart-grid"></div></div><div style="padding:10px 12px;display:flex;gap:7px;overflow:auto"><button class="secondary">XAUUSD</button><button class="secondary">WTIUSD</button><button class="secondary">USDZAR</button><button class="secondary">1M</button><button class="secondary">5M</button><button class="secondary">15M</button><button class="secondary">1H</button><button class="secondary">4H</button></div></div>
-<div id="vgPositionsTab" hidden><div class="vg-empty" id="bwVgPositionsTable">No verified MT5 positions.</div></div>
-<div id="vgOrdersTab" hidden><div class="vg-empty" id="bwVgOrdersTable">No verified MT5 orders.</div></div>
-<div id="vgHistoryTab" hidden><div class="vg-empty" id="bwVgHistoryTable">No verified trade history.</div></div>
-<div id="vgAccountTab" hidden><table class="vg-table"><tbody><tr><th>Broker</th><td>Vantage Markets</td></tr><tr><th>Platform</th><td>MetaTrader 5</td></tr><tr><th>Bridge</th><td id="bwVgBridge">OFFLINE</td></tr><tr><th>Execution</th><td id="bwVgExecStatus">SAFE / OFF</td></tr></tbody></table></div>
-</div>
-<div class="vg-panel">
-<div class="vg-head"><b>NEW ORDER</b><span class="status pending">AI GATED</span></div>
-<div class="vg-form"><label>SYMBOL</label><select><option>XAUUSD</option><option>WTIUSD</option><option>USDZAR</option></select><label>VOLUME</label><input id="vgVolume" type="number" value="0.01" min="0.01" step="0.01"><label>STOP LOSS</label><input id="vgSL" type="number" placeholder="Required"><label>TAKE PROFIT</label><input id="vgTP" type="number" placeholder="Required"></div>
-<div class="vg-actions"><button class="vg-sell" id="vgSell">SELL</button><button class="vg-buy" id="vgBuy">BUY</button></div>
-<div class="notice" style="margin:0 12px 12px">Orders are disabled until the verified MT5 bridge, BETWAZ risk gate, live master switch and real-account switch are all deliberately enabled.</div>
-</div>
-</div>
-<div class="vg-panel"><div class="vg-head"><b>AI TRADING</b><span id="vgAiState" class="status pending">OFF</span></div><div style="padding:12px;display:flex;gap:8px;flex-wrap:wrap"><button id="bwVgArm" class="secondary">ARM AI: OFF</button><button id="bwVgStop" class="secondary">EMERGENCY STOP</button><span id="vgSafety" class="notice" style="margin:0">Safety gate active</span></div></div>
-</div></section><section class="bw-page" id="bw-page-broker-xm"><div class="bw-pagehead"><div><h2>XM</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-xm-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-xm-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-xm-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="xm" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="xm" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="xm" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="xm" data-action="orders">ORDERS</button></div><div id="bw-xm-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-hfm"><div class="bw-pagehead"><div><h2>HFM</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-hfm-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-hfm-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-hfm-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="hfm" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="hfm" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="hfm" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="hfm" data-action="orders">ORDERS</button></div><div id="bw-hfm-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-deriv"><div class="bw-pagehead"><div><h2>DERIV</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-deriv-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-deriv-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-deriv-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="deriv" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="deriv" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="deriv" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="deriv" data-action="orders">ORDERS</button></div><div id="bw-deriv-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-iq"><div class="bw-pagehead"><div><h2>IQ Option</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-iq-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-iq-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-iq-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="iq" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="iq" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="iq" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="iq" data-action="orders">ORDERS</button></div><div id="bw-iq-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section>
-  </main>
-</div>
-<nav class="bw-mobilebar" id="bwMobileNav"><button data-page="dashboard" class="active">⌂<br>Home</button><button data-page="brokers">▣<br>Brokers</button><button data-page="markets">◈<br>Markets</button><button data-page="ai">✦<br>AI</button><button data-page="activity">☷<br>Activity</button></nav>
-<div class="app"><header>
+</style></head><body><div class="app"><header>
   <div>
     <div class="brand">BETWAZ FX AI</div>
     <div class="sub">AI market intelligence • risk engine • broker control</div>
@@ -237,11 +147,6 @@ input,select{
     <span class="chip">1D</span>
   </div>
 </section><section class="card">  <div class="section-title">BROKER CONNECTIONS</div>  <div class="grid" id="brokers"><div class="broker">
-  <b>Vantage</b>
-  <span>Direct broker integration</span>
-  <div class="status">CONNECTOR READY</div>
-</div>
-
 <div class="broker">
   <b>XM</b>
   <span>Direct broker integration</span>
@@ -800,101 +705,66 @@ async function testBackend(){
    TRADE REQUEST
 ----------------------------- */
 
-async function requestTrade(){
+function requestTrade(){
 
   if(stopped){
+
     alert("Emergency stop is active.");
     return;
+
   }
 
   if(!lastAnalysis){
-    alert("Run SCAN MARKET first so BETWAZ FX AI has a live AI decision.");
+
+    alert(
+      "Run SCAN MARKET first so BETWAZ FX AI has a live AI decision."
+    );
+
     return;
+
   }
 
   if(lastAnalysis.side === "WAIT"){
-    log("AI TRADE blocked: live AI decision is WAIT");
-    alert("AI TRADE blocked because the current AI decision is WAIT.");
+
+    log(
+      "AI TRADE blocked: live AI decision is WAIT"
+    );
+
+    alert(
+      "AI TRADE blocked because the current AI decision is WAIT."
+    );
+
     return;
+
   }
 
-  const risk=Number(document.getElementById("risk").value);
-  if(!Number.isFinite(risk) || risk<=0 || risk>1){
-    alert("Risk must be between 0 and 1% per trade.");
-    document.getElementById("risk").value=1;
+  const risk =
+    Number(
+      document.getElementById("risk").value
+    );
+
+  if(risk > 1){
+
+    alert(
+      "Risk cannot exceed 1% per trade."
+    );
+
+    document.getElementById("risk").value = 1;
+
     return;
+
   }
 
-  let pin=sessionStorage.getItem("BETWAZ_OPERATOR_PIN")||"";
-  if(!pin){
-    pin=window.prompt("Enter your BETWAZ operator PIN to authorize this trade request:");
-    if(!pin) return;
-    sessionStorage.setItem("BETWAZ_OPERATOR_PIN",pin);
-  }
+  log(
+    "Trade request prepared: " +
+    lastAnalysis.side +
+    " XAU/USD — server risk authorization required"
+  );
 
-  try{
-    const controlResponse=await fetch(BACKEND_URL+"/api/control/state",{
-      method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}
-    });
-    const controlData=await controlResponse.json().catch(()=>({}));
-    if(controlResponse.status===401){
-      sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
-      throw new Error("Operator PIN rejected");
-    }
-    if(!controlResponse.ok || !controlData.ok) throw new Error(controlData.error||"Could not read trading control");
-    const s=controlData.state;
+  alert(
+    "AI trade request prepared. Live execution remains disabled until the secure broker execution layer is enabled."
+  );
 
-    if(s.emergency_stop || !s.safety_enabled){
-      throw new Error("Safety system is blocking trading");
-    }
-
-    const live=!!s.live_trading_enabled;
-    const broker="VANTAGE";
-
-    const payload={
-      broker,
-      symbol:selected,
-      side:lastAnalysis.side,
-      confidence:Number(lastAnalysis.confidence||0),
-      entry:lastAnalysis.entry,
-      stop:lastAnalysis.stop,
-      target:lastAnalysis.target,
-      risk_pct:risk,
-      spread_points:0,
-      open_positions:0,
-      daily_loss_pct:0,
-      live_request:live
-    };
-
-    const r=await fetch(BACKEND_URL+"/api/trade-request",{
-      method:"POST",cache:"no-store",
-      headers:{
-        "Content-Type":"application/json",
-        "X-BETWAZ-OPERATOR-PIN":pin
-      },
-      body:JSON.stringify(payload)
-    });
-    const d=await r.json().catch(()=>({}));
-    if(r.status===401){
-      sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
-      throw new Error("Operator PIN rejected");
-    }
-    if(!r.ok || !d.ok) throw new Error(d.error||("HTTP "+r.status));
-
-    if(d.approved){
-      log((live?"LIVE":"DEMO")+" Vantage trade queued: "+lastAnalysis.side+" "+selected+" • command "+d.command_id);
-      alert(live
-        ? "LIVE order approved and queued for the Vantage MT5 bridge."
-        : "Trade approved by the safety gates and queued in DEMO mode. No live order was requested.");
-    }else{
-      const reasons=(d.risk_gate?.reasons||[]).concat(d.safety_gate?.reasons||[]);
-      log("Trade rejected: "+(reasons.join(", ")||d.error||"safety gate"));
-      alert("Trade blocked: "+(reasons.join(", ")||d.error||"safety gate"));
-    }
-  }catch(e){
-    log("Trade request failed: "+e.message);
-    alert("BETWAZ FX AI trade request failed: "+e.message);
-  }
 }
 
 
@@ -948,8 +818,6 @@ startLivePrice();
     #betwazControls .ctrlgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
     #betwazControls button{padding:12px;border-radius:11px;font-weight:900;background:#152731;color:#edf6fa;border:1px solid #203642}
     #betwazControls button.on{border-color:#4fe0a0;color:#4fe0a0}
-    #betwazControls button.live{border-color:#ffb84d;color:#ffb84d}
-    #betwazControls button.bridge{border-color:#6db7ff;color:#6db7ff}
     #betwazControls button.stop{background:#7f2429;color:#fff;border-color:#7f2429}
     #betwazControls button.resume{background:#176c4d;color:#fff}
     #betwazControls .ctrlstate{font-size:11px;color:#91a7b3;margin-top:10px;line-height:1.5}
@@ -964,8 +832,6 @@ startLivePrice();
     <div class="ctrlgrid">
       <button id="bwSafety">SAFETY: —</button>
       <button id="bwAuto">AUTO-KILL: —</button>
-      <button id="bwLive">LIVE EXECUTION: —</button>
-      <button id="bwMT5">MT5 BRIDGE: —</button>
       <button id="bwStop" class="stop">EMERGENCY STOP</button>
       <button id="bwResume" class="resume">RESUME</button>
     </div>
@@ -1002,14 +868,10 @@ startLivePrice();
   function render(s) {
     const safety=document.getElementById("bwSafety");
     const auto=document.getElementById("bwAuto");
-    const live=document.getElementById("bwLive");
-    const mt5=document.getElementById("bwMT5");
     safety.textContent="SAFETY: "+(s.safety_enabled?"ON":"OFF");
     safety.classList.toggle("on",!!s.safety_enabled);
     auto.textContent="AUTO-KILL: "+(s.auto_kill_enabled?"ON":"OFF");
     auto.classList.toggle("on",!!s.auto_kill_enabled);
-    live.textContent="LIVE EXECUTION: "+(s.live_trading_enabled?"ON":"OFF");
-    live.classList.toggle("live",!!s.live_trading_enabled);
     const stop=document.getElementById("bwStop");
     stop.textContent=s.emergency_stop?"EMERGENCY STOP: ACTIVE":"EMERGENCY STOP";
     stop.disabled=!!s.emergency_stop;
@@ -1036,38 +898,6 @@ startLivePrice();
       render((await call("/api/control/auto-kill","POST",{enabled:!current})).state);
     } catch(e){ alert(e.message); }
   };
-  document.getElementById("bwLive").onclick=async()=>{
-    const current=document.getElementById("bwLive").textContent.endsWith("ON");
-    if(!current){
-      if(!confirm("Enable the BETWAZ live execution master switch? This does not bypass the MT5 EA safety switches.")) return;
-    } else {
-      if(!confirm("Disable live execution? New live orders will be blocked.")) return;
-    }
-    try {
-      const d=await call("/api/control/live","POST",{enabled:!current});
-      render(d.state);
-      log(d.state.live_trading_enabled ? "LIVE EXECUTION master switch enabled" : "LIVE EXECUTION master switch disabled");
-    } catch(e){ alert(e.message); }
-  };
-
-  document.getElementById("bwMT5").onclick=async()=>{
-    try {
-      const d=await call("/api/mt5/status");
-      const b=d.heartbeat;
-      if(d.connected){
-        mt5.textContent="MT5 BRIDGE: ONLINE";
-        mt5.classList.add("bridge");
-        document.getElementById("bwState").textContent=
-          "MT5 ONLINE • "+(b?.broker||"")+" • positions "+(b?.positions_count ?? "—")+
-          " • daily loss "+Number(b?.daily_loss_pct||0).toFixed(2)+"%";
-      } else {
-        mt5.textContent="MT5 BRIDGE: OFFLINE";
-        mt5.classList.remove("bridge");
-        document.getElementById("bwState").textContent="MT5 bridge is offline or its heartbeat is stale.";
-      }
-    } catch(e){ alert(e.message); }
-  };
-
   document.getElementById("bwStop").onclick=async()=>{
     if(!confirm("Activate EMERGENCY STOP? New trading requests will be blocked.")) return;
     try { render((await call("/api/control/emergency-stop","POST",{reason:"Operator emergency stop from BETWAZ dashboard"})).state); }
@@ -1081,19 +911,6 @@ startLivePrice();
 
   refresh();
   setInterval(refresh,5000);
-  setInterval(async()=>{
-    try{
-      const d=await call("/api/mt5/status");
-      const mt5=document.getElementById("bwMT5");
-      if(d.connected){
-        mt5.textContent="MT5 BRIDGE: ONLINE";
-        mt5.classList.add("bridge");
-      }else{
-        mt5.textContent="MT5 BRIDGE: OFFLINE";
-        mt5.classList.remove("bridge");
-      }
-    }catch(_){}
-  },5000);
 })();
 
 </script>
@@ -1222,67 +1039,6 @@ startLivePrice();
 })();
 </script>
 
-<!-- BETWAZ FX AI DERIV READ-ONLY PROPOSAL TEST -->
-<script>
-(() => {
-  const card = document.getElementById("betwazControls");
-  if (!card || document.getElementById("bwDerivProposalTest")) return;
-
-  const wrap = document.createElement("div");
-  wrap.style.marginTop = "8px";
-  wrap.innerHTML = `
-    <button id="bwDerivProposalTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#315a9b;color:#fff;border:1px solid #315a9b">
-      TEST DERIV DEMO PROPOSAL
-    </button>
-    <div id="bwDerivProposalState" class="ctrlstate">Requests a demo price proposal only. No contract will be purchased.</div>
-  `;
-  card.appendChild(wrap);
-
-  document.getElementById("bwDerivProposalTest").onclick = async () => {
-    let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
-    if (!pin) {
-      pin = window.prompt("Enter your BETWAZ operator PIN:");
-      if (!pin) return;
-      sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
-    }
-
-    const btn = document.getElementById("bwDerivProposalTest");
-    const out = document.getElementById("bwDerivProposalState");
-    btn.disabled = true;
-    out.textContent = "Requesting a read-only Deriv demo proposal…";
-    out.style.color = "var(--muted)";
-
-    try {
-      const symbol = (typeof selected !== "undefined" ? selected : "XAU/USD");
-      const r = await fetch(
-        "https://betwaz-fx-ai-backend.onrender.com/api/deriv/proposal-test?symbol=" + encodeURIComponent(symbol) + "&amount=1",
-        {method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}
-      );
-      const d = await r.json().catch(()=>({}));
-      if (r.status===401) {
-        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
-        throw new Error("Operator PIN rejected");
-      }
-      if (!r.ok || !d.ok) throw new Error(d.error || "Deriv proposal test failed");
-
-      out.textContent = "DEMO PROPOSAL RECEIVED • " + (d.deriv_symbol || symbol) +
-        " • " + (d.contract_type || "contract") +
-        " • Stake: " + (d.stake ?? "n/a") +
-        " " + (d.currency || "") +
-        " • No purchase";
-      out.style.color = "var(--good)";
-      log("Deriv demo proposal received; no purchase submitted");
-    } catch(e) {
-      out.textContent = "Deriv proposal test failed: " + e.message;
-      out.style.color = "var(--bad)";
-      log("Deriv demo proposal test failed");
-    } finally {
-      btn.disabled=false;
-    }
-  };
-})();
-</script>
-
 <!-- BETWAZ FX AI DERIV DEMO MARKET DATA TEST -->
 <script>
 (() => {
@@ -1372,8 +1128,6 @@ startLivePrice();
   const card = document.getElementById("betwazControls");
   if (!card || document.getElementById("bwDerivMarketPanel")) return;
 
-  const API = "https://betwaz-fx-ai-backend.onrender.com";
-
   const wrap = document.createElement("div");
   wrap.id = "bwDerivMarketPanel";
   wrap.style.marginTop = "10px";
@@ -1412,18 +1166,7 @@ startLivePrice();
         sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
         throw new Error("Operator PIN rejected");
       }
-      if (!r.ok || !d.ok) {
-        const serverError = String(d.error || d.message || "");
-        if (/market.*closed|presently closed|closed/i.test(serverError)) {
-          const match = serverError.match(/open at (\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})/i);
-          const openText = match ? " • Opens: " + match[1] + " UTC" : "";
-          out.textContent = "MARKET CLOSED • " + (d.requested_symbol || selected) + openText + " • No trade submitted";
-          out.style.color = "var(--warn)";
-          log("Deriv market closed: " + (d.requested_symbol || selected));
-          return;
-        }
-        throw new Error(serverError || ("HTTP " + r.status));
-      }
+      if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status));
 
       const quote = Number(d.quote);
       const quoteText = Number.isFinite(quote) ? quote.toFixed(5) : String(d.quote);
@@ -1450,154 +1193,6 @@ startLivePrice();
 })();
 </script>
 
-
-<!-- BETWAZ FX AI VANTAGE SESSION SHELL -->
-<section class="card" id="bwVantageTerminal">
-  <div class="row">
-    <div>
-      <div class="section-title" style="margin-bottom:4px">BETWAZ FX AI • VANTAGE SESSION</div>
-      <div class="notice">BETWAZ stays your home screen • Vantage keeps authentication and execution</div>
-    </div>
-    <div id="bwVantageStatus" class="status pending">READY</div>
-  </div>
-
-  <div class="notice" style="margin-top:10px">
-    Vantage does not permit its secure trading workspace to be embedded in this BETWAZ page. We will not bypass that protection. Use the secure Vantage workspace in its own browser tab, then return to BETWAZ FX AI for AI analysis and safety controls.
-  </div>
-
-  <div class="formgrid" style="margin-top:10px">
-    <button id="bwVantageOpen" class="primary" style="padding:13px;border-radius:11px;font-weight:900">
-      OPEN VANTAGE XAUUSD
-    </button>
-    <button id="bwVantageReturn" class="secondary" style="padding:13px;border-radius:11px;font-weight:900">
-      RETURN TO BETWAZ
-    </button>
-  </div>
-
-  <div style="margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#061019">
-    <div style="font-size:12px;font-weight:900;margin-bottom:8px">VANTAGE SESSION</div>
-    <div id="bwVantageState" class="notice">
-      Tap OPEN VANTAGE XAUUSD to sign in through Vantage. BETWAZ FX AI never asks for or stores your Vantage password or MFA code.
-    </div>
-    <div class="formgrid" style="margin-top:9px">
-      <button id="bwVantageArm" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
-        ARM AI: OFF
-      </button>
-      <button id="bwVantageDetach" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
-        RESET SESSION
-      </button>
-    </div>
-  </div>
-
-  <div style="margin-top:10px" class="notice">
-    <strong>How this works:</strong> Vantage's official secure trading workspace stays in its own authenticated browser context. BETWAZ provides the AI analysis, deterministic risk controls, emergency stop and audit layer alongside it.
-  </div>
-</section>
-
-<!-- BETWAZ FX AI VANTAGE SESSION LOGIC -->
-<script>
-(() => {
-  const VANTAGE_TRADE_URL = "https://secure.vantagemarkets.com/web-trade/trade/XAUUSD";
-  const openBtn = document.getElementById("bwVantageOpen");
-  const returnBtn = document.getElementById("bwVantageReturn");
-  const armBtn = document.getElementById("bwVantageArm");
-  const resetBtn = document.getElementById("bwVantageDetach");
-  const status = document.getElementById("bwVantageStatus");
-  const state = document.getElementById("bwVantageState");
-
-  let armed = false;
-  let vantageWindow = null;
-
-  function render() {
-    armBtn.textContent = armed ? "ARM AI: ON" : "ARM AI: OFF";
-    armBtn.className = armed ? "primary" : "secondary";
-    status.textContent = armed ? "AI ARMED" : "READY";
-    status.className = armed ? "status" : "status pending";
-    state.textContent = armed
-      ? "AI analysis is armed locally. Execution remains blocked until an officially supported Vantage automation bridge is verified."
-      : "Vantage authentication remains with Vantage. BETWAZ FX AI does not capture credentials.";
-  }
-
-  openBtn.onclick = () => {
-    vantageWindow = window.open(VANTAGE_TRADE_URL, "_blank");
-    status.textContent = "VANTAGE OPEN";
-    status.className = "status";
-    state.textContent = "Vantage XAUUSD workspace opened. Sign in only on Vantage. Return to this BETWAZ tab when finished checking the account.";
-    if (typeof log === "function") log("Vantage secure XAUUSD workspace opened");
-  };
-
-  returnBtn.onclick = () => {
-    window.focus();
-    status.textContent = "BETWAZ READY";
-    status.className = "status";
-    state.textContent = "BETWAZ FX AI is active. Vantage remains in its secure browser context.";
-    if (typeof log === "function") log("Returned to BETWAZ FX AI");
-  };
-
-  armBtn.onclick = () => {
-    if (typeof stopped !== "undefined" && stopped) {
-      alert("Emergency stop is active. Resume the safety system before arming AI.");
-      return;
-    }
-    armed = !armed;
-    render();
-    if (typeof log === "function") log(armed ? "Vantage AI control armed locally" : "Vantage AI control disarmed");
-  };
-
-  resetBtn.onclick = () => {
-    armed = false;
-    vantageWindow = null;
-    render();
-    if (typeof log === "function") log("Vantage session state reset");
-  };
-
-  render();
-})();
-</script>
-
-
-<script>
-(() => {
-  const pages=[...document.querySelectorAll('.bw-page')];
-  const buttons=[...document.querySelectorAll('[data-page]')];
-  function show(page){
-    pages.forEach(p=>p.classList.toggle('active',p.id==='bw-page-'+page));
-    buttons.forEach(b=>b.classList.toggle('active',b.dataset.page===page));
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  buttons.forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
-  document.querySelectorAll('[data-broker-action]').forEach(b=>b.addEventListener('click',()=>{
-    const broker=b.dataset.brokerAction, action=b.dataset.action, host=document.getElementById('bw-'+broker+'-workspace');
-    host.textContent=action==='overview'?'Broker overview selected. Connect the official broker account to load verified account data.':
-      action==='trades'?'Open trades selected. Live positions will appear here after the official broker bridge is connected.':
-      action==='history'?'Trade history selected. Historical executions will appear here after the official broker bridge is connected.':
-      'Orders selected. Pending and completed orders will appear here after the official broker bridge is connected.';
-  }));
-  window.BETWAZPages={show};
-})();
-</script>
-<script>
-(() => {
- const open=()=>window.open("https://secure.vantagemarkets.com/web-trade/trade/XAUUSD","_blank","noopener,noreferrer");
- document.getElementById("bwVgOpen").onclick=open; document.getElementById("bwVgOpen2").onclick=open;
- document.getElementById("bwVgRefresh").onclick=async()=>{
-   const s=document.getElementById("bwVgStatus"); s.textContent="CHECKING"; s.className="status pending";
-   try{
-     const r=await fetch("https://betwaz-fx-ai-backend.onrender.com/api/mt5/heartbeat",{cache:"no-store"}); const d=await r.json();
-     if(d && d.ok){s.textContent="MT5 BRIDGE ONLINE";s.className="status";document.getElementById("bwVgBridge").textContent="ONLINE";document.getElementById("bwVgAccountStatus").textContent="ACCOUNT TELEMETRY RECEIVED";document.getElementById("bwVgPositions").textContent=d.open_positions??"0";if(d.balance!=null)document.getElementById("bw-vantage-balance").textContent=Number(d.balance).toFixed(2);if(d.equity!=null)document.getElementById("bw-vantage-equity").textContent=Number(d.equity).toFixed(2);document.getElementById("bwVgPositionsTable").textContent="Open positions: "+(d.open_positions??0)+". Symbol: "+(d.symbol||"—")+". Spread: "+(d.spread_points??"—")+" points.";}
-     else{s.textContent="WAITING FOR MT5";s.className="status pending";document.getElementById("bwVgBridge").textContent="OFFLINE";}
-   }catch(e){s.textContent="WAITING FOR MT5";s.className="status pending";document.getElementById("bwVgBridge").textContent="OFFLINE";}
- };
- let armed=false; const arm=document.getElementById("bwVgArm");
- arm.onclick=()=>{if(window.stopped){alert("Emergency stop is active. Resume safety controls before arming AI.");return;}armed=!armed;arm.textContent=armed?"ARM AI: ON":"ARM AI: OFF";arm.className=armed?"primary":"secondary";const s=document.getElementById("bwVgExecStatus");s.textContent=armed?"AI ARMED":"SAFE / OFF";s.className=armed?"status":"status pending";};
- document.getElementById("bwVgStop").onclick=()=>{armed=false;arm.textContent="ARM AI: OFF";arm.className="secondary";const s=document.getElementById("bwVgExecStatus");s.textContent="EMERGENCY STOP";s.className="status pending";if(typeof log==="function")log("Vantage emergency stop requested from broker workspace");};
-})();
-</script><script>
-(()=>{const open=()=>window.open("https://secure.vantagemarkets.com/web-trade/trade/XAUUSD","_blank","noopener,noreferrer");document.getElementById("bwVgOpen").onclick=open;
-const tabs=document.querySelectorAll("[data-vg-tab]");const panes={chart:"vgChartTab",positions:"vgPositionsTab",orders:"vgOrdersTab",history:"vgHistoryTab",account:"vgAccountTab"};tabs.forEach(t=>t.onclick=()=>{tabs.forEach(x=>x.classList.remove("active"));t.classList.add("active");Object.values(panes).forEach(id=>document.getElementById(id).hidden=true);document.getElementById(panes[t.dataset.vgTab]).hidden=false;});
-document.getElementById("bwVgRefresh").onclick=async()=>{const s=document.getElementById("bwVgStatus");s.textContent="CHECKING";try{const r=await fetch("https://betwaz-fx-ai-backend.onrender.com/api/mt5/heartbeat",{cache:"no-store"});const d=await r.json();if(d&&d.ok){s.textContent="MT5 BRIDGE ONLINE";s.className="status";document.getElementById("bwVgBridge").textContent="ONLINE";document.getElementById("vgAccount").textContent=d.login||"Connected";document.getElementById("vgServer").textContent=d.server||"Vantage MT5";document.getElementById("bw-vantage-balance").textContent=d.balance??"—";document.getElementById("bw-vantage-equity").textContent=d.equity??"—";document.getElementById("vgMargin").textContent=d.margin??"—";document.getElementById("vgFreeMargin").textContent=d.free_margin??"—";document.getElementById("bwVgPositionsTable").textContent="Open positions: "+(d.open_positions??0);}else{s.textContent="WAITING FOR BRIDGE";s.className="status pending";}}catch(e){s.textContent="WAITING FOR BRIDGE";s.className="status pending";}};
-let armed=false;document.getElementById("bwVgArm").onclick=()=>{if(window.stopped){alert("Emergency stop is active.");return;}armed=!armed;document.getElementById("bwVgArm").textContent=armed?"ARM AI: ON":"ARM AI: OFF";document.getElementById("vgAiState").textContent=armed?"ARMED":"OFF";document.getElementById("bwVgExecStatus").textContent=armed?"AI ARMED":"SAFE / OFF";};
-document.getElementById("bwVgStop").onclick=()=>{armed=false;document.getElementById("bwVgArm").textContent="ARM AI: OFF";document.getElementById("vgAiState").textContent="EMERGENCY STOP";document.getElementById("bwVgExecStatus").textContent="EMERGENCY STOP";};
-["vgBuy","vgSell"].forEach(id=>document.getElementById(id).onclick=()=>alert("Order blocked: verified MT5 bridge and BETWAZ safety gates are not active."));})();</script></body>
+</body>
 </html>
 
