@@ -1173,7 +1173,18 @@ startLivePrice();
         sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
         throw new Error("Operator PIN rejected");
       }
-      if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status));
+      if (!r.ok || !d.ok) {
+        const serverError = String(d.error || d.message || "");
+        if (/market.*closed|presently closed|closed/i.test(serverError)) {
+          const match = serverError.match(/open at (\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})/i);
+          const openText = match ? " • Opens: " + match[1] + " UTC" : "";
+          out.textContent = "MARKET CLOSED • " + (d.requested_symbol || selected) + openText + " • No trade submitted";
+          out.style.color = "var(--warn)";
+          log("Deriv market closed: " + (d.requested_symbol || selected));
+          return;
+        }
+        throw new Error(serverError || ("HTTP " + r.status));
+      }
 
       const quote = Number(d.quote);
       const quoteText = Number.isFinite(quote) ? quote.toFixed(5) : String(d.quote);
