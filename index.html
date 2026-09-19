@@ -1056,7 +1056,7 @@ startLivePrice();
     <button id="bwDerivMarketTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#13283a;color:#fff;border:1px solid #4874a5">
       TEST DERIV MARKET DATA
     </button>
-    <div id="bwDerivMarketState" class="ctrlstate">Reads one live Deriv demo tick. No trade will be submitted.</div>
+    <div id="bwDerivMarketState" class="ctrlstate">Reads one live Deriv market-data tick. No trade will be submitted.</div>
   `;
   card.appendChild(wrap);
 
@@ -1071,7 +1071,7 @@ startLivePrice();
     const btn = document.getElementById("bwDerivMarketTest");
     const out = document.getElementById("bwDerivMarketState");
     btn.disabled = true;
-    out.textContent = "Reading live " + selected + " data from Deriv demo WebSocket…";
+    out.textContent = "Reading live " + selected + " data from Deriv public market-data WebSocket…";
     out.style.color = "var(--muted)";
 
     try {
@@ -1086,7 +1086,7 @@ startLivePrice();
       }
       if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status + " from BETWAZ FX AI backend"));
 
-      out.textContent = "DERIV LIVE TICK • " + (d.display_name || d.requested_symbol) + " • " + d.quote + " • Authenticated demo WebSocket • No trade";
+      out.textContent = "DERIV LIVE TICK • " + (d.display_name || d.requested_symbol) + " • " + d.quote + " • Public market data • No trade";
       out.style.color = "var(--good)";
       log("Deriv demo market data received: " + (d.display_name || d.requested_symbol) + " " + d.quote);
     } catch(e) {
