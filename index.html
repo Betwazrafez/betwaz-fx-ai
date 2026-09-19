@@ -1405,13 +1405,20 @@ startLivePrice();
       const confidence = Math.round(Math.max(0, Math.min(1, Number(a.confidence || 0))) * 100);
       const agreement = Math.round(Math.max(0, Math.min(1, Number(a.agreement || 0))) * 100);
 
+      const riskOk = !!(d.risk_gate && d.risk_gate.approved);
+      const safetyOk = !!(d.safety_gate && d.safety_gate.approved);
+      const simOk = !!(d.simulation && d.simulation.approved);
+
       out.innerHTML =
         "IQ OPTION AI • " + symbol +
         " • <b>" + side + "</b> • Confidence " + confidence + "%" +
         " • Timeframes " + d.timeframes_ready + "/" + d.timeframes_required +
         " • Agreement " + agreement + "%" +
         "<br>" + (a.rationale || "No AI rationale returned.") +
-        "<br><small>Source: " + (a.source || "IQ Option PRACTICE") +
+        "<br><small>Risk gate: " + (riskOk ? "PASS" : "BLOCKED") +
+        " • Safety gate: " + (safetyOk ? "PASS" : "BLOCKED") +
+        " • Simulated proposal: " + (simOk ? "APPROVED" : "NOT APPROVED") +
+        "<br>Source: " + (a.source || "IQ Option PRACTICE") +
         " • No trade submitted • Real trading disabled</small>";
 
       out.style.color = side === "WAIT" ? "var(--warn)" : "var(--good)";
