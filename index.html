@@ -1419,7 +1419,9 @@ startLivePrice();
         " • Safety gate: " + (safetyOk ? "PASS" : "BLOCKED") +
         " • Simulated proposal: " + (simOk ? "APPROVED" : "NOT APPROVED") +
         "<br>Source: " + (a.source || "IQ Option PRACTICE") +
-        " • No trade submitted • Real trading disabled</small>";
+        " • No trade submitted • Real trading disabled" +
+        (a.error ? "<br><b>AI diagnostic:</b> " + String(a.error).replace(/[<>]/g, "") : "") +
+        "</small>";
 
       out.style.color = side === "WAIT" ? "var(--warn)" : "var(--good)";
       log("IQ Option AI analysis: " + side + " (" + confidence + "% confidence)");
