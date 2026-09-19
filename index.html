@@ -344,8 +344,13 @@ async function updateLivePrice(){
         }
       );
 
-    const data =
-      await response.json();
+    const raw = await response.text();
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (parseError) {
+      throw new Error("Backend returned a non-JSON response (HTTP " + response.status + ")");
+    }
 
     if(!response.ok || !data.ok){
 
