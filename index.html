@@ -130,6 +130,7 @@ input,select{
   <span id="priceTime" class="price-time">
     Waiting for market data…
   </span>
+  <span id="marketStatus" class="price-time">Checking market session…</span>
 </div>
 
 <div style="text-align:right">
@@ -178,6 +179,8 @@ input,select{
   </div>
 </section><section class="card">  <div class="section-title">AI DECISION</div>  <div class="tabs" id="tabs">
     <button data-p="XAU/USD" class="active">XAU/USD</button>
+    <button data-p="WTI/USD">OIL / WTI</button>
+    <button data-p="USD/ZAR">USD/ZAR</button>
   </div>  <div class="signal"><div>
   <div id="decision" class="signal-main wait">WAIT</div>
 
@@ -333,7 +336,7 @@ async function updateLivePrice(){
 
     const response =
       await fetch(
-        BACKEND_URL + "/api/market-data",
+        BACKEND_URL + "/api/market-data?symbol=" + encodeURIComponent(selected),
         {
           method:"GET",
           cache:"no-store"
@@ -399,6 +402,11 @@ async function updateLivePrice(){
       "Updated " +
       new Date().toLocaleTimeString() +
       (timestamp ? " • " + timestamp : "");
+
+    const status = data.market_status || {};
+    const statusElement = document.getElementById("marketStatus");
+    statusElement.textContent = status.open ? "● MARKET OPEN" : "● MARKET CLOSED — WEEKEND";
+    statusElement.style.color = status.open ? "var(--good)" : "var(--warn)";
 
   }catch(error){
 
@@ -550,18 +558,18 @@ async function analyze(){
   decision.className = "signal-main wait";
 
   document.getElementById("reason").textContent =
-    "Fetching live XAU/USD data and running multi-timeframe AI analysis…";
+    "Fetching live " + selected + " data and running multi-timeframe AI analysis…";
 
   document.getElementById("aiStatus").textContent =
     "SCANNING";
 
-  log("Starting live XAU/USD AI scan…");
+  log("Starting live " + selected + " AI scan…");
 
   try{
 
     const response =
       await fetch(
-        BACKEND_URL + "/api/ai-test",
+        BACKEND_URL + "/api/ai-test?symbol=" + encodeURIComponent(selected),
         {
           method:"GET",
           cache:"no-store"
@@ -901,3 +909,18 @@ startLivePrice();
 </script>
 </body>
 </html>
+
+
+/* MARKET TABS */
+document.querySelectorAll("#tabs button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("#tabs button").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    selected = button.dataset.p;
+    document.getElementById("pair").textContent = selected;
+    lastAnalysis = null;
+    document.getElementById("decision").textContent = "WAIT";
+    document.getElementById("reason").textContent = selected === "XAU/USD" ? "Gold market selected." : selected === "WTI/USD" ? "WTI crude oil selected." : "USD/ZAR forex pair selected.";
+    updateLivePrice();
+  });
+});
