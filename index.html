@@ -1133,6 +1133,8 @@ startLivePrice();
   const card = document.getElementById("betwazControls");
   if (!card || document.getElementById("bwDerivMarketPanel")) return;
 
+  const API = "https://betwaz-fx-ai-backend.onrender.com";
+
   const wrap = document.createElement("div");
   wrap.id = "bwDerivMarketPanel";
   wrap.style.marginTop = "10px";
