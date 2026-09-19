@@ -113,7 +113,67 @@ input,select{
   .kv{grid-template-columns:1fr 1fr}
   .kv div:last-child{grid-column:span 2}
 }
-</style></head><body><div class="app"><header>
+
+/* BETWAZ FX AI mobile page shell */
+.bw-shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 70px);gap:0}
+.bw-sidebar{position:sticky;top:0;height:calc(100vh - 70px);padding:14px 10px;border-right:1px solid var(--line);background:rgba(7,16,24,.96);overflow:auto}
+.bw-main{min-width:0;padding:14px;max-width:1200px;width:100%;margin:0 auto}
+.bw-menu-title{font-size:11px;letter-spacing:1.4px;color:var(--muted);font-weight:900;padding:10px 10px 6px}
+.bw-nav{display:flex;flex-direction:column;gap:6px}
+.bw-nav button{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--text);padding:11px 12px;border-radius:10px;font-weight:800;cursor:pointer}
+.bw-nav button:hover{background:var(--panel2);border-color:var(--line)}
+.bw-nav button.active{background:var(--panel2);border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.bw-subnav{display:none;padding:4px 0 8px 10px}.bw-subnav.show{display:block}
+.bw-subnav button{font-size:13px;padding:9px 10px;color:var(--muted)}
+.bw-page{display:none}.bw-page.active{display:block}
+.bw-pagehead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.bw-pagehead h2{margin:0;font-size:20px}.bw-pagehead p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.bw-broker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.bw-broker-card{cursor:pointer}.bw-broker-card:hover{border-color:var(--accent)}
+.bw-statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.bw-stat{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.bw-stat b{display:block;font-size:18px;margin-top:4px}.bw-stat span{color:var(--muted);font-size:11px}
+.bw-mobilebar{display:none}
+@media(max-width:760px){.bw-shell{display:block}.bw-sidebar{display:none}.bw-main{padding:10px 10px 82px}.bw-mobilebar{display:flex;position:fixed;z-index:50;bottom:0;left:0;right:0;background:rgba(7,16,24,.98);border-top:1px solid var(--line);padding:7px 6px;gap:4px}.bw-mobilebar button{flex:1;border:0;background:transparent;color:var(--muted);font-size:10px;font-weight:900;padding:7px 3px;border-radius:9px}.bw-mobilebar button.active{color:var(--text);background:var(--panel2)}.bw-broker-grid,.bw-statgrid{grid-template-columns:1fr}.bw-pagehead h2{font-size:18px}}
+</style></head><body>
+<div class="bw-shell">
+  <aside class="bw-sidebar">
+    <div class="bw-menu-title">MAIN MENU</div>
+    <nav class="bw-nav" id="bwSideNav">
+      <button data-page="dashboard" class="active">⌂ Dashboard</button>
+      <button data-page="brokers">▣ Brokers</button>
+      <button data-page="markets">◈ Markets</button>
+      <button data-page="ai">✦ AI Trading</button>
+      <button data-page="risk">⚙ Risk & Safety</button>
+      <button data-page="activity">☷ Activity</button>
+      <button data-page="settings">⚙ Settings</button>
+    </nav>
+    <div class="bw-menu-title">BROKER ACCOUNTS</div>
+    <nav class="bw-nav" id="bwBrokerNav">
+      <button data-page="broker-vantage">Vantage Markets</button>
+      <button data-page="broker-xm">XM</button>
+      <button data-page="broker-hfm">HFM</button>
+      <button data-page="broker-deriv">Deriv</button>
+      <button data-page="broker-iq">IQ Option</button>
+    </nav>
+  </aside>
+  <main class="bw-main">
+    <section class="bw-page active" id="bw-page-dashboard"><div class="bw-pagehead"><div><h2>Dashboard</h2><p>BETWAZ FX AI control centre</p></div></div><div class="bw-statgrid"><div class="bw-stat"><span>AI STATUS</span><b>ONLINE</b></div><div class="bw-stat"><span>LIVE TRADING</span><b id="bwDashLive">SAFE / OFF</b></div><div class="bw-stat"><span>SAFETY</span><b id="bwDashSafety">ACTIVE</b></div></div><div id="bwDashboardHost" style="margin-top:12px"></div></section>
+    <section class="bw-page" id="bw-page-brokers"><div class="bw-pagehead"><div><h2>Brokers</h2><p>Select a broker to open its dedicated workspace.</p></div></div><div class="bw-broker-grid">
+      <button class="card bw-broker-card" data-page="broker-vantage"><b>VANTAGE MARKETS</b><div class="notice">Balance • positions • orders • history</div></button>
+      <button class="card bw-broker-card" data-page="broker-xm"><b>XM</b><div class="notice">Account and trading workspace</div></button>
+      <button class="card bw-broker-card" data-page="broker-hfm"><b>HFM</b><div class="notice">Account and trading workspace</div></button>
+      <button class="card bw-broker-card" data-page="broker-deriv"><b>DERIV</b><div class="notice">Account • markets • proposals • history</div></button>
+      <button class="card bw-broker-card" data-page="broker-iq"><b>IQ OPTION</b><div class="notice">Account and trading workspace</div></button>
+    </div></section>
+    <section class="bw-page" id="bw-page-markets"><div class="bw-pagehead"><div><h2>Markets</h2><p>XAU/USD, WTI/USD and USD/ZAR</p></div></div><div id="bwMarketsHost"></div></section>
+    <section class="bw-page" id="bw-page-ai"><div class="bw-pagehead"><div><h2>AI Trading</h2><p>Analysis, signals and execution controls</p></div></div><div id="bwAIHost"></div></section>
+    <section class="bw-page" id="bw-page-risk"><div class="bw-pagehead"><div><h2>Risk & Safety</h2><p>Independent controls remain outside the AI decision.</p></div></div><div id="bwRiskHost"></div></section>
+    <section class="bw-page" id="bw-page-activity"><div class="bw-pagehead"><div><h2>Activity</h2><p>System events, broker events and execution audit.</p></div></div><div id="bwActivityHost"></div></section>
+    <section class="bw-page" id="bw-page-settings"><div class="bw-pagehead"><div><h2>Settings</h2><p>Application and operator settings.</p></div></div><div id="bwSettingsHost"></div></section>
+    <section class="bw-page" id="bw-page-broker-vantage"><div class="bw-pagehead"><div><h2>Vantage Markets</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-vantage-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-vantage-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-vantage-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="vantage" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="vantage" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="vantage" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="vantage" data-action="orders">ORDERS</button></div><div id="bw-vantage-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-xm"><div class="bw-pagehead"><div><h2>XM</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-xm-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-xm-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-xm-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="xm" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="xm" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="xm" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="xm" data-action="orders">ORDERS</button></div><div id="bw-xm-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-hfm"><div class="bw-pagehead"><div><h2>HFM</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-hfm-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-hfm-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-hfm-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="hfm" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="hfm" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="hfm" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="hfm" data-action="orders">ORDERS</button></div><div id="bw-hfm-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-deriv"><div class="bw-pagehead"><div><h2>DERIV</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-deriv-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-deriv-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-deriv-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="deriv" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="deriv" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="deriv" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="deriv" data-action="orders">ORDERS</button></div><div id="bw-deriv-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section><section class="bw-page" id="bw-page-broker-iq"><div class="bw-pagehead"><div><h2>IQ Option</h2><p>Dedicated broker workspace</p></div><button class="secondary" data-page="brokers">← Brokers</button></div><div class="card"><div class="bw-statgrid"><div class="bw-stat"><span>BALANCE</span><b id="bw-iq-balance">—</b></div><div class="bw-stat"><span>EQUITY</span><b id="bw-iq-equity">—</b></div><div class="bw-stat"><span>OPEN TRADES</span><b id="bw-iq-positions">—</b></div></div><div class="formgrid" style="margin-top:12px"><button class="primary" data-broker-action="iq" data-action="overview">OVERVIEW</button><button class="secondary" data-broker-action="iq" data-action="trades">OPEN TRADES</button><button class="secondary" data-broker-action="iq" data-action="history">TRADE HISTORY</button><button class="secondary" data-broker-action="iq" data-action="orders">ORDERS</button></div><div id="bw-iq-workspace" class="notice" style="margin-top:12px">Broker data will appear here when an official connection is available.</div></div></section>
+  </main>
+</div>
+<nav class="bw-mobilebar" id="bwMobileNav"><button data-page="dashboard" class="active">⌂<br>Home</button><button data-page="brokers">▣<br>Brokers</button><button data-page="markets">◈<br>Markets</button><button data-page="ai">✦<br>AI</button><button data-page="activity">☷<br>Activity</button></nav>
+<div class="app"><header>
   <div>
     <div class="brand">BETWAZ FX AI</div>
     <div class="sub">AI market intelligence • risk engine • broker control</div>
@@ -1465,6 +1525,27 @@ startLivePrice();
 })();
 </script>
 
+
+<script>
+(() => {
+  const pages=[...document.querySelectorAll('.bw-page')];
+  const buttons=[...document.querySelectorAll('[data-page]')];
+  function show(page){
+    pages.forEach(p=>p.classList.toggle('active',p.id==='bw-page-'+page));
+    buttons.forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  buttons.forEach(b=>b.addEventListener('click',()=>show(b.dataset.page)));
+  document.querySelectorAll('[data-broker-action]').forEach(b=>b.addEventListener('click',()=>{
+    const broker=b.dataset.brokerAction, action=b.dataset.action, host=document.getElementById('bw-'+broker+'-workspace');
+    host.textContent=action==='overview'?'Broker overview selected. Connect the official broker account to load verified account data.':
+      action==='trades'?'Open trades selected. Live positions will appear here after the official broker bridge is connected.':
+      action==='history'?'Trade history selected. Historical executions will appear here after the official broker bridge is connected.':
+      'Orders selected. Pending and completed orders will appear here after the official broker bridge is connected.';
+  }));
+  window.BETWAZPages={show};
+})();
+</script>
 </body>
 </html>
 
