@@ -1418,6 +1418,12 @@ startLivePrice();
         "<br><small>Risk gate: " + (riskOk ? "PASS" : "BLOCKED") +
         " • Safety gate: " + (safetyOk ? "PASS" : "BLOCKED") +
         " • Simulated proposal: " + (simOk ? "APPROVED" : "NOT APPROVED") +
+        "<br><b>Timeframe diagnostics:</b> " +
+        Object.entries(a.timeframe_diagnostics || {}).map(([tf, x]) =>
+          tf + " " + (x.structure || "N/A") +
+          " (EMA " + (x.short_trend || "N/A") + "/" + (x.medium_trend || "N/A") + ")"
+        ).join(" • ") +
+        "<br>Agreement method: " + (a.agreement_method || "AI-reported") +
         "<br>Source: " + (a.source || "IQ Option PRACTICE") +
         " • No trade submitted • Real trading disabled" +
         (a.error ? "<br><b>AI diagnostic:</b> " + String(a.error).replace(/[<>]/g, "") : "") +
