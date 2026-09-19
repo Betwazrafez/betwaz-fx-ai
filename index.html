@@ -1099,20 +1099,105 @@ startLivePrice();
   };
 })();
 </script>
+
+<!-- BETWAZ FX AI MARKET TABS -->
+<script>
+(() => {
+  document.querySelectorAll("#tabs button").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll("#tabs button").forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
+      selected = button.dataset.p;
+      document.getElementById("pair").textContent = selected;
+      lastAnalysis = null;
+      document.getElementById("decision").textContent = "WAIT";
+      document.getElementById("confidence").textContent = "0%";
+      document.getElementById("meter").style.width = "0%";
+      document.getElementById("entry").textContent = "—";
+      document.getElementById("stop").textContent = "—";
+      document.getElementById("target").textContent = "—";
+      document.getElementById("regime").textContent = "UNKNOWN";
+      document.getElementById("reason").textContent =
+        selected === "XAU/USD" ? "Gold market selected." :
+        selected === "WTI/USD" ? "WTI crude oil selected." :
+        "USD/ZAR forex pair selected.";
+      updateLivePrice();
+    });
+  });
+})();
+</script>
+
+<!-- BETWAZ FX AI DERIV MARKET DATA -->
+<script>
+(() => {
+  const card = document.getElementById("betwazControls");
+  if (!card || document.getElementById("bwDerivMarketPanel")) return;
+
+  const wrap = document.createElement("div");
+  wrap.id = "bwDerivMarketPanel";
+  wrap.style.marginTop = "10px";
+  wrap.innerHTML = `
+    <div style="font-size:12px;font-weight:900;margin-bottom:8px">DERIV MARKET DATA</div>
+    <button id="bwDerivMarketTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#13283a;color:#fff;border:1px solid #4874a5">
+      TEST DERIV MARKET DATA
+    </button>
+    <div id="bwDerivMarketState" class="ctrlstate">Reads one live public Deriv tick. No trade is submitted.</div>
+  `;
+  card.appendChild(wrap);
+
+  const btn = document.getElementById("bwDerivMarketTest");
+  const out = document.getElementById("bwDerivMarketState");
+
+  btn.onclick = async () => {
+    let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
+    if (!pin) {
+      pin = window.prompt("Enter your BETWAZ operator PIN:");
+      if (!pin) return;
+      sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
+    }
+
+    btn.disabled = true;
+    out.textContent = "Reading live " + selected + " from Deriv public market data…";
+    out.style.color = "var(--muted)";
+
+    try {
+      const r = await fetch(
+        API + "/api/deriv/market-test?symbol=" + encodeURIComponent(selected),
+        {method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}
+      );
+      const d = await r.json().catch(() => ({}));
+
+      if (r.status === 401) {
+        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
+        throw new Error("Operator PIN rejected");
+      }
+      if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status));
+
+      const quote = Number(d.quote);
+      const quoteText = Number.isFinite(quote) ? quote.toFixed(5) : String(d.quote);
+
+      out.textContent =
+        "DERIV LIVE TICK • " +
+        (d.display_name || d.requested_symbol) +
+        " • " + quoteText +
+        " • Public market data • No trade";
+
+      out.style.color = "var(--good)";
+      log("Deriv market data received: " + (d.display_name || d.requested_symbol) + " " + quoteText);
+    } catch(e) {
+      out.textContent =
+        e.message === "Failed to fetch"
+          ? "Deriv market-data test failed: backend unreachable, CORS, network, or Render issue."
+          : "Deriv market-data test failed: " + e.message;
+      out.style.color = "var(--bad)";
+      log("Deriv market-data test failed: " + e.message);
+    } finally {
+      btn.disabled = false;
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
 
-
-/* MARKET TABS */
-document.querySelectorAll("#tabs button").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll("#tabs button").forEach(b => b.classList.remove("active"));
-    button.classList.add("active");
-    selected = button.dataset.p;
-    document.getElementById("pair").textContent = selected;
-    lastAnalysis = null;
-    document.getElementById("decision").textContent = "WAIT";
-    document.getElementById("reason").textContent = selected === "XAU/USD" ? "Gold market selected." : selected === "WTI/USD" ? "WTI crude oil selected." : "USD/ZAR forex pair selected.";
-    updateLivePrice();
-  });
-});
