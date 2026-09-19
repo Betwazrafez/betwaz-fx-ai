@@ -1193,6 +1193,159 @@ startLivePrice();
 })();
 </script>
 
+<!-- BETWAZ FX AI IQ OPTION PRACTICE TEST -->
+<script>
+(() => {
+  if (document.getElementById("bwIqOptionPanel")) return;
+
+  const card = document.createElement("section");
+  card.className = "card";
+  card.id = "bwIqOptionPanel";
+  card.innerHTML = `
+    <div class="section-title">IQ OPTION • PRACTICE MODE</div>
+    <div class="notice" style="margin-bottom:10px">
+      Server-side community connector. PRACTICE account only. No real-money order is submitted.
+    </div>
+    <div class="grid">
+      <div class="broker">
+        <b id="bwIqStatus">STATUS: CHECKING</b>
+        <span id="bwIqStatusDetail">Credentials and connector are checked on Render.</span>
+      </div>
+      <div class="broker">
+        <b id="bwIqAccount">ACCOUNT: NOT TESTED</b>
+        <span id="bwIqAccountDetail">Practice balance will appear after a successful connection test.</span>
+      </div>
+    </div>
+    <div style="margin-top:9px">
+      <label class="notice">IQ Option market symbol
+        <input id="bwIqSymbol" value="EURUSD" autocomplete="off" spellcheck="false">
+      </label>
+    </div>
+    <div class="grid" style="margin-top:9px">
+      <button id="bwIqAccountTest" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
+        TEST PRACTICE ACCOUNT
+      </button>
+      <button id="bwIqMarketTest" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
+        TEST PRACTICE MARKET
+      </button>
+    </div>
+    <div id="bwIqState" class="notice" style="margin-top:10px">
+      Operator authorization is required. Your PIN is kept in this browser session only.
+    </div>
+  `;
+
+  const controls = document.getElementById("betwazControls");
+  const app = document.querySelector(".app");
+  if (controls) controls.parentNode.insertBefore(card, controls.nextSibling);
+  else if (app) app.appendChild(card);
+
+  const API = BACKEND_URL;
+  const pinKey = "BETWAZ_OPERATOR_PIN";
+
+  function getPin() {
+    let pin = sessionStorage.getItem(pinKey) || "";
+    if (!pin) {
+      pin = window.prompt("Enter your BETWAZ operator PIN:");
+      if (!pin) return "";
+      sessionStorage.setItem(pinKey, pin);
+    }
+    return pin;
+  }
+
+  async function call(path) {
+    const pin = getPin();
+    if (!pin) throw new Error("Operator PIN not entered");
+    const r = await fetch(API + path, {
+      method: "GET",
+      cache: "no-store",
+      headers: {"X-BETWAZ-OPERATOR-PIN": pin}
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.status === 401) {
+      sessionStorage.removeItem(pinKey);
+      throw new Error("Operator PIN rejected");
+    }
+    if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status));
+    return d;
+  }
+
+  function setState(message, good=false) {
+    const el = document.getElementById("bwIqState");
+    el.textContent = message;
+    el.style.color = good ? "var(--good)" : "var(--muted)";
+  }
+
+  async function statusTest() {
+    try {
+      const d = await call("/api/iqoption/status");
+      const q = d.iqoption || {};
+      document.getElementById("bwIqStatus").textContent =
+        "STATUS: " + (q.configured ? "CONFIGURED" : "NOT CONFIGURED");
+      document.getElementById("bwIqStatusDetail").textContent =
+        (q.connector || "IQ Option connector") + " • " + (q.mode || "PRACTICE") +
+        " • Real trading: " + (q.real_trading_enabled ? "ENABLED" : "DISABLED");
+    } catch (e) {
+      document.getElementById("bwIqStatus").textContent = "STATUS: AUTH REQUIRED";
+      document.getElementById("bwIqStatusDetail").textContent = e.message;
+    }
+  }
+
+  document.getElementById("bwIqAccountTest").onclick = async () => {
+    const btn = document.getElementById("bwIqAccountTest");
+    btn.disabled = true;
+    setState("Connecting to IQ Option PRACTICE account on the server…");
+    try {
+      const d = await call("/api/iqoption/practice-test");
+      const balance = d.balance == null ? "—" : String(d.balance);
+      document.getElementById("bwIqAccount").textContent =
+        "ACCOUNT: " + (d.account_type || "PRACTICE");
+      document.getElementById("bwIqAccountDetail").textContent =
+        "Balance: " + balance + " " + (d.currency || "") +
+        " • Connected: " + (d.connected ? "YES" : "NO");
+      setState("IQ OPTION PRACTICE ACCOUNT CONNECTED • No trade submitted • Real trading disabled", true);
+      log("IQ Option PRACTICE account test succeeded");
+    } catch (e) {
+      setState("IQ Option practice account test failed: " + e.message);
+      log("IQ Option practice account test failed");
+    } finally {
+      btn.disabled = false;
+      await statusTest();
+    }
+  };
+
+  document.getElementById("bwIqMarketTest").onclick = async () => {
+    const btn = document.getElementById("bwIqMarketTest");
+    const symbol = (document.getElementById("bwIqSymbol").value || "EURUSD").trim().toUpperCase();
+    if (!/^[A-Z0-9._/-]{3,20}$/.test(symbol)) {
+      setState("Invalid IQ Option symbol.");
+      return;
+    }
+    btn.disabled = true;
+    setState("Reading " + symbol + " candles from IQ Option PRACTICE connection…");
+    try {
+      const d = await call("/api/iqoption/market-test?symbol=" + encodeURIComponent(symbol));
+      setState(
+        "IQ OPTION MARKET DATA OK • " + d.symbol +
+        " • " + d.candles_received + " candles received • No trade submitted",
+        true
+      );
+      log("IQ Option practice market data received: " + d.symbol);
+    } catch (e) {
+      setState("IQ Option market-data test failed: " + e.message);
+      log("IQ Option market-data test failed");
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  document.getElementById("bwIqSymbol").addEventListener("change", e => {
+    e.target.value = e.target.value.trim().toUpperCase();
+  });
+
+  statusTest();
+})();
+</script>
+
 </body>
 </html>
 
