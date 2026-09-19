@@ -1043,6 +1043,62 @@ startLivePrice();
   };
 })();
 </script>
+
+<!-- BETWAZ FX AI DERIV DEMO MARKET DATA TEST -->
+<script>
+(() => {
+  const card = document.getElementById("betwazControls");
+  if (!card || document.getElementById("bwDerivMarketTest")) return;
+
+  const wrap = document.createElement("div");
+  wrap.style.marginTop = "8px";
+  wrap.innerHTML = `
+    <button id="bwDerivMarketTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#13283a;color:#fff;border:1px solid #4874a5">
+      TEST DERIV DEMO MARKET DATA
+    </button>
+    <div id="bwDerivMarketState" class="ctrlstate">Reads one live Deriv demo tick. No trade will be submitted.</div>
+  `;
+  card.appendChild(wrap);
+
+  document.getElementById("bwDerivMarketTest").onclick = async () => {
+    let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
+    if (!pin) {
+      pin = window.prompt("Enter your BETWAZ operator PIN:");
+      if (!pin) return;
+      sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
+    }
+
+    const btn = document.getElementById("bwDerivMarketTest");
+    const out = document.getElementById("bwDerivMarketState");
+    btn.disabled = true;
+    out.textContent = "Reading live " + selected + " data from Deriv demo WebSocket…";
+    out.style.color = "var(--muted)";
+
+    try {
+      const r = await fetch(
+        "https://betwaz-fx-ai-backend.onrender.com/api/deriv/market-test?symbol=" + encodeURIComponent(selected),
+        {method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}
+      );
+      const d = await r.json().catch(()=>({}));
+      if (r.status === 401) {
+        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
+        throw new Error("Operator PIN rejected");
+      }
+      if (!r.ok || !d.ok) throw new Error(d.error || "Deriv market-data test failed");
+
+      out.textContent = "DERIV LIVE TICK • " + (d.display_name || d.requested_symbol) + " • " + d.quote + " • Authenticated demo WebSocket • No trade";
+      out.style.color = "var(--good)";
+      log("Deriv demo market data received: " + (d.display_name || d.requested_symbol) + " " + d.quote);
+    } catch(e) {
+      out.textContent = "Deriv market-data test failed: " + e.message;
+      out.style.color = "var(--bad)";
+      log("Deriv demo market-data test failed");
+    } finally {
+      btn.disabled = false;
+    }
+  };
+})();
+</script>
 </body>
 </html>
 
