@@ -1054,7 +1054,7 @@ startLivePrice();
   wrap.style.marginTop = "8px";
   wrap.innerHTML = `
     <button id="bwDerivMarketTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#13283a;color:#fff;border:1px solid #4874a5">
-      TEST DERIV DEMO MARKET DATA
+      TEST DERIV MARKET DATA
     </button>
     <div id="bwDerivMarketState" class="ctrlstate">Reads one live Deriv demo tick. No trade will be submitted.</div>
   `;
@@ -1084,15 +1084,15 @@ startLivePrice();
         sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
         throw new Error("Operator PIN rejected");
       }
-      if (!r.ok || !d.ok) throw new Error(d.error || "Deriv market-data test failed");
+      if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status + " from BETWAZ FX AI backend"));
 
       out.textContent = "DERIV LIVE TICK • " + (d.display_name || d.requested_symbol) + " • " + d.quote + " • Authenticated demo WebSocket • No trade";
       out.style.color = "var(--good)";
       log("Deriv demo market data received: " + (d.display_name || d.requested_symbol) + " " + d.quote);
     } catch(e) {
-      out.textContent = "Deriv market-data test failed: " + e.message;
+      out.textContent = e.message === "Failed to fetch"\n        ? "Deriv market-data test failed: Browser could not reach the BETWAZ FX AI backend (network, CORS, or Render service issue)."\n        : "Deriv market-data test failed: " + e.message;
       out.style.color = "var(--bad)";
-      log("Deriv demo market-data test failed");
+      log("Deriv market-data test failed: " + e.message);
     } finally {
       btn.disabled = false;
     }
