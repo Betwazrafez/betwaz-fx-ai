@@ -710,66 +710,101 @@ async function testBackend(){
    TRADE REQUEST
 ----------------------------- */
 
-function requestTrade(){
+async function requestTrade(){
 
   if(stopped){
-
     alert("Emergency stop is active.");
     return;
-
   }
 
   if(!lastAnalysis){
-
-    alert(
-      "Run SCAN MARKET first so BETWAZ FX AI has a live AI decision."
-    );
-
+    alert("Run SCAN MARKET first so BETWAZ FX AI has a live AI decision.");
     return;
-
   }
 
   if(lastAnalysis.side === "WAIT"){
-
-    log(
-      "AI TRADE blocked: live AI decision is WAIT"
-    );
-
-    alert(
-      "AI TRADE blocked because the current AI decision is WAIT."
-    );
-
+    log("AI TRADE blocked: live AI decision is WAIT");
+    alert("AI TRADE blocked because the current AI decision is WAIT.");
     return;
-
   }
 
-  const risk =
-    Number(
-      document.getElementById("risk").value
-    );
-
-  if(risk > 1){
-
-    alert(
-      "Risk cannot exceed 1% per trade."
-    );
-
-    document.getElementById("risk").value = 1;
-
+  const risk=Number(document.getElementById("risk").value);
+  if(!Number.isFinite(risk) || risk<=0 || risk>1){
+    alert("Risk must be between 0 and 1% per trade.");
+    document.getElementById("risk").value=1;
     return;
-
   }
 
-  log(
-    "Trade request prepared: " +
-    lastAnalysis.side +
-    " XAU/USD — server risk authorization required"
-  );
+  let pin=sessionStorage.getItem("BETWAZ_OPERATOR_PIN")||"";
+  if(!pin){
+    pin=window.prompt("Enter your BETWAZ operator PIN to authorize this trade request:");
+    if(!pin) return;
+    sessionStorage.setItem("BETWAZ_OPERATOR_PIN",pin);
+  }
 
-  alert(
-    "AI trade request prepared. Live execution remains disabled until the secure broker execution layer is enabled."
-  );
+  try{
+    const controlResponse=await fetch(BACKEND_URL+"/api/control/state",{
+      method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}
+    });
+    const controlData=await controlResponse.json().catch(()=>({}));
+    if(controlResponse.status===401){
+      sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
+      throw new Error("Operator PIN rejected");
+    }
+    if(!controlResponse.ok || !controlData.ok) throw new Error(controlData.error||"Could not read trading control");
+    const s=controlData.state;
 
+    if(s.emergency_stop || !s.safety_enabled){
+      throw new Error("Safety system is blocking trading");
+    }
+
+    const live=!!s.live_trading_enabled;
+    const broker="VANTAGE";
+
+    const payload={
+      broker,
+      symbol:selected,
+      side:lastAnalysis.side,
+      confidence:Number(lastAnalysis.confidence||0),
+      entry:lastAnalysis.entry,
+      stop:lastAnalysis.stop,
+      target:lastAnalysis.target,
+      risk_pct:risk,
+      spread_points:0,
+      open_positions:0,
+      daily_loss_pct:0,
+      live_request:live
+    };
+
+    const r=await fetch(BACKEND_URL+"/api/trade-request",{
+      method:"POST",cache:"no-store",
+      headers:{
+        "Content-Type":"application/json",
+        "X-BETWAZ-OPERATOR-PIN":pin
+      },
+      body:JSON.stringify(payload)
+    });
+    const d=await r.json().catch(()=>({}));
+    if(r.status===401){
+      sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
+      throw new Error("Operator PIN rejected");
+    }
+    if(!r.ok || !d.ok) throw new Error(d.error||("HTTP "+r.status));
+
+    if(d.approved){
+      log((live?"LIVE":"DEMO")+" Vantage trade queued: "+lastAnalysis.side+" "+selected+" • command "+d.command_id);
+      alert(live
+        ? "LIVE order approved and queued for the Vantage MT5 bridge."
+        : "Trade approved by the safety gates and queued in DEMO mode. No live order was requested.");
+    }else{
+      const reasons=(d.risk_gate?.reasons||[]).concat(d.safety_gate?.reasons||[]);
+      log("Trade rejected: "+(reasons.join(", ")||d.error||"safety gate"));
+      alert("Trade blocked: "+(reasons.join(", ")||d.error||"safety gate"));
+    }
+  }catch(e){
+    log("Trade request failed: "+e.message);
+    alert("BETWAZ FX AI trade request failed: "+e.message);
+  }
 }
 
 
@@ -823,6 +858,8 @@ startLivePrice();
     #betwazControls .ctrlgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
     #betwazControls button{padding:12px;border-radius:11px;font-weight:900;background:#152731;color:#edf6fa;border:1px solid #203642}
     #betwazControls button.on{border-color:#4fe0a0;color:#4fe0a0}
+    #betwazControls button.live{border-color:#ffb84d;color:#ffb84d}
+    #betwazControls button.bridge{border-color:#6db7ff;color:#6db7ff}
     #betwazControls button.stop{background:#7f2429;color:#fff;border-color:#7f2429}
     #betwazControls button.resume{background:#176c4d;color:#fff}
     #betwazControls .ctrlstate{font-size:11px;color:#91a7b3;margin-top:10px;line-height:1.5}
@@ -837,6 +874,8 @@ startLivePrice();
     <div class="ctrlgrid">
       <button id="bwSafety">SAFETY: —</button>
       <button id="bwAuto">AUTO-KILL: —</button>
+      <button id="bwLive">LIVE EXECUTION: —</button>
+      <button id="bwMT5">MT5 BRIDGE: —</button>
       <button id="bwStop" class="stop">EMERGENCY STOP</button>
       <button id="bwResume" class="resume">RESUME</button>
     </div>
@@ -873,10 +912,14 @@ startLivePrice();
   function render(s) {
     const safety=document.getElementById("bwSafety");
     const auto=document.getElementById("bwAuto");
+    const live=document.getElementById("bwLive");
+    const mt5=document.getElementById("bwMT5");
     safety.textContent="SAFETY: "+(s.safety_enabled?"ON":"OFF");
     safety.classList.toggle("on",!!s.safety_enabled);
     auto.textContent="AUTO-KILL: "+(s.auto_kill_enabled?"ON":"OFF");
     auto.classList.toggle("on",!!s.auto_kill_enabled);
+    live.textContent="LIVE EXECUTION: "+(s.live_trading_enabled?"ON":"OFF");
+    live.classList.toggle("live",!!s.live_trading_enabled);
     const stop=document.getElementById("bwStop");
     stop.textContent=s.emergency_stop?"EMERGENCY STOP: ACTIVE":"EMERGENCY STOP";
     stop.disabled=!!s.emergency_stop;
@@ -903,6 +946,38 @@ startLivePrice();
       render((await call("/api/control/auto-kill","POST",{enabled:!current})).state);
     } catch(e){ alert(e.message); }
   };
+  document.getElementById("bwLive").onclick=async()=>{
+    const current=document.getElementById("bwLive").textContent.endsWith("ON");
+    if(!current){
+      if(!confirm("Enable the BETWAZ live execution master switch? This does not bypass the MT5 EA safety switches.")) return;
+    } else {
+      if(!confirm("Disable live execution? New live orders will be blocked.")) return;
+    }
+    try {
+      const d=await call("/api/control/live","POST",{enabled:!current});
+      render(d.state);
+      log(d.state.live_trading_enabled ? "LIVE EXECUTION master switch enabled" : "LIVE EXECUTION master switch disabled");
+    } catch(e){ alert(e.message); }
+  };
+
+  document.getElementById("bwMT5").onclick=async()=>{
+    try {
+      const d=await call("/api/mt5/status");
+      const b=d.heartbeat;
+      if(d.connected){
+        mt5.textContent="MT5 BRIDGE: ONLINE";
+        mt5.classList.add("bridge");
+        document.getElementById("bwState").textContent=
+          "MT5 ONLINE • "+(b?.broker||"")+" • positions "+(b?.positions_count ?? "—")+
+          " • daily loss "+Number(b?.daily_loss_pct||0).toFixed(2)+"%";
+      } else {
+        mt5.textContent="MT5 BRIDGE: OFFLINE";
+        mt5.classList.remove("bridge");
+        document.getElementById("bwState").textContent="MT5 bridge is offline or its heartbeat is stale.";
+      }
+    } catch(e){ alert(e.message); }
+  };
+
   document.getElementById("bwStop").onclick=async()=>{
     if(!confirm("Activate EMERGENCY STOP? New trading requests will be blocked.")) return;
     try { render((await call("/api/control/emergency-stop","POST",{reason:"Operator emergency stop from BETWAZ dashboard"})).state); }
@@ -916,6 +991,19 @@ startLivePrice();
 
   refresh();
   setInterval(refresh,5000);
+  setInterval(async()=>{
+    try{
+      const d=await call("/api/mt5/status");
+      const mt5=document.getElementById("bwMT5");
+      if(d.connected){
+        mt5.textContent="MT5 BRIDGE: ONLINE";
+        mt5.classList.add("bridge");
+      }else{
+        mt5.textContent="MT5 BRIDGE: OFFLINE";
+        mt5.classList.remove("bridge");
+      }
+    }catch(_){}
+  },5000);
 })();
 
 </script>
