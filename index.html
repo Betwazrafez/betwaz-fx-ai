@@ -1273,80 +1273,87 @@ startLivePrice();
 </script>
 
 
-<!-- BETWAZ FX AI VANTAGE IN-APP TRADING SHELL -->
+<!-- BETWAZ FX AI VANTAGE SESSION SHELL -->
 <section class="card" id="bwVantageTerminal">
   <div class="row">
     <div>
-      <div class="section-title" style="margin-bottom:4px">BETWAZ FX AI • VANTAGE TERMINAL</div>
-      <div class="notice">Your BETWAZ shell • Vantage authentication stays with Vantage</div>
+      <div class="section-title" style="margin-bottom:4px">BETWAZ FX AI • VANTAGE SESSION</div>
+      <div class="notice">BETWAZ stays your home screen • Vantage keeps authentication and execution</div>
     </div>
-    <div id="bwVantageStatus" class="status pending">NOT CONNECTED</div>
+    <div id="bwVantageStatus" class="status pending">READY</div>
   </div>
 
-  <div style="margin-top:12px">
-    <button id="bwVantageOpen" class="primary" style="width:100%;padding:13px;border-radius:11px;font-weight:900">
-      OPEN VANTAGE INSIDE BETWAZ
+  <div class="notice" style="margin-top:10px">
+    Vantage does not permit its secure trading workspace to be embedded in this BETWAZ page. We will not bypass that protection. Use the secure Vantage workspace in its own browser tab, then return to BETWAZ FX AI for AI analysis and safety controls.
+  </div>
+
+  <div class="formgrid" style="margin-top:10px">
+    <button id="bwVantageOpen" class="primary" style="padding:13px;border-radius:11px;font-weight:900">
+      OPEN VANTAGE XAUUSD
+    </button>
+    <button id="bwVantageReturn" class="secondary" style="padding:13px;border-radius:11px;font-weight:900">
+      RETURN TO BETWAZ
     </button>
   </div>
 
-  <div class="formgrid" style="margin-top:9px">
-    <button id="bwVantageArm" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
-      ARM AI: OFF
-    </button>
-    <button id="bwVantageDetach" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
-      CLOSE TERMINAL
-    </button>
-  </div>
-
-  <div id="bwVantageState" class="notice" style="margin-top:10px">
-    BETWAZ FX AI will load the Vantage Web Trading workspace below. Sign in only through Vantage. We never collect your Vantage password or MFA code.
-  </div>
-
-  <div id="bwVantageFrameWrap" class="hidden" style="margin-top:12px">
-    <div class="notice" style="margin-bottom:7px">
-      Vantage Web Trading workspace • XAUUSD. If Vantage's browser security permits embedding, you remain inside BETWAZ FX AI. If Vantage blocks embedding, use the official Vantage browser tab instead.
+  <div style="margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#061019">
+    <div style="font-size:12px;font-weight:900;margin-bottom:8px">VANTAGE SESSION</div>
+    <div id="bwVantageState" class="notice">
+      Tap OPEN VANTAGE XAUUSD to sign in through Vantage. BETWAZ FX AI never asks for or stores your Vantage password or MFA code.
     </div>
-    <iframe
-      id="bwVantageFrame"
-      title="Vantage Web Trading inside BETWAZ FX AI"
-      style="width:100%;height:680px;border:1px solid var(--line);border-radius:12px;background:#061019"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allow="clipboard-read; clipboard-write">
-    </iframe>
+    <div class="formgrid" style="margin-top:9px">
+      <button id="bwVantageArm" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
+        ARM AI: OFF
+      </button>
+      <button id="bwVantageDetach" class="secondary" style="padding:12px;border-radius:11px;font-weight:900">
+        RESET SESSION
+      </button>
+    </div>
+  </div>
+
+  <div style="margin-top:10px" class="notice">
+    <strong>How this works:</strong> Vantage's official secure trading workspace stays in its own authenticated browser context. BETWAZ provides the AI analysis, deterministic risk controls, emergency stop and audit layer alongside it.
   </div>
 </section>
 
-<!-- BETWAZ FX AI VANTAGE IN-APP TERMINAL LOGIC -->
+<!-- BETWAZ FX AI VANTAGE SESSION LOGIC -->
 <script>
 (() => {
   const VANTAGE_TRADE_URL = "https://secure.vantagemarkets.com/web-trade/trade/XAUUSD";
   const openBtn = document.getElementById("bwVantageOpen");
+  const returnBtn = document.getElementById("bwVantageReturn");
   const armBtn = document.getElementById("bwVantageArm");
-  const closeBtn = document.getElementById("bwVantageDetach");
+  const resetBtn = document.getElementById("bwVantageDetach");
   const status = document.getElementById("bwVantageStatus");
   const state = document.getElementById("bwVantageState");
-  const frameWrap = document.getElementById("bwVantageFrameWrap");
-  const frame = document.getElementById("bwVantageFrame");
 
   let armed = false;
+  let vantageWindow = null;
 
   function render() {
     armBtn.textContent = armed ? "ARM AI: ON" : "ARM AI: OFF";
     armBtn.className = armed ? "primary" : "secondary";
-    status.textContent = armed ? "AI ARMED" : (frameWrap.classList.contains("hidden") ? "NOT CONNECTED" : "VANTAGE WORKSPACE");
-    status.className = armed ? "status" : (frameWrap.classList.contains("hidden") ? "status pending" : "status");
+    status.textContent = armed ? "AI ARMED" : "READY";
+    status.className = armed ? "status" : "status pending";
     state.textContent = armed
-      ? "AI analysis is armed locally. Order execution remains blocked until an officially supported Vantage automation bridge is verified."
+      ? "AI analysis is armed locally. Execution remains blocked until an officially supported Vantage automation bridge is verified."
       : "Vantage authentication remains with Vantage. BETWAZ FX AI does not capture credentials.";
   }
 
   openBtn.onclick = () => {
-    frame.src = VANTAGE_TRADE_URL;
-    frameWrap.classList.remove("hidden");
-    status.textContent = "VANTAGE WORKSPACE";
+    vantageWindow = window.open(VANTAGE_TRADE_URL, "_blank");
+    status.textContent = "VANTAGE OPEN";
     status.className = "status";
-    state.textContent = "Loading the authenticated Vantage Web Trading workspace inside BETWAZ FX AI…";
-    if (typeof log === "function") log("Vantage Web Trading workspace opened inside BETWAZ shell");
+    state.textContent = "Vantage XAUUSD workspace opened. Sign in only on Vantage. Return to this BETWAZ tab when finished checking the account.";
+    if (typeof log === "function") log("Vantage secure XAUUSD workspace opened");
+  };
+
+  returnBtn.onclick = () => {
+    window.focus();
+    status.textContent = "BETWAZ READY";
+    status.className = "status";
+    state.textContent = "BETWAZ FX AI is active. Vantage remains in its secure browser context.";
+    if (typeof log === "function") log("Returned to BETWAZ FX AI");
   };
 
   armBtn.onclick = () => {
@@ -1359,22 +1366,12 @@ startLivePrice();
     if (typeof log === "function") log(armed ? "Vantage AI control armed locally" : "Vantage AI control disarmed");
   };
 
-  closeBtn.onclick = () => {
+  resetBtn.onclick = () => {
     armed = false;
-    frame.src = "about:blank";
-    frameWrap.classList.add("hidden");
-    status.textContent = "NOT CONNECTED";
-    status.className = "status pending";
-    state.textContent = "Vantage workspace closed. No Vantage credentials were stored by BETWAZ FX AI.";
-    if (typeof log === "function") log("Vantage workspace closed");
+    vantageWindow = null;
+    render();
+    if (typeof log === "function") log("Vantage session state reset");
   };
-
-  frame.addEventListener("load", () => {
-    if (!frameWrap.classList.contains("hidden")) {
-      state.textContent = "Vantage workspace loaded or responded. If the frame is blank/blocked, Vantage is preventing third-party embedding; use the official browser tab rather than bypassing that protection.";
-      if (typeof log === "function") log("Vantage workspace frame responded");
-    }
-  });
 
   render();
 })();
