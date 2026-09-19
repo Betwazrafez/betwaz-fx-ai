@@ -1408,6 +1408,9 @@ startLivePrice();
       const bullishCount = Number(a.bullish_timeframes || 0);
       const bearishCount = Number(a.bearish_timeframes || 0);
       const mixedCount = Number(a.mixed_timeframes || 0);
+      const qualityGate = d.analysis_quality_gate || {};
+      const qualityOk = !!qualityGate.approved;
+      const qualityReasons = (qualityGate.reasons || []).join(", ") || "none";
 
       const riskOk = !!(d.risk_gate && d.risk_gate.approved);
       const safetyOk = !!(d.safety_gate && d.safety_gate.approved);
@@ -1419,7 +1422,8 @@ startLivePrice();
         " • Timeframes " + d.timeframes_ready + "/" + d.timeframes_required +
         " • Agreement " + agreement + "%" +
         "<br>" + (a.rationale || "No AI rationale returned.") +
-        "<br><small>Risk gate: " + (riskOk ? "PASS" : "BLOCKED") +
+        "<br><small>Analysis quality: " + (qualityOk ? "PASS" : "BLOCKED") +
+        " • Risk gate: " + (riskOk ? "PASS" : "BLOCKED") +
         " • Safety gate: " + (safetyOk ? "PASS" : "BLOCKED") +
         " • Simulated proposal: " + (simOk ? "APPROVED" : "NOT APPROVED") +
         "<br><b>Timeframe diagnostics:</b> " +
@@ -1429,6 +1433,7 @@ startLivePrice();
         ).join(" • ") +
         "<br><b>Structure counts:</b> Bullish " + bullishCount + " • Bearish " + bearishCount + " • Mixed " + mixedCount +
         "<br>Agreement method: " + (a.agreement_method || "AI-reported") +
+        "<br><b>Analysis-quality reasons:</b> " + qualityReasons +
         "<br><b>Risk reasons:</b> " + ((d.risk_gate && d.risk_gate.reasons || []).join(", ") || "none") +
         "<br><b>Safety reasons:</b> " + ((d.safety_gate && d.safety_gate.reasons || []).join(", ") || "none") +
         "<br>Source: " + (a.source || "IQ Option PRACTICE") +
