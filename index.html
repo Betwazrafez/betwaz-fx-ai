@@ -285,6 +285,7 @@ let stopped = false;
 let lastAnalysis = null;
 let priceTimer = null;
 let lastPrice = null;
+let marketOpen = true;
 
 
 /* -----------------------------
@@ -404,6 +405,7 @@ async function updateLivePrice(){
       (timestamp ? " • " + timestamp : "");
 
     const status = data.market_status || {};
+    marketOpen = status.open !== false;
     const statusElement = document.getElementById("marketStatus");
     statusElement.textContent = status.open ? "● MARKET OPEN" : "● MARKET CLOSED — WEEKEND";
     statusElement.style.color = status.open ? "var(--good)" : "var(--warn)";
@@ -543,6 +545,11 @@ function displayAnalysis(data){
 ----------------------------- */
 
 async function analyze(){
+
+  if(!marketOpen){
+    alert("Markets are closed for the weekend. BETWAZ FX AI will resume analysis when the market reopens.");
+    return;
+  }
 
   if(stopped){
 
