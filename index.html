@@ -789,5 +789,115 @@ testBackend();
 /* Start automatic XAU/USD price updates */
 startLivePrice();
 
-</script></body>
+</script>
+<!-- BETWAZ FX AI SAFETY CONTROL UPGRADE -->
+<script>
+/* BETWAZ FX AI operator controls. Load after the main dashboard HTML. */
+(() => {
+  const API = "https://betwaz-fx-ai-backend.onrender.com";
+  let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #betwazControls{margin-bottom:12px}
+    #betwazControls .ctrlgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    #betwazControls button{padding:12px;border-radius:11px;font-weight:900;background:#152731;color:#edf6fa;border:1px solid #203642}
+    #betwazControls button.on{border-color:#4fe0a0;color:#4fe0a0}
+    #betwazControls button.stop{background:#7f2429;color:#fff;border-color:#7f2429}
+    #betwazControls button.resume{background:#176c4d;color:#fff}
+    #betwazControls .ctrlstate{font-size:11px;color:#91a7b3;margin-top:10px;line-height:1.5}
+  `;
+  document.head.appendChild(style);
+
+  const card = document.createElement("section");
+  card.className = "card";
+  card.id = "betwazControls";
+  card.innerHTML = `
+    <div class="section-title">SAFETY CONTROL</div>
+    <div class="ctrlgrid">
+      <button id="bwSafety">SAFETY: —</button>
+      <button id="bwAuto">AUTO-KILL: —</button>
+      <button id="bwStop" class="stop">EMERGENCY STOP</button>
+      <button id="bwResume" class="resume">RESUME</button>
+    </div>
+    <div id="bwState" class="ctrlstate">Operator authorization required.</div>
+  `;
+
+  const activityCard = document.getElementById("activity")?.closest(".card");
+  const app = document.querySelector(".app");
+  if (activityCard) activityCard.parentNode.insertBefore(card, activityCard);
+  else if (app) app.appendChild(card);
+
+  async function ensurePin() {
+    if (pin) return true;
+    pin = window.prompt("Enter your BETWAZ operator PIN:");
+    if (!pin) return false;
+    sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
+    return true;
+  }
+
+  async function call(path, method="GET", body=null) {
+    if (!await ensurePin()) throw new Error("Operator PIN not entered");
+    const opts = {method, cache:"no-store", headers:{"X-BETWAZ-OPERATOR-PIN":pin}};
+    if (body !== null) {
+      opts.headers["Content-Type"]="application/json";
+      opts.body=JSON.stringify(body);
+    }
+    const r=await fetch(API+path,opts);
+    const d=await r.json().catch(()=>({}));
+    if (r.status===401) { sessionStorage.removeItem("BETWAZ_OPERATOR_PIN"); pin=""; }
+    if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP "+r.status));
+    return d;
+  }
+
+  function render(s) {
+    const safety=document.getElementById("bwSafety");
+    const auto=document.getElementById("bwAuto");
+    safety.textContent="SAFETY: "+(s.safety_enabled?"ON":"OFF");
+    safety.classList.toggle("on",!!s.safety_enabled);
+    auto.textContent="AUTO-KILL: "+(s.auto_kill_enabled?"ON":"OFF");
+    auto.classList.toggle("on",!!s.auto_kill_enabled);
+    const stop=document.getElementById("bwStop");
+    stop.textContent=s.emergency_stop?"EMERGENCY STOP: ACTIVE":"EMERGENCY STOP";
+    stop.disabled=!!s.emergency_stop;
+    document.getElementById("bwResume").disabled=!s.emergency_stop;
+    document.getElementById("bwState").textContent=
+      (s.emergency_stop?"TRADING BLOCKED • ":"TRADING CONTROL READY • ")+
+      (s.reason||"")+" • Live master switch: "+(s.live_trading_enabled?"ON":"OFF");
+  }
+
+  async function refresh() {
+    try { render((await call("/api/control/state")).state); }
+    catch(e) { document.getElementById("bwState").textContent="Control unavailable: "+e.message; }
+  }
+
+  document.getElementById("bwSafety").onclick=async()=>{
+    try {
+      const current=document.getElementById("bwSafety").textContent.endsWith("ON");
+      render((await call("/api/control/safety","POST",{enabled:!current})).state);
+    } catch(e){ alert(e.message); }
+  };
+  document.getElementById("bwAuto").onclick=async()=>{
+    try {
+      const current=document.getElementById("bwAuto").textContent.endsWith("ON");
+      render((await call("/api/control/auto-kill","POST",{enabled:!current})).state);
+    } catch(e){ alert(e.message); }
+  };
+  document.getElementById("bwStop").onclick=async()=>{
+    if(!confirm("Activate EMERGENCY STOP? New trading requests will be blocked.")) return;
+    try { render((await call("/api/control/emergency-stop","POST",{reason:"Operator emergency stop from BETWAZ dashboard"})).state); }
+    catch(e){ alert(e.message); }
+  };
+  document.getElementById("bwResume").onclick=async()=>{
+    if(!confirm("Resume the safety system? Live trading remains disabled.")) return;
+    try { render((await call("/api/control/resume","POST",{})).state); }
+    catch(e){ alert(e.message); }
+  };
+
+  refresh();
+  setInterval(refresh,5000);
+})();
+
+</script>
+</body>
 </html>
