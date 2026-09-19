@@ -986,6 +986,63 @@ startLivePrice();
   };
 })();
 </script>
+
+<!-- BETWAZ FX AI DERIV DEMO WEBSOCKET TEST -->
+<script>
+(() => {
+  const card = document.getElementById("betwazControls");
+  if (!card || document.getElementById("bwDerivDemoTest")) return;
+
+  const wrap = document.createElement("div");
+  wrap.style.marginTop = "8px";
+  wrap.innerHTML = `
+    <button id="bwDerivDemoTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#176c4d;color:#fff;border:1px solid #176c4d">
+      TEST DERIV DEMO WEBSOCKET
+    </button>
+    <div id="bwDerivDemoState" class="ctrlstate">Verifies the authenticated demo account connection. No trade will be submitted.</div>
+  `;
+  card.appendChild(wrap);
+
+  document.getElementById("bwDerivDemoTest").onclick = async () => {
+    let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
+    if (!pin) {
+      pin = window.prompt("Enter your BETWAZ operator PIN:");
+      if (!pin) return;
+      sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
+    }
+
+    const btn = document.getElementById("bwDerivDemoTest");
+    const out = document.getElementById("bwDerivDemoState");
+    btn.disabled = true;
+    out.textContent = "Connecting to the Deriv demo WebSocket…";
+    out.style.color = "var(--muted)";
+
+    try {
+      const r = await fetch(
+        "https://betwaz-fx-ai-backend.onrender.com/api/deriv/demo-test",
+        {method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}
+      );
+      const d = await r.json().catch(()=>({}));
+      if (r.status===401) {
+        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
+        throw new Error("Operator PIN rejected");
+      }
+      if (!r.ok || !d.ok) throw new Error(d.error || "Demo WebSocket test failed");
+
+      const a=d.demo_account || {};
+      out.textContent="DERIV DEMO CONNECTED • "+(a.account_id || "account detected")+" • WebSocket authenticated • No trade submitted";
+      out.style.color="var(--good)";
+      log("Deriv demo WebSocket connected successfully");
+    } catch(e) {
+      out.textContent="Deriv demo WebSocket test failed: "+e.message;
+      out.style.color="var(--bad)";
+      log("Deriv demo WebSocket test failed");
+    } finally {
+      btn.disabled=false;
+    }
+  };
+})();
+</script>
 </body>
 </html>
 
