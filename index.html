@@ -1299,7 +1299,7 @@ startLivePrice();
   </div>
 
   <div id="bwVantageState" class="notice" style="margin-top:10px">
-    Open Vantage's official browser trading environment and sign in there. BETWAZ FX AI never asks for your Vantage password or MFA code.
+    Open the official Vantage Markets Web Trading page. Sign in through Vantage, select your trading account, then choose Trade. BETWAZ FX AI never asks for your Vantage password or MFA code.
   </div>
 
   <div id="bwVantageFrameWrap" class="hidden" style="margin-top:12px">
@@ -1320,7 +1320,7 @@ startLivePrice();
 <!-- BETWAZ FX AI VANTAGE WEB TERMINAL LOGIC -->
 <script>
 (() => {
-  const VANTAGE_URL = "https://webtrader.vantage-markets.com/";
+  const VANTAGE_URL = "https://www.vantagemarkets.com/trading-platform/web-trading/";
   const openBtn = document.getElementById("bwVantageOpen");
   const armBtn = document.getElementById("bwVantageArm");
   const detachBtn = document.getElementById("bwVantageDetach");
@@ -1339,7 +1339,7 @@ startLivePrice();
     status.className = armed ? "status" : "status pending";
     state.textContent = armed
       ? "AI is armed locally. Execution remains blocked until an officially supported Vantage automation bridge is available and verified."
-      : "Vantage browser session ready. Authentication remains on Vantage.";
+      : "Official Vantage browser entry is ready. Authentication remains on Vantage.";
   }
 
   openBtn.onclick = () => {
@@ -1348,7 +1348,7 @@ startLivePrice();
     frameWrap.classList.remove("hidden");
     status.textContent = "VANTAGE OPEN";
     status.className = "status";
-    state.textContent = "Vantage Web Trading opened. Log in normally on Vantage. BETWAZ FX AI does not capture credentials.";
+    state.textContent = "Official Vantage Web Trading opened. Log in normally on Vantage, select your trading account, then choose Trade. BETWAZ FX AI does not capture credentials.";
     if (typeof log === "function") log("Vantage Web Trading opened");
   };
 
