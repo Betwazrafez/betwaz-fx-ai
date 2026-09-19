@@ -1403,7 +1403,11 @@ startLivePrice();
       const a = d.analysis || {};
       const side = ["BUY","SELL","WAIT"].includes(a.side) ? a.side : "WAIT";
       const confidence = Math.round(Math.max(0, Math.min(1, Number(a.confidence || 0))) * 100);
-      const agreement = Math.round(Math.max(0, Math.min(1, Number(a.agreement || 0))) * 100);
+      // Backend agreement is already a percentage (0-100), not a 0-1 fraction.
+      const agreement = Math.round(Math.max(0, Math.min(100, Number(a.agreement || 0))));
+      const bullishCount = Number(a.bullish_timeframes || 0);
+      const bearishCount = Number(a.bearish_timeframes || 0);
+      const mixedCount = Number(a.mixed_timeframes || 0);
 
       const riskOk = !!(d.risk_gate && d.risk_gate.approved);
       const safetyOk = !!(d.safety_gate && d.safety_gate.approved);
@@ -1423,7 +1427,10 @@ startLivePrice();
           tf + " " + (x.structure || "N/A") +
           " (EMA " + (x.short_trend || "N/A") + "/" + (x.medium_trend || "N/A") + ")"
         ).join(" • ") +
+        "<br><b>Structure counts:</b> Bullish " + bullishCount + " • Bearish " + bearishCount + " • Mixed " + mixedCount +
         "<br>Agreement method: " + (a.agreement_method || "AI-reported") +
+        "<br><b>Risk reasons:</b> " + ((d.risk_gate && d.risk_gate.reasons || []).join(", ") || "none") +
+        "<br><b>Safety reasons:</b> " + ((d.safety_gate && d.safety_gate.reasons || []).join(", ") || "none") +
         "<br>Source: " + (a.source || "IQ Option PRACTICE") +
         " • No trade submitted • Real trading disabled" +
         (a.error ? "<br><b>AI diagnostic:</b> " + String(a.error).replace(/[<>]/g, "") : "") +
