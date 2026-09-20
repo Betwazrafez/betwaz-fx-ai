@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
         } else {
-            loadWebCommandCenter();
+            loadLocalCommandCenter();
         }
     }
 
