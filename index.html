@@ -113,6 +113,18 @@ input,select{
   .kv{grid-template-columns:1fr 1fr}
   .kv div:last-child{grid-column:span 2}
 }
+</style><style id="bw-pro-ui">
+:root{--bg:#05090d;--panel:#0a1219;--panel2:#0e1a23;--line:#1c303c;--text:#f4f8fa;--muted:#8299a6;--good:#45e0a0;--warn:#f6c85f;--bad:#ff646d;--accent:#6da9ff}
+body{background:radial-gradient(circle at 15% -10%,#12304a55 0,transparent 34%),radial-gradient(circle at 95% 0%,#182d3b44 0,transparent 30%),linear-gradient(180deg,#05090d,#071018 58%,#05090d)}
+.app{max-width:760px;padding:14px 14px 112px}.brand{letter-spacing:.2px}.sub{font-size:10px;letter-spacing:.25px}.mode{background:#09151d;border-color:#315062}
+.card{border-radius:20px;background:linear-gradient(180deg,#0b151e,#09121a);border-color:#1b313d;box-shadow:0 14px 38px #0005}.hero{border-color:#24465a;background:radial-gradient(circle at 100% 0,#17405c 0,transparent 43%),linear-gradient(145deg,#0d1b26,#09131b)}
+.bw-page{display:none}.bw-page.active{display:block;animation:bwIn .22s ease}@keyframes bwIn{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
+.bw-page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:3px 2px 12px}.bw-page-title{font-size:21px;font-weight:950}.bw-page-sub{font-size:10px;color:var(--muted);margin-top:3px}.bw-page-mark{font-size:9px;font-weight:950;letter-spacing:1.5px;color:#6f8794}
+.bw-nav{position:fixed;z-index:100;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:9px max(7px,calc((100vw - 760px)/2 + 7px));background:#050b10ed;border-top:1px solid #1a303b;backdrop-filter:blur(18px)}
+.bw-nav button{min-width:0;padding:8px 3px;border-radius:12px;background:transparent;color:#718793;border:1px solid transparent;font-size:9px;font-weight:900}.bw-nav button.active{color:#fff;background:#122636;border-color:#31546a;box-shadow:0 0 20px #1d6de022}.bw-nav .ico{display:block;font-size:16px;line-height:17px;margin-bottom:2px}
+.bw-topmenu{display:flex;gap:6px;overflow:auto;padding:0 0 11px}.bw-topmenu button{flex:0 0 auto;background:#09151d;border:1px solid #1a303b;color:#8ea3ae;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:900}
+.bw-start-card{border-color:#2c6388;background:linear-gradient(145deg,#0e2230,#09131b)}.bw-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.bw-kpi{padding:13px;border:1px solid #1b303b;border-radius:14px;background:#071119}.bw-kpi small{display:block;font-size:9px;color:#78909c;font-weight:900;letter-spacing:.6px}.bw-kpi b{display:block;font-size:20px;margin:5px 0 2px}.bw-kpi span{display:block;font-size:9px;color:#657b86;line-height:1.3}.bw-account-list{margin-top:10px}.bw-account-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #18303b}.bw-account-row b{font-size:12px}.bw-account-row small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.bw-account-row strong{font-size:13px}.bw-wide-btn{width:100%;padding:13px;border-radius:12px;margin-top:12px;font-weight:950}.bw-integrity{display:flex;gap:11px;align-items:flex-start}.bw-led{width:10px;height:10px;border-radius:50%;background:var(--warn);margin-top:4px;box-shadow:0 0 12px #f6c85f55}.bw-integrity b{font-size:11px}.bw-integrity p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.bw-broker-selected{border-color:#45e0a0!important}.bw-broker-confirm{background:#176c4d!important}.actionbar{z-index:90;background:#050b10e8}
+@media(max-width:430px){.bw-nav button{font-size:8px}.bw-page-title{font-size:19px}.bw-kpi b{font-size:17px}}
 </style></head><body><div class="app"><header>
   <div>
     <div class="brand">BETWAZ FX AI</div>
@@ -1547,136 +1559,52 @@ body{overflow-x:hidden}
 (() => {
   function bootPages(){
     if(document.getElementById("bwNav")) return;
-
-    const app = document.querySelector(".app");
-    if(!app) return;
-
-    /* Capture the existing cards before rearranging them. */
-    const cards = [...app.querySelectorAll(":scope > .card")];
-    const hero = cards.find(x => x.classList.contains("hero"));
-    const brokerCard = cards.find(x => /BROKER CONNECTIONS/i.test(x.textContent));
-    const aiCard = cards.find(x => /AI DECISION/i.test(x.textContent));
-    const riskCard = cards.find(x => /RISK CONTROL/i.test(x.textContent));
-    const activityCard = cards.find(x => /ACTIVITY/i.test(x.textContent));
-    const connectionCard = cards.find(x => /CONNECTION/i.test(x.textContent));
-    const controls = document.getElementById("betwazControls");
-    const iqPanel = document.getElementById("bwIqOptionPanel");
-
-    /* Create a compact mobile page shell. */
-    const pages = document.createElement("div");
-    pages.id = "bwPages";
-
-    const makePage = (id,title,sub) => {
-      const p = document.createElement("section");
-      p.className = "bw-page";
-      p.id = id;
-      p.innerHTML = '<div class="bw-page-title">'+title+'</div><div class="bw-page-sub">'+sub+'</div>';
-      pages.appendChild(p);
-      return p;
-    };
-
-    const home = makePage("bwHome","Home","Market overview and current AI state");
-    const brokers = makePage("bwBrokers","Brokers","Broker connections and practice/demo tests");
-    const ai = makePage("bwAI","AI Scan","Multi-timeframe market intelligence");
-    const risk = makePage("bwRisk","Risk & Safety","Trading controls remain in safe mode");
-    const activity = makePage("bwActivity","Activity","System events and backend status");
-
-    /* Move existing content into focused pages. */
-    if(hero) home.appendChild(hero);
-    if(aiCard) { ai.appendChild(aiCard); }
-    if(brokerCard) brokers.appendChild(brokerCard);
-    if(controls) brokers.appendChild(controls);
-    if(iqPanel) { brokers.appendChild(iqPanel); }
-
-    if(riskCard) risk.appendChild(riskCard);
-
-    /* Connection belongs with Activity/diagnostics. */
-    if(connectionCard) activity.appendChild(connectionCard);
-    if(activityCard) activity.appendChild(activityCard);
-
-    /* IQ Option AI belongs on the AI page if it was injected into the panel. */
-    if(iqPanel && !ai.querySelector("#bwIqAiTest")) {
-      /* The AI button lives inside IQ panel, so show a compact duplicate status on AI page. */
-      const iqAI = iqPanel.cloneNode(true);
-      iqAI.id = "bwIqAIView";
-      iqAI.querySelectorAll("button,input").forEach(el => el.disabled = true);
-      ai.appendChild(iqAI);
-    }
-
-    app.appendChild(pages);
-
-    const nav = document.createElement("nav");
-    nav.className = "bw-nav";
-    nav.id = "bwNav";
-    nav.innerHTML = [
-      ["home","⌂","Home"],
-      ["brokers","⇄","Brokers"],
-      ["ai","◉","AI Scan"],
-      ["risk","◆","Risk"],
-      ["activity","☷","Activity"]
-    ].map(x =>
-      '<button data-page="'+x[0]+'"><span class="ico">'+x[1]+'</span>'+x[2]+'</button>'
-    ).join("");
+    const app=document.querySelector(".app"); if(!app) return;
+    const direct=id=>document.getElementById(id);
+    const cards=[...app.querySelectorAll(":scope > .card")];
+    const hero=cards.find(x=>x.classList.contains("hero"));
+    const start=direct("bwStartTrading");
+    const broker=cards.find(x=>/BROKER CONTROL/i.test(x.textContent));
+    const ai=cards.find(x=>/AI DECISION/i.test(x.textContent));
+    const risk=direct("riskControl")||cards.find(x=>/RISK CONTROL/i.test(x.textContent));
+    const activity=direct("activityCard")||cards.find(x=>/ACTIVITY/i.test(x.textContent));
+    const controls=direct("betwazControls"), iq=direct("bwIqOptionPanel"), deriv=direct("derivAiCard"), iqPractice=direct("bwIqPracticeTrade");
+    const pages=document.createElement("div"); pages.id="bwPages";
+    const page=(id,title,sub)=>{const p=document.createElement("section");p.className="bw-page";p.id=id;p.innerHTML='<div class="bw-page-head"><div><div class="bw-page-title">'+title+'</div><div class="bw-page-sub">'+sub+'</div></div><div class="bw-page-mark">BETWAZ</div></div>';pages.appendChild(p);return p};
+    const home=page("bwHome","Command Center","One place to see what matters now.");
+    const aiPage=page("bwAI","AI Intelligence","Market evidence, consensus and the current AI decision.");
+    const portfolio=page("bwPortfolio","Balances & Performance","Broker balances, exposure and verified performance data.");
+    const brokers=page("bwBrokers","Execution","Choose the practice connector controlled by BETWAZ AI.");
+    const riskPage=page("bwRisk","Risk & Safety","Hard safety gates remain authoritative over every AI action.");
+    const activityPage=page("bwActivity","Audit Trail","Analysis, trade requests, blocks and system events.");
+    if(hero)home.appendChild(hero); if(start)home.appendChild(start); if(ai)aiPage.appendChild(ai);
+    if(broker)brokers.appendChild(broker); if(deriv)brokers.appendChild(deriv); if(iq)brokers.appendChild(iq); if(iqPractice)brokers.appendChild(iqPractice);
+    if(risk)riskPage.appendChild(risk); if(controls)riskPage.appendChild(controls); if(activity)activityPage.appendChild(activity);
+    const portfolioCard=document.createElement("section");portfolioCard.className="card";portfolioCard.id="bwPortfolioCard";
+    portfolioCard.innerHTML='<div class="section-title">ACCOUNT SNAPSHOT</div><div class="bw-kpi-grid">'+
+      '<div class="bw-kpi"><small>TOTAL BALANCE</small><b id="bwTotalBalance">—</b><span id="bwBalanceMeta">Practice accounts only</span></div>'+
+      '<div class="bw-kpi"><small>PROFIT / LOSS</small><b id="bwPnl">—</b><span>Broker-reported settled P/L</span></div>'+
+      '<div class="bw-kpi"><small>EQUITY</small><b id="bwEquity">—</b><span>Authoritative broker value</span></div>'+
+      '<div class="bw-kpi"><small>OPEN RISK</small><b id="bwOpenRisk">—</b><span>Risk engine / active positions</span></div></div>'+
+      '<div id="bwAccountRows" class="bw-account-list"><div class="notice">Tap REFRESH to retrieve protected practice-account information.</div></div>'+
+      '<button id="bwRefreshAccounts" class="primary bw-wide-btn" type="button">REFRESH ACCOUNT DATA</button>'+
+      '<p id="bwAccountState" class="notice" style="margin-bottom:0">Live trading remains OFF. No profit/loss is estimated from AI signals.</p>';
+    portfolio.appendChild(portfolioCard);
+    const performance=document.createElement("section");performance.className="card";
+    performance.innerHTML='<div class="section-title">PERFORMANCE INTEGRITY</div><div class="bw-integrity"><span class="bw-led"></span><div><b id="bwPerfState">WAITING FOR BROKER DATA</b><p id="bwPerfNote">BETWAZ FX AI will never label an AI signal as profit. P/L is shown only when an authoritative broker source reports it.</p></div></div>';
+    portfolio.appendChild(performance); app.appendChild(pages);
+    const nav=document.createElement("nav");nav.className="bw-nav";nav.id="bwNav";
+    nav.innerHTML=[["home","⌂","Home"],["ai","◉","AI"],["portfolio","▣","Portfolio"],["brokers","⇄","Execute"],["risk","◆","Risk"],["activity","☷","Activity"]].map(x=>'<button data-page="'+x[0]+'" type="button"><span class="ico">'+x[1]+'</span><span>'+x[2]+'</span></button>').join("");
     document.body.appendChild(nav);
-
-    const map = {
-      home:"bwHome", brokers:"bwBrokers", ai:"bwAI", risk:"bwRisk", activity:"bwActivity"
-    };
-
-    function show(name, updateHash=true){
-      const id = map[name] || map.home;
-      document.querySelectorAll(".bw-page").forEach(p => p.classList.toggle("active", p.id===id));
-      nav.querySelectorAll("button").forEach(b => b.classList.toggle("active", b.dataset.page===name));
-      if(updateHash) history.replaceState(null,"","#"+name);
-      window.scrollTo({top:0,behavior:"instant"});
-    }
-
-    nav.querySelectorAll("button").forEach(b => b.addEventListener("click",()=>show(b.dataset.page)));
-
-    /* Optional quick menu under the header. */
-    const header = app.querySelector("header");
-    if(header){
-      const menu = document.createElement("div");
-      menu.className = "bw-topmenu";
-      menu.innerHTML = nav.innerHTML;
-      menu.querySelectorAll("button").forEach(b => {
-        b.addEventListener("click",()=>show(b.dataset.page));
-      });
-      header.insertAdjacentElement("afterend",menu);
-    }
-
-    /* Home is the landing screen. Existing action bar remains available globally. */
-    show(location.hash ? location.hash.slice(1) : "home", false);
-
-    /* Correct wording so practice analysis is not presented as live trading. */
-    const aiStatus = document.getElementById("aiStatus");
-    if(aiStatus && aiStatus.textContent==="AI LIVE") aiStatus.textContent="AI ONLINE";
-    const activityText = [...document.querySelectorAll(".activity small")];
-    activityText.forEach(x => {
-      if(x.textContent.includes("Waiting for live scan")) x.textContent="Waiting for next market scan";
-    });
-    const liveLabels = [...document.querySelectorAll(".activity p")];
-    liveLabels.forEach(x => {
-      if(x.textContent.includes("Live AI result:")) x.textContent=x.textContent.replace("Live AI result:","Latest AI result:");
-    });
-    const statusBars = document.querySelectorAll("#bwHome .hero");
-    if(statusBars.length){
-      const s=document.createElement("div");
-      s.className="bw-statusbar";
-      s.innerHTML='<span>Trading mode</span><b>SAFE MODE • LIVE OFF</b>';
-      statusBars[0].insertAdjacentElement("afterend",s);
-    }
-
-    /* Keep the existing bottom action buttons but make the labels unambiguous. */
-    document.querySelectorAll(".actionbar button").forEach(b => {
-      if(b.textContent.trim()==="SCAN MARKET") b.textContent="SCAN";
-      if(b.textContent.trim()==="AI TRADE") b.textContent="AI TRADE";
-      if(b.textContent.trim()==="EMERGENCY STOP") b.textContent="STOP";
-    });
+    const map={home:"bwHome",ai:"bwAI",portfolio:"bwPortfolio",brokers:"bwBrokers",risk:"bwRisk",activity:"bwActivity"};
+    function show(name,hash=true){const key=map[name]?name:"home";document.querySelectorAll(".bw-page").forEach(p=>p.classList.toggle("active",p.id===map[key]));nav.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.page===key));if(hash)history.replaceState(null,"","#"+key);window.scrollTo({top:0,behavior:"instant"});if(key==="portfolio"&&typeof window.refreshPortfolio==="function")window.refreshPortfolio()}
+    nav.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.page)));
+    const header=app.querySelector("header");if(header){const q=document.createElement("div");q.className="bw-topmenu";q.innerHTML='<button data-page="home">HOME</button><button data-page="ai">AI</button><button data-page="portfolio">PORTFOLIO</button><button data-page="brokers">EXECUTE</button><button data-page="risk">RISK</button><button data-page="activity">AUDIT</button>';q.querySelectorAll("button").forEach(b=>b.onclick=()=>show(b.dataset.page));header.insertAdjacentElement("afterend",q)}
+    show((location.hash||"#home").slice(1),false);
+    const mode=document.getElementById("mode");if(mode){mode.textContent="SAFE MODE • LIVE OFF";mode.className="mode"}
+    const aiStatus=document.getElementById("aiStatus");if(aiStatus&&/AI LIVE|CONNECTING/.test(aiStatus.textContent))aiStatus.textContent="AI ONLINE";
   }
-
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bootPages);
-  else bootPages();
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(bootPages,850));else setTimeout(bootPages,850);
 })();
 </script>
 
@@ -1896,8 +1824,7 @@ body{overflow-x:hidden}
       if(!response.ok) throw new Error(data.error || ("HTTP " + response.status));
       const a=data.analysis||{};
       const confidence=Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100);
-<script id="bw-direct-workflow">
-(()=>{const K="BETWAZ_SELECTED_BROKER",A="BETWAZ_ACTIVITY_LOG";let broker=localStorage.getItem(K)||"",auto=localStorage.getItem("BETWAZ_AI_RISK_CONTROL")!=="off";const nav=p=>{const b=document.querySelector('#bwNav button[data-page="'+p+'"]');if(b)b.click()},esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));function save(m,t){try{let a=JSON.parse(localStorage.getItem(A)||"[]");a.unshift({time:new Date().toISOString(),message:m,type:t});localStorage.setItem(A,JSON.stringify(a.slice(0,500)))}catch(e){}render("all")}function render(f){const box=document.getElementById("bwFullActivity");if(!box)return;let a=[];try{a=JSON.parse(localStorage.getItem(A)||"[]")}catch(e){}a=f==="all"?a:a.filter(x=>x.type===f);box.innerHTML=a.length?a.map(x=>'<div class="activity"><i class="dot"></i><div><p>'+esc(x.message)+'</p><small>'+new Date(x.time).toLocaleString()+' • '+esc(x.type)+'</small></div></div>').join(""):'<div class="notice">No recorded activity for this filter yet.</div>'}window.selectBrokerDirect=n=>{if(n!=="Deriv"&&n!=="IQ Option")return;if(!confirm("Confirm "+n+" as the broker controlled by BETWAZ FX AI?"))return;broker=n;localStorage.setItem(K,n);document.getElementById("selectedBrokerStatus").textContent="Selected broker: "+n+" • AI control ready";document.getElementById("bwSelectedBrokerHome").textContent="Selected broker: "+n;save("Broker selected: "+n,"system");nav("home")};window.applyAiRiskAdjustmentDirect=()=>{const i=document.getElementById("risk");if(!i)return;const s=(document.getElementById("decision")?.textContent||"WAIT").trim(),q=parseFloat((document.getElementById("confidence")?.textContent||"0").replace("%",""))||0,r=s==="WAIT"||q<70?.5:q<85?.75:1;i.value=r;const x=document.getElementById("aiRiskState");if(x)x.textContent="BETWAZ AI risk adjustment: "+r+"% • hard backend maximum: 1%";save("AI risk adjusted to "+r+"%","analysis")};window.filterActivityDirect=f=>{document.querySelectorAll("#activityCard [data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter===f));render(f)};window.startTradingDirect=async()=>{if(!broker){alert("Select Deriv or IQ Option first.");nav("brokers");return}save("START TRADING requested • "+broker,"system");nav("ai");if(typeof window.analyze!=="function"){alert("AI scan control is not available.");return}await window.analyze();const s=(document.getElementById("decision")?.textContent||"WAIT").trim();if(s!=="BUY"&&s!=="SELL"){save("AI decided WAIT • no trade request sent","analysis");alert("BETWAZ AI decided WAIT. No trade request was sent.");return}if(auto)applyAiRiskAdjustmentDirect();if(broker==="Deriv"&&typeof window.requestDerivAiPractice==="function")return window.requestDerivAiPractice();if(broker==="IQ Option"&&typeof window.requestIqOptionPracticeTrade==="function")return window.requestIqOptionPracticeTrade();alert("Selected practice broker control is not ready yet.")};function boot(){const h=document.getElementById("bwSelectedBrokerHome"),s=document.getElementById("selectedBrokerStatus");if(h)h.textContent=broker?"Selected broker: "+broker:"No broker selected";if(s)s.textContent=broker?"Selected broker: "+broker+" • AI control ready":"No broker selected.";render("all")}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,100));else setTimeout(boot,100)})();</script>
+
 <!-- BETWAZ FX AI LINKED APP WORKFLOW -->
 <style id="bw-linked-workflow-style">
 .bw-start-card{border-color:#315f87;background:linear-gradient(180deg,#102638,#0d1923)}
@@ -1913,135 +1840,16 @@ body{overflow-x:hidden}
 .bw-toggle{padding:9px 11px;border-radius:10px;background:#176c4d;color:#fff;font-weight:900}
 .bw-toggle.off{background:#152731;color:var(--muted)}
 </style>
-<script id="bw-linked-workflow-script">
-(() => {
-  const BROKER_KEY="BETWAZ_SELECTED_BROKER";
-  const ACTIVITY_KEY="BETWAZ_ACTIVITY_LOG";
-  let selectedBroker=localStorage.getItem(BROKER_KEY)||"";
-  let aiRiskControl=localStorage.getItem("BETWAZ_AI_RISK_CONTROL")!=="off";
 
-  function nav(page){const b=document.querySelector('#bwNav button[data-page="'+page+'"]');if(b)b.click();}
-  function home(){nav("home");}
-  function safeText(v){return String(v??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));}
-
-  function hookActivity(){
-    if(typeof window.log!=="function"||window.__bwActivityHooked)return;
-    const original=window.log;
-    window.log=function(msg){
-      try{
-        const list=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");
-        list.unshift({time:new Date().toISOString(),message:String(msg),type:/trade|order|broker/i.test(msg)?"trade":/scan|ai|analysis|decision/i.test(msg)?"analysis":"system"});
-        localStorage.setItem(ACTIVITY_KEY,JSON.stringify(list.slice(0,300)));
-      }catch(e){}
-      original(msg);renderActivity();
-    };
-    window.__bwActivityHooked=true;
-  }
-
-  function renderActivity(filter="all"){
-    const box=document.getElementById("bwFullActivity");if(!box)return;
-    let list=[];try{list=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");}catch(e){}
-    const filtered=filter==="all"?list:list.filter(x=>x.type===filter);
-    box.innerHTML=filtered.length?filtered.map(x=>'<div class="activity"><i class="dot"></i><div><p>'+safeText(x.message)+'</p><small>'+new Date(x.time).toLocaleString()+' • '+safeText(x.type)+'</small></div></div>').join(""):'<div class="notice">No recorded activity in this device session yet.</div>';
-  }
-
-  function addStartCard(){
-    const homePage=document.getElementById("bwHome");if(!homePage||document.getElementById("bwStartTrading"))return;
-    const card=document.createElement("section");card.className="card bw-start-card";card.id="bwStartTrading";
-    card.innerHTML='<div class="section-title">AI TRADING CONTROL</div><div class="notice">Select Deriv or IQ Option in Brokers first. BETWAZ FX AI will scan the market, make the decision, apply its risk and safety controls, then use the selected practice path. LIVE TRADING remains OFF.</div><div class="bw-selected-broker" id="bwSelectedBrokerHome">No broker selected</div><button class="bw-start-btn" type="button" id="bwStartBtn">START TRADING</button>';
-    const hero=homePage.querySelector(".hero");if(hero)hero.insertAdjacentElement("afterend",card);else homePage.appendChild(card);
-    document.getElementById("bwStartBtn").onclick=startTrading;
-  }
-
-  function updateSelectedBrokerUI(){
-    document.querySelectorAll("#brokers .broker").forEach(card=>{
-      const name=card.querySelector("b")?.textContent.trim()||"";
-      card.classList.toggle("bw-broker-selected",name.toLowerCase()===selectedBroker.toLowerCase());
-      let btn=card.querySelector(".bw-broker-confirm");
-      if(!btn){
-        btn=document.createElement("button");btn.className="bw-broker-confirm";btn.type="button";btn.textContent="SELECT BROKER";card.appendChild(btn);
-        btn.onclick=e=>{e.stopPropagation();selectBroker(name);};
-      }
-      btn.textContent=name.toLowerCase()===selectedBroker.toLowerCase()?"SELECTED • USE THIS BROKER":"SELECT BROKER";
-    });
-    const homeLabel=document.getElementById("bwSelectedBrokerHome");if(homeLabel)homeLabel.textContent=selectedBroker?"Selected broker: "+selectedBroker:"No broker selected — choose one from Brokers";
-  }
-
-  function selectBroker(name){
-    if(!/^(Deriv|IQ Option)$/i.test(name))return;
-    const normalized=/^deriv$/i.test(name)?"Deriv":"IQ Option";
-    if(!confirm("Confirm "+normalized+" as the broker controlled by BETWAZ FX AI?"))return;
-    selectedBroker=normalized;localStorage.setItem(BROKER_KEY,selectedBroker);
-    if(typeof window.log==="function")window.log("Broker selected: "+selectedBroker+" • AI control enabled");
-    home();updateSelectedBrokerUI();
-  }
-
-  async function startTrading(){
-    if(!selectedBroker){alert("Select Deriv or IQ Option first.");nav("brokers");return;}
-    if(typeof window.log==="function")window.log("START TRADING requested • "+selectedBroker+" • AI scan first");
-    nav("ai");
-    try{
-      await window.analyze();
-      const side=document.getElementById("decision")?.textContent||"WAIT";
-      if(side!=="BUY"&&side!=="SELL"){alert("BETWAZ FX AI decided WAIT. No trade request was sent.");return;}
-      if(aiRiskControl)applyAiRiskAdjustment();
-      if(selectedBroker==="Deriv"&&typeof window.requestDerivAiPractice==="function")window.requestDerivAiPractice();
-      else if(selectedBroker==="IQ Option"&&typeof window.requestIqOptionPracticeTrade==="function")window.requestIqOptionPracticeTrade();
-      else alert("The selected broker practice control is not ready yet.");
-    }catch(e){if(typeof window.log==="function")window.log("START TRADING stopped: "+e.message);}
-  }
-
-  function applyAiRiskAdjustment(){
-    const input=document.getElementById("risk");if(!input||!window.lastAnalysis)return;
-    const side=document.getElementById("decision")?.textContent||"WAIT";
-    const confidence=Number((document.getElementById("confidence")?.textContent||"0").replace("%",""))/100;
-    let next=1;
-    if(side==="WAIT"||confidence<0.70)next=0.5;else if(confidence<0.85)next=0.75;
-    input.value=next;input.dispatchEvent(new Event("change",{bubbles:true}));
-    if(typeof window.log==="function")window.log("AI risk control adjusted risk to "+next+"% (hard maximum remains 1%)");
-    renderRiskStatus();
-  }
-
-  function addRiskAI(){
-    const riskPage=document.getElementById("bwRisk");if(!riskPage||document.getElementById("bwAiRiskControl"))return;
-    const card=document.createElement("section");card.className="card bw-ai-risk";card.id="bwAiRiskControl";
-    card.innerHTML='<div class="section-title">BETWAZ AI RISK CONTROL</div><div class="bw-ai-risk-row"><div class="notice">AI may automatically reduce the risk setting when signal confidence calls for caution. It cannot raise the backend hard limit above 1%.</div><button id="bwAiRiskToggle" class="bw-toggle">AI AUTO: ON</button></div><button id="bwAiRiskApply" class="secondary" style="width:100%;padding:12px;border-radius:10px;margin-top:10px;font-weight:900">APPLY AI RISK ADJUSTMENT</button><p id="bwAiRiskState" class="notice" style="margin-bottom:0"></p>';
-    riskPage.appendChild(card);
-    document.getElementById("bwAiRiskToggle").onclick=()=>{aiRiskControl=!aiRiskControl;localStorage.setItem("BETWAZ_AI_RISK_CONTROL",aiRiskControl?"on":"off");renderRiskStatus();};
-    document.getElementById("bwAiRiskApply").onclick=()=>{if(aiRiskControl)applyAiRiskAdjustment();else document.getElementById("bwAiRiskState").textContent="AI AUTO is OFF.";};
-    renderRiskStatus();
-  }
-  function renderRiskStatus(){
-    const t=document.getElementById("bwAiRiskToggle"),s=document.getElementById("bwAiRiskState");
-    if(t){t.textContent="AI AUTO: "+(aiRiskControl?"ON":"OFF");t.classList.toggle("off",!aiRiskControl);}
-    if(s)s.textContent=window.lastAnalysis?"Current AI decision: "+(window.lastAnalysis.side||"WAIT")+" • confidence: "+Math.round(Number(window.lastAnalysis.confidence||0)*100)+"% • current risk: "+(document.getElementById("risk")?.value||"—")+"%":"Run an AI scan to let BETWAZ AI evaluate the risk setting.";
-  }
-
-  function addActivityPage(){
-    const page=document.getElementById("bwActivity");if(!page||document.getElementById("bwFullActivity"))return;
-    const card=document.createElement("section");card.className="card";
-    card.innerHTML='<div class="section-title">ALL ACTIVITY</div><div class="bw-activity-tools"><button data-filter="all" class="active">ALL</button><button data-filter="analysis">ANALYSIS</button><button data-filter="trade">TRADES</button><button data-filter="system">SYSTEM</button></div><div id="bwFullActivity"></div>';
-    page.insertBefore(card,page.firstChild||null);
-    card.querySelectorAll("button").forEach(b=>b.onclick=()=>{card.querySelectorAll("button").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderActivity(b.dataset.filter);});
-    renderActivity();
-  }
-
-  function makeAllBrokerCardsClickable(){
-    document.querySelectorAll("#brokers .broker").forEach(card=>{
-      if(card.__bwBound)return;card.__bwBound=true;
-      card.addEventListener("click",()=>selectBroker(card.querySelector("b")?.textContent.trim()||""));
-    });
-  }
-
-  function boot(){
-    hookActivity();addStartCard();addRiskAI();addActivityPage();makeAllBrokerCardsClickable();updateSelectedBrokerUI();
-    document.querySelectorAll('#bwNav button[data-page="brokers"],#bwNav button[data-page="home"]').forEach(b=>b.addEventListener("click",()=>setTimeout(updateSelectedBrokerUI,20)));
-    const originalDisplay=window.displayAnalysis;
-    if(typeof originalDisplay==="function"&&!window.__bwRiskHooked){
-      window.displayAnalysis=function(data){originalDisplay(data);if(aiRiskControl)applyAiRiskAdjustment();renderRiskStatus();};
-      window.__bwRiskHooked=true;
-    }
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,700));else setTimeout(boot,700);
-})();
+<script id="bw-unified-control">
+(()=>{const API="https://betwaz-fx-ai-backend.onrender.com",BROKER_KEY="BETWAZ_SELECTED_BROKER",ACTIVITY_KEY="BETWAZ_ACTIVITY_LOG";let broker=localStorage.getItem(BROKER_KEY)||"";const esc=v=>String(v??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));const nav=p=>{const b=document.querySelector('#bwNav button[data-page="'+p+'"]');if(b)b.click()};
+function activity(msg,type="system"){try{const a=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");a.unshift({time:new Date().toISOString(),message:msg,type});localStorage.setItem(ACTIVITY_KEY,JSON.stringify(a.slice(0,500)))}catch(e){}renderActivity("all")}
+function renderActivity(filter="all"){const box=document.getElementById("bwFullActivity");if(!box)return;let a=[];try{a=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]")}catch(e){}const f=filter==="all"?a:a.filter(x=>x.type===filter);box.innerHTML=f.length?f.map(x=>'<div class="activity"><i class="dot"></i><div><p>'+esc(x.message)+'</p><small>'+new Date(x.time).toLocaleString()+' • '+esc(x.type)+'</small></div></div>').join(""):'<div class="notice">No recorded activity for this filter yet.</div>'}
+window.selectBrokerDirect=name=>{if(!["Deriv","IQ Option"].includes(name))return;if(!confirm("Confirm "+name+" as the broker controlled by BETWAZ FX AI?"))return;broker=name;localStorage.setItem(BROKER_KEY,broker);document.querySelectorAll("#brokers .broker").forEach(x=>x.classList.toggle("bw-broker-selected",(x.querySelector("b")?.textContent||"").trim()===broker));activity("Broker selected: "+broker,"system");nav("home")};
+window.applyAiRiskAdjustmentDirect=()=>{const input=document.getElementById("risk");if(!input)return;const side=(document.getElementById("decision")?.textContent||"WAIT").trim(),q=parseFloat((document.getElementById("confidence")?.textContent||"0").replace("%",""))||0,next=side==="WAIT"||q<70?.5:q<85?.75:1;input.value=next;const state=document.getElementById("aiRiskState");if(state)state.textContent="BETWAZ AI adjusted risk to "+next+"% • backend hard maximum: 1%";activity("AI risk adjustment: "+next+"%","analysis")};
+window.filterActivityDirect=filter=>{document.querySelectorAll("#activityCard [data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter===filter));renderActivity(filter)};
+window.startTradingDirect=async()=>{if(!broker){alert("Select Deriv or IQ Option first.");nav("brokers");return}activity("START TRADING requested • "+broker,"system");nav("ai");if(typeof window.analyze!=="function"){alert("AI scan control is unavailable.");return}await window.analyze();const side=(document.getElementById("decision")?.textContent||"WAIT").trim();if(!["BUY","SELL"].includes(side)){activity("AI decided WAIT • no trade request sent","analysis");alert("BETWAZ FX AI decided WAIT. No trade request was sent.");return}window.applyAiRiskAdjustmentDirect();if(broker==="Deriv"&&typeof window.requestDerivAiPractice==="function")return window.requestDerivAiPractice();if(broker==="IQ Option"&&typeof window.requestIqOptionPracticeTrade==="function")return window.requestIqOptionPracticeTrade();alert("Selected practice broker control is not ready yet.")};
+window.refreshPortfolio=async()=>{let pin=sessionStorage.getItem("BETWAZ_OPERATOR_PIN")||"";if(!pin){pin=window.prompt("Enter your BETWAZ operator PIN to view protected account data:");if(!pin)return;sessionStorage.setItem("BETWAZ_OPERATOR_PIN",pin)}const state=document.getElementById("bwAccountState");if(state)state.textContent="Refreshing protected practice-account data…";try{const r=await fetch(API+"/api/account-summary",{cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));const rows=d.accounts||[],bs=rows.map(x=>Number(x.balance)).filter(Number.isFinite),total=bs.reduce((a,b)=>a+b,0);document.getElementById("bwTotalBalance").textContent=bs.length?total.toFixed(2):"—";document.getElementById("bwBalanceMeta").textContent=rows.length+" practice account"+(rows.length===1?"":"s")+" reported";document.getElementById("bwPnl").textContent=d.performance?.profit_loss==null?"—":String(d.performance.profit_loss);document.getElementById("bwEquity").textContent=d.performance?.equity==null?"—":String(d.performance.equity);document.getElementById("bwOpenRisk").textContent=d.performance?.open_risk==null?"—":String(d.performance.open_risk);document.getElementById("bwAccountRows").innerHTML=rows.length?rows.map(x=>'<div class="bw-account-row"><div><b>'+esc(x.broker)+' • '+esc(x.mode)+'</b><small>'+esc(x.currency||"")+' • '+esc(x.status||"unknown")+'</small></div><strong>'+esc(x.balance==null?"—":Number(x.balance).toFixed(2))+'</strong></div>').join(""):'<div class="notice">No practice account balance was returned by the configured connectors.</div>';if(state)state.textContent="Updated "+new Date().toLocaleTimeString()+" • Live trading: OFF";document.getElementById("bwPerfState").textContent=d.performance?.profit_loss==null?"P/L SOURCE NOT AVAILABLE":"P/L VERIFIED FROM BROKER";document.getElementById("bwPerfNote").textContent=d.performance?.note||"";activity("Portfolio account data refreshed","system")}catch(e){if(state)state.textContent="Account refresh failed: "+e.message}};
+function bind(){const start=document.getElementById("bwStartTrading");if(start)start.querySelector("button")?.addEventListener("click",window.startTradingDirect);document.getElementById("bwRefreshAccounts")?.addEventListener("click",window.refreshPortfolio);document.querySelectorAll("#activityCard [data-filter]").forEach(b=>b.addEventListener("click",()=>window.filterActivityDirect(b.dataset.filter)));const h=document.getElementById("bwSelectedBrokerHome");if(h)h.textContent=broker?"Selected broker: "+broker:"No broker selected";const s=document.getElementById("selectedBrokerStatus");if(s)s.textContent=broker?"Selected broker: "+broker+" • AI control ready":"No broker selected.";renderActivity("all")}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(bind,1250));else setTimeout(bind,1250)})();
 </script>
