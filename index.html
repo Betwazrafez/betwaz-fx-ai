@@ -113,17 +113,14 @@ input,select{
   .kv{grid-template-columns:1fr 1fr}
   .kv div:last-child{grid-column:span 2}
 }
-</style><style id="bw-single-navigation">
-/* BETWAZ FX AI — single top navigation; duplicate bottom navigation hidden */
-.bw-nav{display:none!important}
 </style><style id="bw-pro-ui">
 :root{--bg:#05090d;--panel:#0a1219;--panel2:#0e1a23;--line:#1c303c;--text:#f4f8fa;--muted:#8299a6;--good:#45e0a0;--warn:#f6c85f;--bad:#ff646d;--accent:#6da9ff}
 body{background:radial-gradient(circle at 15% -10%,#12304a55 0,transparent 34%),radial-gradient(circle at 95% 0%,#182d3b44 0,transparent 30%),linear-gradient(180deg,#05090d,#071018 58%,#05090d)}
-.app{max-width:760px;padding:14px 14px 22px}.brand{letter-spacing:.2px}.sub{font-size:10px;letter-spacing:.25px}.mode{background:#09151d;border-color:#315062}
+.app{max-width:760px;padding:14px 14px 112px}.brand{letter-spacing:.2px}.sub{font-size:10px;letter-spacing:.25px}.mode{background:#09151d;border-color:#315062}
 .card{border-radius:20px;background:linear-gradient(180deg,#0b151e,#09121a);border-color:#1b313d;box-shadow:0 14px 38px #0005}.hero{border-color:#24465a;background:radial-gradient(circle at 100% 0,#17405c 0,transparent 43%),linear-gradient(145deg,#0d1b26,#09131b)}
 .bw-page{display:none}.bw-page.active{display:block;animation:bwIn .22s ease}@keyframes bwIn{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
 .bw-page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:3px 2px 12px}.bw-page-title{font-size:21px;font-weight:950}.bw-page-sub{font-size:10px;color:var(--muted);margin-top:3px}.bw-page-mark{font-size:9px;font-weight:950;letter-spacing:1.5px;color:#6f8794}
-.bw-nav{display:none!important;position:fixed;z-index:100;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:9px max(7px,calc((100vw - 760px)/2 + 7px));background:#050b10ed;border-top:1px solid #1a303b;backdrop-filter:blur(18px)}
+.bw-nav{position:fixed;z-index:100;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:9px max(7px,calc((100vw - 760px)/2 + 7px));background:#050b10ed;border-top:1px solid #1a303b;backdrop-filter:blur(18px)}
 .bw-nav button{min-width:0;min-height:56px;padding:7px 2px;border-radius:14px;background:#091721;color:#8ea4af;border:1px solid #173746;font-size:9px;font-weight:950;letter-spacing:.15px;transition:.2s;box-shadow:inset 0 0 0 1px #071018}
 .bw-nav button.active{color:#fff;background:linear-gradient(145deg,#123d5b,#102437);border-color:#16cfff;box-shadow:0 0 18px #00bfff55,inset 0 0 18px #006d9940}
 .bw-nav button:nth-child(2).active{border-color:#a66cff;box-shadow:0 0 18px #9a5cff55,inset 0 0 18px #54208040}
@@ -1528,14 +1525,13 @@ startLivePrice();
 /* BETWAZ FX AI — mobile page navigation */
 :root{--nav-h:72px}
 body{overflow-x:hidden}
-.app{padding-bottom:22px}
+.app{padding-bottom:calc(var(--nav-h) + 22px)}
 .bw-page{display:none;animation:bwFade .16s ease}
 .bw-page.active{display:block}
 @keyframes bwFade{from{opacity:.4;transform:translateY(3px)}to{opacity:1;transform:none}}
 .bw-page-title{font-size:18px;font-weight:950;margin:3px 2px 12px}
 .bw-page-sub{font-size:11px;color:var(--muted);margin:-7px 2px 14px}
 .bw-nav{
-  display:none!important;
   position:fixed;z-index:9999;left:0;right:0;bottom:0;height:var(--nav-h);
   background:rgba(6,16,25,.97);border-top:1px solid var(--line);
   backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
@@ -1642,10 +1638,13 @@ body{overflow-x:hidden}
     const performance=document.createElement("section");performance.className="card";
     performance.innerHTML='<div class="section-title">PERFORMANCE INTEGRITY</div><div class="bw-integrity"><span class="bw-led"></span><div><b id="bwPerfState">WAITING FOR BROKER DATA</b><p id="bwPerfNote">BETWAZ FX AI will never label an AI signal as profit. P/L is shown only when an authoritative broker source reports it.</p></div></div>';
     portfolio.appendChild(performance); app.appendChild(pages);
+    const nav=document.createElement("nav");nav.className="bw-nav";nav.id="bwNav";
+    nav.innerHTML=[["home","⌂","Home"],["ai","◉","AI"],["portfolio","▣","Portfolio"],["brokers","⇄","Execute"],["risk","◆","Risk"],["activity","☷","Activity"]].map(x=>'<button data-page="'+x[0]+'" type="button"><span class="ico">'+x[1]+'</span><span>'+x[2]+'</span></button>').join("");
+    document.body.appendChild(nav);
     const map={home:"bwHome",ai:"bwAI",portfolio:"bwPortfolio",brokers:"bwBrokers",risk:"bwRisk",activity:"bwActivity"};
-    let navButtons=[];
-    function show(name,hash=true){const key=map[name]?name:"home";document.querySelectorAll(".bw-page").forEach(p=>p.classList.toggle("active",p.id===map[key]));navButtons.forEach(b=>b.classList.toggle("active",b.dataset.page===key));if(hash)history.replaceState(null,"","#"+key);window.scrollTo({top:0,behavior:"instant"});if(key==="portfolio"&&typeof window.refreshPortfolio==="function")window.refreshPortfolio()}
-    const header=app.querySelector("header");if(header){const q=document.createElement("div");q.className="bw-topmenu";q.innerHTML='<button data-page="home">HOME</button><button data-page="ai">AI</button><button data-page="portfolio">PORTFOLIO</button><button data-page="brokers">EXECUTE</button><button data-page="risk">RISK</button><button data-page="activity">AUDIT</button>';navButtons=[...q.querySelectorAll("button")];navButtons.forEach(b=>b.onclick=()=>show(b.dataset.page));header.insertAdjacentElement("afterend",q)}
+    function show(name,hash=true){const key=map[name]?name:"home";document.querySelectorAll(".bw-page").forEach(p=>p.classList.toggle("active",p.id===map[key]));nav.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.page===key));if(hash)history.replaceState(null,"","#"+key);window.scrollTo({top:0,behavior:"instant"});if(key==="portfolio"&&typeof window.refreshPortfolio==="function")window.refreshPortfolio()}
+    nav.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.page)));
+    const header=app.querySelector("header");if(header){const q=document.createElement("div");q.className="bw-topmenu";q.innerHTML='<button data-page="home">HOME</button><button data-page="ai">AI</button><button data-page="portfolio">PORTFOLIO</button><button data-page="brokers">EXECUTE</button><button data-page="risk">RISK</button><button data-page="activity">AUDIT</button>';q.querySelectorAll("button").forEach(b=>b.onclick=()=>show(b.dataset.page));header.insertAdjacentElement("afterend",q)}
     show((location.hash||"#home").slice(1),false);
     const mode=document.getElementById("mode");if(mode){mode.textContent="SAFE MODE • LIVE OFF";mode.className="mode"}
     const aiStatus=document.getElementById("aiStatus");if(aiStatus&&/AI LIVE|CONNECTING/.test(aiStatus.textContent))aiStatus.textContent="AI ONLINE";
