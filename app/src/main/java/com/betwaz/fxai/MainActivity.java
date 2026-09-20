@@ -71,9 +71,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void loadWebCommandCenter() {
+    private void loadLocalCommandCenter() {
         usingFallback = false;
-        webView.loadUrl(WEB_APP);
+        webView.loadUrl("file:///android_asset/index.html");
     }
 
     @Override
