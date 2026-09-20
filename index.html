@@ -2081,8 +2081,10 @@ body{overflow-x:hidden}
 
   function applyAiRiskAdjustment(){
     const input=document.getElementById("risk");if(!input||!window.lastAnalysis)return;
-    const a=window.lastAnalysis,confidence=Number(a.confidence||0);let next=1;
-    if(a.side==="WAIT"||confidence<0.70)next=0.5;else if(confidence<0.85)next=0.75;
+    const side=document.getElementById("decision")?.textContent||"WAIT";
+    const confidence=Number((document.getElementById("confidence")?.textContent||"0").replace("%",""))/100;
+    let next=1;
+    if(side==="WAIT"||confidence<0.70)next=0.5;else if(confidence<0.85)next=0.75;
     input.value=next;input.dispatchEvent(new Event("change",{bubbles:true}));
     if(typeof window.log==="function")window.log("AI risk control adjusted risk to "+next+"% (hard maximum remains 1%)");
     renderRiskStatus();
