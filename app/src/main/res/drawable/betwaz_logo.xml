@@ -5,67 +5,47 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
 
+    <!-- Premium BETWAZ fintech monogram: clean B + rising market signal. -->
     <path
-        android:fillColor="#070A0D"
-        android:pathData="M64,12 L448,12 Q500,12 500,64 L500,448 Q500,500 448,500 L64,500 Q12,500 12,448 L12,64 Q12,12 64,12 Z"/>
+        android:fillColor="#061633"
+        android:pathData="M92,20 L420,20 Q492,20 492,92 L492,420 Q492,492 420,492 L92,492 Q20,492 20,420 L20,92 Q20,20 92,20 Z"/>
 
     <path
         android:fillColor="@android:color/transparent"
-        android:strokeColor="#00E5FF"
-        android:strokeWidth="7"
-        android:pathData="M64,18 L448,18 Q494,18 494,64 L494,448 Q494,494 448,494 L64,494 Q18,494 18,448 L18,64 Q18,18 64,18 Z"/>
+        android:strokeColor="#167FC2"
+        android:strokeWidth="8"
+        android:pathData="M92,24 L420,24 Q488,24 488,92 L488,420 Q488,488 420,488 L92,488 Q24,488 24,420 L24,92 Q24,24 92,24 Z"/>
 
     <path
-        android:fillColor="#101820"
-        android:strokeColor="#00F5A0"
-        android:strokeWidth="5"
-        android:pathData="M256,132 C216,132 177,151 154,181 C126,217 126,282 153,326 C178,367 213,390 256,399 C299,390 334,367 359,326 C386,282 386,217 358,181 C335,151 296,132 256,132 Z"/>
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#00C8FF"
+        android:strokeWidth="34"
+        android:strokeLineJoin="round"
+        android:pathData="M158,126 L276,126 C324,126 350,151 350,190 C350,216 331,237 305,243 C337,248 360,270 360,306 C360,348 327,378 276,378 L158,378 Z"/>
 
     <path
-        android:fillColor="#22F27B"
-        android:pathData="M222,162 C184,119 146,91 105,78 C132,128 158,164 195,188 C175,182 153,184 132,194 C161,214 194,218 225,202 Z"/>
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#20F0B5"
+        android:strokeWidth="28"
+        android:strokeLineCap="round"
+        android:pathData="M158,256 L286,256"/>
 
     <path
-        android:fillColor="#00D9FF"
-        android:pathData="M290,162 C328,119 366,91 407,78 C380,128 354,164 317,188 C337,182 359,184 380,194 C351,214 318,218 287,202 Z"/>
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1769DF"
+        android:strokeWidth="16"
+        android:strokeLineCap="round"
+        android:pathData="M128,380 L128,326 M160,380 L160,304 M192,380 L192,282 M224,380 L224,256"/>
 
     <path
-        android:fillColor="#1D2A33"
-        android:pathData="M256,156 C219,156 196,182 196,219 L208,300 C216,337 232,359 256,371 C280,359 296,337 304,300 L316,219 C316,182 293,156 256,156 Z"/>
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#20F0B5"
+        android:strokeWidth="12"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M222,258 L270,258 L248,232"/>
 
     <path
-        android:fillColor="#27F58B"
-        android:pathData="M219,224 C201,207 181,207 163,219 C180,231 198,238 218,236 Z"/>
-
-    <path
-        android:fillColor="#00D9FF"
-        android:pathData="M293,224 C311,207 331,207 349,219 C332,231 314,238 294,236 Z"/>
-
-    <path
-        android:fillColor="#071A24"
-        android:pathData="M227,270 C239,256 273,256 285,270 L277,306 C270,323 242,323 235,306 Z"/>
-
-    <path
-        android:fillColor="#24F28A"
-        android:pathData="M231,288 L256,277 L281,288 L270,312 L256,319 L242,312 Z"/>
-
-    <path
-        android:fillColor="#0A1218"
-        android:pathData="M256,183 L269,213 L256,246 L243,213 Z"/>
-
-    <path
-        android:fillColor="#FF3355"
-        android:pathData="M78,298 L90,298 L90,368 L78,368 Z M102,274 L114,274 L114,368 L102,368 Z M126,310 L138,310 L138,368 L126,368 Z"/>
-
-    <path
-        android:fillColor="#22F27B"
-        android:pathData="M374,292 L386,292 L386,368 L374,368 Z M398,258 L410,258 L410,368 L398,368 Z M422,224 L434,224 L434,368 L422,368 Z"/>
-
-    <path
-        android:fillColor="#20F07A"
-        android:pathData="M137,404 C218,444 306,442 405,374 L419,392 C309,470 205,472 126,426 Z"/>
-
-    <path
-        android:fillColor="#20F07A"
-        android:pathData="M399,361 L452,349 L429,398 Z"/>
+        android:fillColor="#20F0B5"
+        android:pathData="M386,126 A10,10 0,1 0,386.1,126"/>
 </vector>
