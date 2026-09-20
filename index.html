@@ -1659,6 +1659,150 @@ body{overflow-x:hidden}
 })();
 </script>
 
+
+<!-- BETWAZ FX AI UI CLEANUP + MARKET DETAIL -->
+<style id="bw-final-ui">
+  .bw-market-detail{margin-top:12px}
+  .bw-detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .bw-detail-item{background:#0a151e;border:1px solid var(--line);border-radius:11px;padding:10px}
+  .bw-detail-item small{display:block;color:var(--muted);font-size:10px}
+  .bw-detail-item b{display:block;margin-top:4px;font-size:12px}
+  .bw-signal-box{margin-top:9px;padding:11px;border:1px solid #294250;border-radius:12px;background:#0b1720}
+  .bw-deriv-access{margin-top:10px}
+  .bw-deriv-access button{width:100%;padding:14px;border-radius:12px;font-weight:950;background:#176c4d;color:#fff;border:1px solid #176c4d}
+  @media(max-width:430px){.bw-detail-grid{grid-template-columns:1fr 1fr}}
+</style>
+<script id="bw-final-ui-script">
+(() => {
+  function removeElementById(id){
+    const el=document.getElementById(id);
+    if(el){
+      const parent=el.parentElement;
+      if(parent) parent.remove();
+      else el.remove();
+    }
+  }
+
+  function cleanup(){
+    /* Remove backend health/testing UI. Backend remains available internally. */
+    const backendBtn=[...document.querySelectorAll("button")].find(b=>b.textContent.trim()==="TEST BETWAZ BACKEND");
+    if(backendBtn){
+      const card=backendBtn.closest(".card");
+      if(card) card.remove();
+      else backendBtn.remove();
+    }
+
+    /* Remove all Deriv test controls; the configured connection is now represented
+       by one direct access button instead of repeated diagnostic tests. */
+    [
+      "bwDerivTest","bwDerivDemoTest","bwDerivMarketTest",
+      "bwDerivMarketPanel","bwDerivMarketState",
+      "bwDerivState","bwDerivDemoState"
+    ].forEach(removeElementById);
+
+    document.querySelectorAll("#betwazControls").forEach(card=>{
+      [...card.querySelectorAll("button")].forEach(b=>{
+        if(/TEST DERIV|DERIV.*TEST/i.test(b.textContent)) b.closest("div")?.remove();
+      });
+    });
+
+    /* Add one direct Deriv trading access button. */
+    const brokersPage=document.getElementById("bwBrokers");
+    if(brokersPage && !document.getElementById("bwDerivAccess")){
+      const card=document.createElement("section");
+      card.className="card bw-deriv-access";
+      card.id="bwDerivAccess";
+      card.innerHTML=
+        '<div class="section-title">DERIV TRADING</div>'+
+        '<div class="notice">Deriv is configured. Use the secure Deriv trading platform for account access and order execution.</div>'+
+        '<button type="button" onclick="window.open(\'https://app.deriv.com/\',\'_blank\',\'noopener\')">OPEN DERIV TRADING</button>';
+      brokersPage.appendChild(card);
+    }
+
+    /* Remove the old connection page/card if it still exists. */
+    const connectionCard=[...document.querySelectorAll(".card")].find(c=>/TEST BETWAZ BACKEND/i.test(c.textContent));
+    if(connectionCard) connectionCard.remove();
+  }
+
+  function renderMarketDetails(data){
+    const a=data?.analysis || data || {};
+    let box=document.getElementById("bwMarketDetails");
+    const aiPage=document.getElementById("bwAI");
+    if(!aiPage) return;
+    if(!box){
+      box=document.createElement("section");
+      box.className="card bw-market-detail";
+      box.id="bwMarketDetails";
+      box.innerHTML='<div class="section-title">MARKET & SIGNAL DETAILS</div><div id="bwMarketDetailsBody"></div>';
+      const aiCard=[...aiPage.querySelectorAll(".card")].find(c=>/AI DECISION/i.test(c.textContent));
+      if(aiCard) aiCard.insertAdjacentElement("afterend",box);
+      else aiPage.appendChild(box);
+    }
+
+    const d=a.timeframe_diagnostics || {};
+    const order=["1m","5m","15m","1h","4h","1D"];
+    const rows=order.filter(tf=>d[tf]).map(tf=>{
+      const x=d[tf]||{};
+      return '<div class="bw-detail-item">'+
+        '<small>'+tf+'</small>'+
+        '<b>'+String(x.structure||"—")+'</b>'+
+        '<span class="notice">EMA '+String(x.short_trend||"—")+'/'+String(x.medium_trend||"—")+
+        ' • Momentum '+fmt(x.momentum14)+
+        ' • ATR '+fmt(x.atr14)+'</span>'+
+        '</div>';
+    }).join("");
+
+    const side=["BUY","SELL","WAIT"].includes(a.side)?a.side:"WAIT";
+    const rationale=String(a.rationale||"No signal detail returned.");
+    const marketState=String(a.market_state||"UNKNOWN");
+    const entry=a.entry==null?"—":a.entry;
+    const stop=a.stop==null?"—":a.stop;
+    const target=a.target==null?"—":a.target;
+    const risk=a.risk_pct==null?"—":a.risk_pct+"%";
+    const agreement=a.agreement==null?"—":a.agreement+"%";
+
+    document.getElementById("bwMarketDetailsBody").innerHTML=
+      '<div class="bw-signal-box">'+
+        '<b>'+side+'</b> • Regime: <b>'+marketState+'</b> • Confidence: <b>'+Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100)+'%</b>'+
+        '<br><span class="notice">Entry: <b>'+entry+'</b> • Stop loss: <b>'+stop+'</b> • Target/Exit: <b>'+target+'</b> • Risk: <b>'+risk+'</b> • Structure consensus: <b>'+agreement+'</b></span>'+
+        '<br><span class="notice">'+escapeText(rationale)+'</span>'+
+      '</div>'+
+      '<div class="section-title" style="margin-top:13px">TIMEFRAME MARKET DETAIL</div>'+
+      '<div class="bw-detail-grid">'+rows+'</div>';
+  }
+
+  function fmt(v){
+    const n=Number(v);
+    return Number.isFinite(n)?(Math.abs(n)>=100?n.toFixed(2):n.toFixed(4)):"—";
+  }
+  function escapeText(v){
+    return String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  }
+
+  /* Extend the existing analysis renderer without changing its backend logic. */
+  function hookAnalysis(){
+    if(typeof window.displayAnalysis!=="function" || window.__bwMarketHooked) return;
+    const original=window.displayAnalysis;
+    window.displayAnalysis=function(data){
+      original(data);
+      renderMarketDetails(data);
+    };
+    window.__bwMarketHooked=true;
+  }
+
+  function boot(){
+    cleanup();
+    hookAnalysis();
+    /* The function is declared in the page script scope; retry once after startup. */
+    setTimeout(()=>{ cleanup(); hookAnalysis(); },50);
+    setTimeout(()=>{ cleanup(); hookAnalysis(); },500);
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+</script>
+
 </body>
 </html>
 
