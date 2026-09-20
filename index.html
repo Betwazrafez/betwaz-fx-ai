@@ -1420,7 +1420,7 @@ startLivePrice();
         "IQ OPTION AI • " + symbol +
         " • <b>" + side + "</b> • Confidence " + confidence + "%" +
         " • Timeframes " + d.timeframes_ready + "/" + d.timeframes_required +
-        " • Agreement " + agreement + "%" +
+        " • Structure consensus " + agreement + "%" +
         "<br>" + (a.rationale || "No AI rationale returned.") +
         "<br><small>Analysis quality: " + (qualityOk ? "PASS" : "BLOCKED") +
         " • Risk gate: " + (riskOk ? "PASS" : "BLOCKED") +
@@ -1432,7 +1432,7 @@ startLivePrice();
           " (EMA " + (x.short_trend || "N/A") + "/" + (x.medium_trend || "N/A") + ")"
         ).join(" • ") +
         "<br><b>Structure counts:</b> Bullish " + bullishCount + " • Bearish " + bearishCount + " • Mixed " + mixedCount +
-        "<br>Agreement method: " + (a.agreement_method || "AI-reported") +
+        "<br>Structure consensus method: " + (a.agreement_method || "AI-reported") +
         "<br><b>Analysis-quality reasons:</b> " + qualityReasons +
         "<br><b>Risk reasons:</b> " + ((d.risk_gate && d.risk_gate.reasons || []).join(", ") || "none") +
         "<br><b>Safety reasons:</b> " + ((d.safety_gate && d.safety_gate.reasons || []).join(", ") || "none") +
