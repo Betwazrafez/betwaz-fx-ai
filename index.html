@@ -262,7 +262,31 @@ onclick="testBackend()">
 TEST BETWAZ BACKEND
 </button>
 
-  <p id="backend" class="notice"></p></section></div><div class="actionbar">  <button class="secondary" onclick="analyze()">
+  <p id="backend" class="notice"></p><section class="card" id="derivAiCard">
+  <div class="section-title">DERIV • AI CONTROLLED PRACTICE</div>
+  <div class="notice" style="margin-bottom:10px">BETWAZ FX AI controls the decision. This is a proposal-only practice path while live trading is disabled.</div>
+  <div class="formgrid">
+    <label class="notice">Symbol
+      <select id="derivSymbol">
+        <option>XAU/USD</option>
+        <option>WTI/USD</option>
+        <option>USD/ZAR</option>
+        <option>EUR/USD</option>
+      </select>
+    </label>
+    <label class="notice">Practice stake
+      <input id="derivStake" type="number" value="1" min="1" max="1000" step="1">
+    </label>
+  </div>
+  <div class="kv" style="margin-top:10px">
+    <div><small>AI decision</small><b id="derivDecision">WAIT</b></div>
+    <div><small>Confidence</small><b id="derivConfidence">0%</b></div>
+    <div><small>Execution</small><b>LIVE OFF</b></div>
+  </div>
+  <button id="derivAiTradeBtn" class="primary" style="width:100%;padding:12px;border-radius:10px;margin-top:10px" onclick="requestDerivAiPractice()">AI CONTROLLED DERIV PRACTICE</button>
+  <p id="derivAiState" class="notice" style="margin-bottom:0">Run SCAN MARKET first. BETWAZ FX AI must produce BUY or SELL and pass the backend safety gates.</p>
+</section>
+</section></div><div class="actionbar">  <button class="secondary" onclick="analyze()">
     SCAN MARKET
   </button>  <button class="primary" onclick="requestTrade()">
     AI TRADE
