@@ -756,14 +756,82 @@ function requestTrade(){
   }
 
   log(
-    "Trade request prepared: " +
+    "AI TRADE → " +
     lastAnalysis.side +
-    " XAU/USD — server risk authorization required"
+    " XAU/USD — sending to BETWAZ risk + safety gateway"
   );
 
-  alert(
-    "AI trade request prepared. Live execution remains disabled until the secure broker execution layer is enabled."
-  );
+  const operatorPin =
+    sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
+
+  if(!operatorPin){
+    alert(
+      "Operator authorization is required before BETWAZ FX AI can submit a trade request."
+    );
+    return;
+  }
+
+  fetch(
+    BACKEND_URL + "/api/deriv/trade-request",
+    {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        "X-BETWAZ-OPERATOR-PIN": operatorPin
+      },
+      body: JSON.stringify({
+        side: lastAnalysis.side,
+        symbol: "XAU/USD",
+        confidence: Number(lastAnalysis.confidence || 0),
+        entry: lastAnalysis.entry,
+        stop: lastAnalysis.stop,
+        target: lastAnalysis.target,
+        risk_pct: risk,
+        spread_points: Number(lastAnalysis.spread_points || 0),
+        open_positions: 0,
+        daily_loss_pct: 0,
+        live_request: false,
+        stake: 1
+      })
+    }
+  )
+  .then(r => r.json())
+  .then(data => {
+    if(!data.ok){
+      throw new Error(data.error || "AI trade gateway rejected the request");
+    }
+
+    if(data.approved){
+      log(
+        "AI TRADE proposal approved by BETWAZ gates — " +
+        (data.deriv_symbol || "Deriv") +
+        " — no order submitted"
+      );
+      alert(
+        "BETWAZ FX AI approved the trade proposal. No order was submitted because live trading is disabled."
+      );
+    }else{
+      const reasons = [
+        ...(data.risk_gate?.reasons || []),
+        ...(data.safety_gate?.reasons || [])
+      ];
+
+      log(
+        "AI TRADE blocked by BETWAZ controls: " +
+        (reasons.length ? reasons.join(", ") : "trade not approved")
+      );
+
+      alert(
+        "BETWAZ FX AI blocked this trade.\n\n" +
+        (reasons.length ? reasons.join("\n") : "The trade did not pass the required controls.")
+      );
+    }
+  })
+  .catch(error => {
+    log("AI TRADE gateway error: " + error.message);
+    alert("AI trade request failed: " + error.message);
+  });
 
 }
 
