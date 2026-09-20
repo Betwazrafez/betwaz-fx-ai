@@ -1088,61 +1088,7 @@ startLivePrice();
 })();
 </script>
 
-<!-- BETWAZ FX AI DERIV DEMO MARKET DATA TEST -->
-<script>
-(() => {
-  const card = document.getElementById("betwazControls");
-  if (!card || document.getElementById("bwDerivMarketTest")) return;
 
-  const wrap = document.createElement("div");
-  wrap.style.marginTop = "8px";
-  wrap.innerHTML = `
-    <button id="bwDerivMarketTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#13283a;color:#fff;border:1px solid #4874a5">
-      TEST DERIV MARKET DATA
-    </button>
-    <div id="bwDerivMarketState" class="ctrlstate">Reads one live Deriv market-data tick. No trade will be submitted.</div>
-  `;
-  card.appendChild(wrap);
-
-  document.getElementById("bwDerivMarketTest").onclick = async () => {
-    let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
-    if (!pin) {
-      pin = window.prompt("Enter your BETWAZ operator PIN:");
-      if (!pin) return;
-      sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
-    }
-
-    const btn = document.getElementById("bwDerivMarketTest");
-    const out = document.getElementById("bwDerivMarketState");
-    btn.disabled = true;
-    out.textContent = "Reading live " + selected + " data from Deriv public market-data WebSocket…";
-    out.style.color = "var(--muted)";
-
-    try {
-      const r = await fetch(
-        "https://betwaz-fx-ai-backend.onrender.com/api/deriv/market-test?symbol=" + encodeURIComponent(selected),
-        {method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}
-      );
-      const d = await r.json().catch(()=>({}));
-      if (r.status === 401) {
-        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
-        throw new Error("Operator PIN rejected");
-      }
-      if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status + " from BETWAZ FX AI backend"));
-
-      out.textContent = "DERIV LIVE TICK • " + (d.display_name || d.requested_symbol) + " • " + d.quote + " • Public market data • No trade";
-      out.style.color = "var(--good)";
-      log("Deriv demo market data received: " + (d.display_name || d.requested_symbol) + " " + d.quote);
-    } catch(e) {
-      out.textContent = e.message === "Failed to fetch"\n        ? "Deriv market-data test failed: Browser could not reach the BETWAZ FX AI backend (network, CORS, or Render service issue)."\n        : "Deriv market-data test failed: " + e.message;
-      out.style.color = "var(--bad)";
-      log("Deriv market-data test failed: " + e.message);
-    } finally {
-      btn.disabled = false;
-    }
-  };
-})();
-</script>
 
 <!-- BETWAZ FX AI MARKET TABS -->
 <script>
@@ -1171,76 +1117,7 @@ startLivePrice();
 })();
 </script>
 
-<!-- BETWAZ FX AI DERIV MARKET DATA -->
-<script>
-(() => {
-  const card = document.getElementById("betwazControls");
-  if (!card || document.getElementById("bwDerivMarketPanel")) return;
 
-  const wrap = document.createElement("div");
-  wrap.id = "bwDerivMarketPanel";
-  wrap.style.marginTop = "10px";
-  wrap.innerHTML = `
-    <div style="font-size:12px;font-weight:900;margin-bottom:8px">DERIV MARKET DATA</div>
-    <button id="bwDerivMarketTest" style="width:100%;padding:12px;border-radius:11px;font-weight:900;background:#13283a;color:#fff;border:1px solid #4874a5">
-      TEST DERIV MARKET DATA
-    </button>
-    <div id="bwDerivMarketState" class="ctrlstate">Reads one live public Deriv tick. No trade is submitted.</div>
-  `;
-  card.appendChild(wrap);
-
-  const btn = document.getElementById("bwDerivMarketTest");
-  const out = document.getElementById("bwDerivMarketState");
-
-  btn.onclick = async () => {
-    let pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
-    if (!pin) {
-      pin = window.prompt("Enter your BETWAZ operator PIN:");
-      if (!pin) return;
-      sessionStorage.setItem("BETWAZ_OPERATOR_PIN", pin);
-    }
-
-    btn.disabled = true;
-    out.textContent = "Reading live " + selected + " from Deriv public market data…";
-    out.style.color = "var(--muted)";
-
-    try {
-      const r = await fetch(
-        API + "/api/deriv/market-test?symbol=" + encodeURIComponent(selected),
-        {method:"GET",cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":pin}}
-      );
-      const d = await r.json().catch(() => ({}));
-
-      if (r.status === 401) {
-        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
-        throw new Error("Operator PIN rejected");
-      }
-      if (!r.ok || !d.ok) throw new Error(d.error || ("HTTP " + r.status));
-
-      const quote = Number(d.quote);
-      const quoteText = Number.isFinite(quote) ? quote.toFixed(5) : String(d.quote);
-
-      out.textContent =
-        "DERIV LIVE TICK • " +
-        (d.display_name || d.requested_symbol) +
-        " • " + quoteText +
-        " • Public market data • No trade";
-
-      out.style.color = "var(--good)";
-      log("Deriv market data received: " + (d.display_name || d.requested_symbol) + " " + quoteText);
-    } catch(e) {
-      out.textContent =
-        e.message === "Failed to fetch"
-          ? "Deriv market-data test failed: backend unreachable, CORS, network, or Render issue."
-          : "Deriv market-data test failed: " + e.message;
-      out.style.color = "var(--bad)";
-      log("Deriv market-data test failed: " + e.message);
-    } finally {
-      btn.disabled = false;
-    }
-  };
-})();
-</script>
 
 <script id="bw-broker-execution-ui">
 (() => {
