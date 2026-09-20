@@ -1810,8 +1810,14 @@ body{overflow-x:hidden}
     /* Remove backend health/testing UI. Backend remains available internally. */
     const backendBtn=[...document.querySelectorAll("button")].find(b=>b.textContent.trim()==="TEST BETWAZ BACKEND");
     if(backendBtn){
-      const card=backendBtn.closest(".card");
-      if(card) card.remove();
+      const connectionCard=backendBtn.closest(".card");
+      const derivCard=document.getElementById("derivAiCard");
+      const brokersPage=document.getElementById("bwBrokers");
+      /* Preserve the Deriv AI practice card before removing the old connection card. */
+      if(derivCard && brokersPage){
+        brokersPage.appendChild(derivCard);
+      }
+      if(connectionCard) connectionCard.remove();
       else backendBtn.remove();
     }
 
