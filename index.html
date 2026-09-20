@@ -146,28 +146,16 @@ input,select{
     <span class="chip">4h</span>
     <span class="chip">1D</span>
   </div>
-</section><section class="card">  <div class="section-title">BROKER CONNECTIONS</div>  <div class="grid" id="brokers"><div class="broker">
-<div class="broker">
-  <b>XM</b>
-  <span>Direct broker integration</span>
-  <div class="status">CONNECTOR READY</div>
-</div>
-
-<div class="broker">
-  <b>HFM</b>
-  <span>Direct broker integration</span>
-  <div class="status">CONNECTOR READY</div>
-</div>
-
+</section><section class="card">  <div class="section-title">BROKER CONNECTIONS</div>  <div class="grid" id="brokers">
 <div class="broker">
   <b>Deriv</b>
-  <span>Official API</span>
+  <span>Official API • AI-controlled practice</span>
   <div class="status">API READY</div>
 </div>
 
 <div class="broker">
   <b>IQ Option</b>
-  <span>Secure PRACTICE connector</span>
+  <span>Secure PRACTICE connector • 1m / 5m</span>
   <div class="status">PRACTICE READY</div>
 </div>
 
@@ -1998,3 +1986,148 @@ body{overflow-x:hidden}
       if(!response.ok) throw new Error(data.error || ("HTTP " + response.status));
       const a=data.analysis||{};
       const confidence=Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100);
+<!-- BETWAZ FX AI LINKED APP WORKFLOW -->
+<style id="bw-linked-workflow-style">
+.bw-start-card{border-color:#315f87;background:linear-gradient(180deg,#102638,#0d1923)}
+.bw-start-btn{width:100%;padding:15px;border-radius:12px;font-weight:950;font-size:15px;background:#1c6de0;color:#fff;margin-top:10px}
+.bw-selected-broker{font-size:11px;color:var(--muted);margin-top:8px}
+.bw-broker-selected{border-color:#4fe0a0!important;box-shadow:0 0 0 1px #4fe0a033}
+.bw-broker-confirm{margin-top:9px;width:100%;padding:10px;border-radius:10px;background:#176c4d;color:#fff;font-weight:900}
+.bw-activity-tools{display:flex;gap:7px;overflow:auto;margin-bottom:10px}
+.bw-activity-tools button{flex:0 0 auto;padding:8px 10px;border-radius:9px;background:#0b1720;color:var(--muted);border:1px solid var(--line);font-size:10px;font-weight:850}
+.bw-activity-tools button.active{color:#fff;background:#13283a;border-color:#4874a5}
+.bw-ai-risk{border-color:#315f87}
+.bw-ai-risk-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bw-toggle{padding:9px 11px;border-radius:10px;background:#176c4d;color:#fff;font-weight:900}
+.bw-toggle.off{background:#152731;color:var(--muted)}
+</style>
+<script id="bw-linked-workflow-script">
+(() => {
+  const BROKER_KEY="BETWAZ_SELECTED_BROKER";
+  const ACTIVITY_KEY="BETWAZ_ACTIVITY_LOG";
+  let selectedBroker=localStorage.getItem(BROKER_KEY)||"";
+  let aiRiskControl=localStorage.getItem("BETWAZ_AI_RISK_CONTROL")!=="off";
+
+  function nav(page){const b=document.querySelector('#bwNav button[data-page="'+page+'"]');if(b)b.click();}
+  function home(){nav("home");}
+  function safeText(v){return String(v??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));}
+
+  function hookActivity(){
+    if(typeof window.log!=="function"||window.__bwActivityHooked)return;
+    const original=window.log;
+    window.log=function(msg){
+      try{
+        const list=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");
+        list.unshift({time:new Date().toISOString(),message:String(msg),type:/trade|order|broker/i.test(msg)?"trade":/scan|ai|analysis|decision/i.test(msg)?"analysis":"system"});
+        localStorage.setItem(ACTIVITY_KEY,JSON.stringify(list.slice(0,300)));
+      }catch(e){}
+      original(msg);renderActivity();
+    };
+    window.__bwActivityHooked=true;
+  }
+
+  function renderActivity(filter="all"){
+    const box=document.getElementById("bwFullActivity");if(!box)return;
+    let list=[];try{list=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");}catch(e){}
+    const filtered=filter==="all"?list:list.filter(x=>x.type===filter);
+    box.innerHTML=filtered.length?filtered.map(x=>'<div class="activity"><i class="dot"></i><div><p>'+safeText(x.message)+'</p><small>'+new Date(x.time).toLocaleString()+' • '+safeText(x.type)+'</small></div></div>').join(""):'<div class="notice">No recorded activity in this device session yet.</div>';
+  }
+
+  function addStartCard(){
+    const homePage=document.getElementById("bwHome");if(!homePage||document.getElementById("bwStartTrading"))return;
+    const card=document.createElement("section");card.className="card bw-start-card";card.id="bwStartTrading";
+    card.innerHTML='<div class="section-title">AI TRADING CONTROL</div><div class="notice">Select Deriv or IQ Option in Brokers first. BETWAZ FX AI will scan the market, make the decision, apply its risk and safety controls, then use the selected practice path. LIVE TRADING remains OFF.</div><div class="bw-selected-broker" id="bwSelectedBrokerHome">No broker selected</div><button class="bw-start-btn" type="button" id="bwStartBtn">START TRADING</button>';
+    const hero=homePage.querySelector(".hero");if(hero)hero.insertAdjacentElement("afterend",card);else homePage.appendChild(card);
+    document.getElementById("bwStartBtn").onclick=startTrading;
+  }
+
+  function updateSelectedBrokerUI(){
+    document.querySelectorAll("#brokers .broker").forEach(card=>{
+      const name=card.querySelector("b")?.textContent.trim()||"";
+      card.classList.toggle("bw-broker-selected",name.toLowerCase()===selectedBroker.toLowerCase());
+      let btn=card.querySelector(".bw-broker-confirm");
+      if(!btn){
+        btn=document.createElement("button");btn.className="bw-broker-confirm";btn.type="button";btn.textContent="SELECT BROKER";card.appendChild(btn);
+        btn.onclick=e=>{e.stopPropagation();selectBroker(name);};
+      }
+      btn.textContent=name.toLowerCase()===selectedBroker.toLowerCase()?"SELECTED • USE THIS BROKER":"SELECT BROKER";
+    });
+    const homeLabel=document.getElementById("bwSelectedBrokerHome");if(homeLabel)homeLabel.textContent=selectedBroker?"Selected broker: "+selectedBroker:"No broker selected — choose one from Brokers";
+  }
+
+  function selectBroker(name){
+    if(!/^(Deriv|IQ Option)$/i.test(name))return;
+    const normalized=/^deriv$/i.test(name)?"Deriv":"IQ Option";
+    if(!confirm("Confirm "+normalized+" as the broker controlled by BETWAZ FX AI?"))return;
+    selectedBroker=normalized;localStorage.setItem(BROKER_KEY,selectedBroker);
+    if(typeof window.log==="function")window.log("Broker selected: "+selectedBroker+" • AI control enabled");
+    home();updateSelectedBrokerUI();
+  }
+
+  async function startTrading(){
+    if(!selectedBroker){alert("Select Deriv or IQ Option first.");nav("brokers");return;}
+    if(typeof window.log==="function")window.log("START TRADING requested • "+selectedBroker+" • AI scan first");
+    nav("ai");
+    try{
+      await window.analyze();
+      const side=document.getElementById("decision")?.textContent||"WAIT";
+      if(side!=="BUY"&&side!=="SELL"){alert("BETWAZ FX AI decided WAIT. No trade request was sent.");return;}
+      if(aiRiskControl)applyAiRiskAdjustment();
+      if(selectedBroker==="Deriv"&&typeof window.requestDerivAiPractice==="function")window.requestDerivAiPractice();
+      else if(selectedBroker==="IQ Option"&&typeof window.requestIqOptionPracticeTrade==="function")window.requestIqOptionPracticeTrade();
+      else alert("The selected broker practice control is not ready yet.");
+    }catch(e){if(typeof window.log==="function")window.log("START TRADING stopped: "+e.message);}
+  }
+
+  function applyAiRiskAdjustment(){
+    const input=document.getElementById("risk");if(!input||!window.lastAnalysis)return;
+    const a=window.lastAnalysis,confidence=Number(a.confidence||0);let next=1;
+    if(a.side==="WAIT"||confidence<0.70)next=0.5;else if(confidence<0.85)next=0.75;
+    input.value=next;input.dispatchEvent(new Event("change",{bubbles:true}));
+    if(typeof window.log==="function")window.log("AI risk control adjusted risk to "+next+"% (hard maximum remains 1%)");
+    renderRiskStatus();
+  }
+
+  function addRiskAI(){
+    const riskPage=document.getElementById("bwRisk");if(!riskPage||document.getElementById("bwAiRiskControl"))return;
+    const card=document.createElement("section");card.className="card bw-ai-risk";card.id="bwAiRiskControl";
+    card.innerHTML='<div class="section-title">BETWAZ AI RISK CONTROL</div><div class="bw-ai-risk-row"><div class="notice">AI may automatically reduce the risk setting when signal confidence calls for caution. It cannot raise the backend hard limit above 1%.</div><button id="bwAiRiskToggle" class="bw-toggle">AI AUTO: ON</button></div><button id="bwAiRiskApply" class="secondary" style="width:100%;padding:12px;border-radius:10px;margin-top:10px;font-weight:900">APPLY AI RISK ADJUSTMENT</button><p id="bwAiRiskState" class="notice" style="margin-bottom:0"></p>';
+    riskPage.appendChild(card);
+    document.getElementById("bwAiRiskToggle").onclick=()=>{aiRiskControl=!aiRiskControl;localStorage.setItem("BETWAZ_AI_RISK_CONTROL",aiRiskControl?"on":"off");renderRiskStatus();};
+    document.getElementById("bwAiRiskApply").onclick=()=>{if(aiRiskControl)applyAiRiskAdjustment();else document.getElementById("bwAiRiskState").textContent="AI AUTO is OFF.";};
+    renderRiskStatus();
+  }
+  function renderRiskStatus(){
+    const t=document.getElementById("bwAiRiskToggle"),s=document.getElementById("bwAiRiskState");
+    if(t){t.textContent="AI AUTO: "+(aiRiskControl?"ON":"OFF");t.classList.toggle("off",!aiRiskControl);}
+    if(s)s.textContent=window.lastAnalysis?"Current AI decision: "+(window.lastAnalysis.side||"WAIT")+" • confidence: "+Math.round(Number(window.lastAnalysis.confidence||0)*100)+"% • current risk: "+(document.getElementById("risk")?.value||"—")+"%":"Run an AI scan to let BETWAZ AI evaluate the risk setting.";
+  }
+
+  function addActivityPage(){
+    const page=document.getElementById("bwActivity");if(!page||document.getElementById("bwFullActivity"))return;
+    const card=document.createElement("section");card.className="card";
+    card.innerHTML='<div class="section-title">ALL ACTIVITY</div><div class="bw-activity-tools"><button data-filter="all" class="active">ALL</button><button data-filter="analysis">ANALYSIS</button><button data-filter="trade">TRADES</button><button data-filter="system">SYSTEM</button></div><div id="bwFullActivity"></div>';
+    page.insertBefore(card,page.firstChild||null);
+    card.querySelectorAll("button").forEach(b=>b.onclick=()=>{card.querySelectorAll("button").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderActivity(b.dataset.filter);});
+    renderActivity();
+  }
+
+  function makeAllBrokerCardsClickable(){
+    document.querySelectorAll("#brokers .broker").forEach(card=>{
+      if(card.__bwBound)return;card.__bwBound=true;
+      card.addEventListener("click",()=>selectBroker(card.querySelector("b")?.textContent.trim()||""));
+    });
+  }
+
+  function boot(){
+    hookActivity();addStartCard();addRiskAI();addActivityPage();makeAllBrokerCardsClickable();updateSelectedBrokerUI();
+    document.querySelectorAll('#bwNav button[data-page="brokers"],#bwNav button[data-page="home"]').forEach(b=>b.addEventListener("click",()=>setTimeout(updateSelectedBrokerUI,20)));
+    const originalDisplay=window.displayAnalysis;
+    if(typeof originalDisplay==="function"&&!window.__bwRiskHooked){
+      window.displayAnalysis=function(data){originalDisplay(data);if(aiRiskControl)applyAiRiskAdjustment();renderRiskStatus();};
+      window.__bwRiskHooked=true;
+    }
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,700));else setTimeout(boot,700);
+})();
+</script>
