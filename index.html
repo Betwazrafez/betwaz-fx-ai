@@ -1408,6 +1408,22 @@ startLivePrice();
       const bullishCount = Number(a.bullish_timeframes || 0);
       const bearishCount = Number(a.bearish_timeframes || 0);
       const mixedCount = Number(a.mixed_timeframes || 0);
+      const consensusState = a.consensus_state || d.analysis_quality_gate?.consensus_state || "UNKNOWN";
+      const dominantDirection = a.dominant_direction || d.analysis_quality_gate?.dominant_direction || "NONE";
+      const consensusLabel =
+        consensusState === "BULLISH_DOMINANT" ? "BULLISH DOMINANT" :
+        consensusState === "BEARISH_DOMINANT" ? "BEARISH DOMINANT" :
+        consensusState === "TIE" ? "DIRECTIONAL TIE" :
+        consensusState === "NO_DIRECTION" ? "NO DIRECTION" :
+        "UNKNOWN";
+      const consensusSummary =
+        consensusState === "TIE"
+          ? "Bullish and bearish structures are tied; there is no dominant direction."
+          : consensusState === "BULLISH_DOMINANT"
+            ? "Bullish structure is the dominant directional group."
+            : consensusState === "BEARISH_DOMINANT"
+              ? "Bearish structure is the dominant directional group."
+              : "There is no sufficient directional structure for consensus.";
       const qualityGate = d.analysis_quality_gate || {};
       const qualityOk = !!qualityGate.approved;
       const qualityReasons = (qualityGate.reasons || []).join(", ") || "none";
@@ -1421,6 +1437,11 @@ startLivePrice();
         " • <b>" + side + "</b> • Confidence " + confidence + "%" +
         " • Timeframes " + d.timeframes_ready + "/" + d.timeframes_required +
         " • Structure consensus " + agreement + "%" +
+        "<br><b>Consensus status:</b> " + consensusLabel +
+        " • " + bullishCount + "/" + d.timeframes_required + " bullish • " +
+        bearishCount + "/" + d.timeframes_required + " bearish • " +
+        mixedCount + "/" + d.timeframes_required + " mixed" +
+        "<br>" + consensusSummary +
         "<br>" + (a.rationale || "No AI rationale returned.") +
         "<br><small>Analysis quality: " + (qualityOk ? "PASS" : "BLOCKED") +
         " • Risk gate: " + (riskOk ? "PASS" : "BLOCKED") +
@@ -1432,6 +1453,8 @@ startLivePrice();
           " (EMA " + (x.short_trend || "N/A") + "/" + (x.medium_trend || "N/A") + ")"
         ).join(" • ") +
         "<br><b>Structure counts:</b> Bullish " + bullishCount + " • Bearish " + bearishCount + " • Mixed " + mixedCount +
+        "<br><b>Dominant direction:</b> " + dominantDirection +
+        " • Structure consensus: " + agreement + "%" +
         "<br>Structure consensus method: " + (a.agreement_method || "AI-reported") +
         "<br><b>Analysis-quality reasons:</b> " + qualityReasons +
         "<br><b>Risk reasons:</b> " + ((d.risk_gate && d.risk_gate.reasons || []).join(", ") || "none") +
