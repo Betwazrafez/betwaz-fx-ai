@@ -1,166 +1,102 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05090d">
-<meta name="betwaz-ui-version" content="2026-09-20-build8-restored">
-<title>BETWAZ FX AI</title>
-<style>
-:root{--bg:#05090d;--panel:#0b141c;--panel2:#0e1b25;--line:#1b3441;--text:#f3f8fa;--muted:#8199a5;--good:#45e0a0;--warn:#f5c85b;--bad:#ff626d;--blue:#31c7ff;--purple:#a56cff}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 15% -10%,#123b5b66,transparent 32%),radial-gradient(circle at 100% 0,#2a174455,transparent 28%),linear-gradient(180deg,#05090d,#071018 55%,#05090d);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:0}button:disabled{opacity:.5;cursor:not-allowed}.app{max-width:1180px;margin:auto;min-height:100vh;padding:14px 18px 34px}.logo{width:42px;height:42px;flex:0 0 42px;filter:drop-shadow(0 0 12px #00c8ff55)}.brandrow{align-items:center}.brandgroup{display:flex;align-items:center;gap:10px}.top{position:sticky;top:0;z-index:50;background:#05090de8;backdrop-filter:blur(18px);padding:8px 0 10px}.brandrow{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand{font-size:23px;font-weight:950;letter-spacing:.2px}.sub{font-size:9px;color:var(--muted);margin-top:3px}.mode{font-size:9px;font-weight:950;padding:8px 10px;border-radius:99px;border:1px solid #315164;background:#09151d;white-space:nowrap}.nav{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:10px}.nav button{min-width:0;padding:9px 3px;border-radius:11px;background:#091721;border:1px solid #183847;color:#8ea6b2;font-size:8px;font-weight:950}.nav button.active{color:#fff;border-color:var(--blue);background:linear-gradient(145deg,#123c57,#0b1e2b);box-shadow:0 0 14px #00bfff33}.page{display:none}.page.active{display:block;animation:in .2s ease}@keyframes in{from{opacity:.35;transform:translateY(5px)}to{opacity:1;transform:none}}.head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:16px 2px 12px}.title{font-size:22px;font-weight:950}.hint{font-size:10px;color:var(--muted);line-height:1.45}.tag{font-size:8px;color:#6f8794;font-weight:950;letter-spacing:1.5px}.card{background:linear-gradient(180deg,#0b151e,#09121a);border:1px solid var(--line);border-radius:19px;padding:15px;margin-bottom:11px;box-shadow:0 14px 36px #0005}.hero{border-color:#28516a;background:radial-gradient(circle at 100% 0,#17435e,transparent 43%),linear-gradient(145deg,#0e2230,#09131b)}.eyebrow{font-size:9px;color:#78919d;font-weight:950;letter-spacing:1.3px}.big{font-size:30px;font-weight:950}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.btn{width:100%;padding:13px;border-radius:12px;font-weight:950}.primary{background:linear-gradient(145deg,#2388ef,#1762bc);color:#fff}.secondary{background:#132631;color:#e9f4f7;border:1px solid #244454}.danger{background:#7e252d;color:#fff}.good{background:#176c4d;color:#fff}.ghost{background:#091721;color:#a9bdc6;border:1px solid #1b3947}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.kpi{padding:12px;border:1px solid #1b313c;border-radius:14px;background:#071119}.kpi small{display:block;color:#748b97;font-size:8px;font-weight:950;letter-spacing:.7px}.kpi b{display:block;font-size:18px;margin-top:5px}.kpi span{display:block;color:#657b86;font-size:9px;margin-top:2px}.market{padding:12px;border:1px solid #1b3542;border-radius:14px;background:#08131b;text-align:left}.market.selected{border-color:var(--blue);box-shadow:0 0 15px #00bfff22}.market b{font-size:12px}.market .px{font-size:15px;font-weight:900;margin-top:7px}.market small{font-size:8px;color:var(--muted)}.market-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.signal{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.decision{font-size:34px;font-weight:950}.buy{color:var(--good)}.sell{color:var(--bad)}.wait{color:var(--warn)}.meter{height:7px;background:#172a35;border-radius:99px;overflow:hidden;margin-top:8px}.meter i{display:block;height:100%;width:0;background:var(--good);transition:.35s}.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.kv div{padding:10px;border:1px solid #19313c;border-radius:12px;background:#071119}.kv small{display:block;color:var(--muted);font-size:8px}.kv b{display:block;font-size:12px;margin-top:4px}.section{font-size:12px;font-weight:950;letter-spacing:.6px;margin-bottom:10px}.notice{font-size:10px;color:var(--muted);line-height:1.5}.broker{padding:15px;border:1px solid #1d3947;border-radius:16px;background:linear-gradient(145deg,#0a1720,#071118)}.broker.selected{border-color:var(--good);box-shadow:0 0 18px #45e0a022}.broker h3{margin:0;font-size:16px}.broker .state{font-size:8px;color:var(--good);font-weight:950;margin-top:5px}.broker .meta{font-size:10px;color:var(--muted);margin:8px 0 12px;line-height:1.45}.input{width:100%;background:#071119;color:#fff;border:1px solid #1b3744;padding:11px;border-radius:10px;outline:none}.label{font-size:9px;color:#8299a5;font-weight:900}.form{display:grid;gap:8px}.activity{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid #18303b}.dot{width:8px;height:8px;border-radius:50%;background:var(--good);margin-top:5px;flex:0 0 auto}.activity p{margin:0;font-size:10px}.activity small{color:var(--muted);font-size:8px}.filters{display:flex;gap:6px;overflow:auto;margin-bottom:8px}.filters button{flex:0 0 auto;padding:8px 10px;border-radius:9px;background:#091721;color:#8199a5;border:1px solid #1a3441;font-size:8px;font-weight:950}.filters button.active{color:#fff;border-color:var(--blue);background:#102d3d}.note{padding:11px;border-left:3px solid var(--purple);background:#0a141d;border-radius:9px;font-size:10px;color:#b6c5cb;line-height:1.5;margin-top:8px}.council{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.role{padding:10px;border:1px solid #1b3440;border-radius:12px;background:#071119}.role b{font-size:10px}.role small{display:block;color:var(--muted);font-size:8px;margin-top:4px}.pill{display:inline-block;padding:5px 7px;border-radius:99px;background:#10212c;border:1px solid #244555;font-size:8px;color:#9eb2bb;font-weight:900}.divider{height:1px;background:#18303b;margin:12px 0}.locked{color:var(--warn)!important;border-color:#6c5320!important}.footer-safe{font-size:8px;color:#607783;text-align:center;padding:14px 0 4px}@media(min-width:900px){.nav{grid-template-columns:repeat(6,1fr);max-width:760px}.page.active{display:block}.page.active .head{margin-top:22px}.card{padding:18px}.market-grid{grid-template-columns:repeat(3,1fr)}.council{grid-template-columns:repeat(4,1fr)}}@media(max-width:600px){.app{padding:10px 11px 26px}.logo{width:38px;height:38px;flex-basis:38px}.brand{font-size:20px}.mode{font-size:8px;padding:7px 8px}.nav{grid-template-columns:repeat(6,1fr)}}@media(max-width:430px){.nav button{font-size:7px}.title{font-size:19px}.grid3{grid-template-columns:1fr 1fr}.grid3 .kpi:last-child{grid-column:span 2}.kv{grid-template-columns:1fr 1fr}.kv div:last-child{grid-column:span 2}.market-grid{grid-template-columns:1fr 1fr}.council{grid-template-columns:1fr 1fr}}
-</style>
-<style id="betwaz-color-palette">
-:root{--bg:#071a3d;--panel:#0d2b55;--panel2:#123967;--line:#167fc2;--text:#f7fbff;--muted:#91c9ed;--good:#20f0b5;--warn:#ffd84a;--bad:#ff4f68;--blue:#00c8ff;--purple:#9b5cff}
-body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),radial-gradient(circle at 100% 0,#743cff55,transparent 30%),radial-gradient(circle at 50% 100%,#00c8ff1c,transparent 42%),linear-gradient(180deg,#071a3d,#0a2550 55%,#061633)}
-.top{background:#071a3dea}
-.mode{background:#0c2c52;border-color:#238bd0;color:#eaf8ff}
-.nav button{background:#0d2b55;border-color:#176ca4;color:#b9ddf2}
-.nav button.active{background:linear-gradient(145deg,#104b82,#0b2d58);border-color:var(--blue);box-shadow:0 0 18px #00c8ff55}
-.card{background:linear-gradient(180deg,#10345f,#0b2548);border-color:#176fae;box-shadow:0 14px 36px #020b1f66}
-.hero{border-color:#00bfff;background:radial-gradient(circle at 100% 0,#126bb0,transparent 46%),linear-gradient(145deg,#103b70,#0b2548)}
-.eyebrow{color:#7ddcff}
-.primary{background:linear-gradient(145deg,#0b9dff,#1769df);box-shadow:0 0 16px #00bfff33}
-.secondary{background:#17436c;color:#f3fbff;border-color:#2784bd}
-.danger{background:#a52d46}
-.good{background:#138a67}
-.ghost{background:#0b294b;color:#bde4f8;border-color:#1e6898}
-.kpi{border-color:#1b6090;background:#0a2343}
-.market{border-color:#1d6596;background:#0b284c}
-.market.selected{border-color:var(--blue);box-shadow:0 0 18px #00c8ff44}
-.meter{background:#19466b}
-.kv div{border-color:#1d6090;background:#0a2343}
-.broker{border-color:#21699a;background:linear-gradient(145deg,#0e315a,#0a2342)}
-.broker.selected{border-color:var(--good);box-shadow:0 0 20px #20f0b544}
-.input{background:#092342;border-color:#21638e;color:#fff}
-.filters button{background:#0b294a;color:#9bc9e5;border-color:#1d5f8d}
-.filters button.active{border-color:var(--blue);background:#104a70;color:#fff}
-.note{background:#0c2949;color:#c4e4f5}
-.role{border-color:#1c5d8c;background:#092342}
-.pill{background:#12395b;border-color:#2678a8;color:#bde5f7}
-.divider{background:#1c5b82}
-.footer-safe{color:#78aeca}
-.nav button:nth-child(1){border-color:#00c8ff}.nav button:nth-child(2){border-color:#9b5cff}.nav button:nth-child(3){border-color:#20f0b5}.nav button:nth-child(4){border-color:#218cff}.nav button:nth-child(5){border-color:#ff4f68}.nav button:nth-child(6){border-color:#ffd84a}
-</style>
-</head>
-<body>
-<div class="app">
-<header class="top">
- <div class="brandrow">
- <div class="brandgroup">
-  <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="BETWAZ FX AI logo">
-   <defs>
-    <linearGradient id="bw1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1769df"/><stop offset=".5" stop-color="#00c8ff"/><stop offset="1" stop-color="#20f0b5"/></linearGradient>
-   </defs>
-   <rect x="8" y="8" width="84" height="84" rx="22" fill="#061633" stroke="#167fc2" stroke-width="2"/>
-   <path d="M31 25 H54 C66 25 72 30 72 39 C72 45 68 49 61 50 C69 51 74 56 74 64 C74 73 67 78 54 78 H31 Z" fill="none" stroke="url(#bw1)" stroke-width="7" stroke-linejoin="round"/>
-   <path d="M31 50 H56" fill="none" stroke="#20f0b5" stroke-width="6" stroke-linecap="round"/>
-   <path d="M25 70 L25 58 M33 70 L33 53 M41 70 L41 48 M49 70 L49 43" fill="none" stroke="#00c8ff" stroke-width="3" stroke-linecap="round"/>
-   <path d="M47 43 L56 43 L52 38" fill="none" stroke="#20f0b5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-   <circle cx="75" cy="25" r="2.2" fill="#20f0b5"/>
-  </svg>
-  <div><div class="brand">BETWAZ FX AI</div><div class="sub">AI intelligence • decision engine • risk control • broker execution</div></div>
- </div>
- <div id="mode" class="mode">SAFE MODE • LIVE OFF</div>
-</div>
- <nav class="nav" id="nav">
-  <button data-page="home" class="active">⌂<br>HOME</button><button data-page="ai">◈<br>AI SCAN</button><button data-page="portfolio">◫<br>PORTFOLIO</button><button data-page="brokers">⇄<br>BROKERS</button><button data-page="safety">⛨<br>SAFETY</button><button data-page="activity">≡<br>ACTIVITY</button>
- </nav>
-</header>
+package com.betwaz.fxai;
 
-<main>
-<section id="page-home" class="page active">
- <div class="head"><div><div class="title">Command Center</div><div class="hint">One control surface for market selection, AI decisions and practice execution.</div></div><span class="tag">LIVE OFF</span></div>
- <section class="card hero">
-  <div class="eyebrow">CURRENT MARKET</div>
-  <div class="row"><div><div id="homePair" class="big">XAU/USD</div><div id="homePrice" class="notice">Loading live price…</div></div><div style="text-align:right"><div class="eyebrow">AI STATUS</div><b id="homeAi" style="color:var(--good)">READY</b></div></div>
-  <div class="grid2" style="margin-top:13px"><button class="btn primary" id="startBtn">START TRADING</button><button class="btn secondary" id="scanBtn">SCAN MARKET</button></div>
-  <div id="homeBroker" class="notice" style="margin-top:9px">Select a broker in Brokers before starting.</div>
- </section>
- <section class="card"><div class="section">MARKETS</div><div id="markets" class="market-grid"></div></section>
- <section class="card"><div class="section">AI COMMAND STATUS</div><div class="grid3"><div class="kpi"><small>DECISION</small><b id="homeDecision">WAIT</b><span>AI controlled</span></div><div class="kpi"><small>CONFIDENCE</small><b id="homeConfidence">0%</b><span>Current scan</span></div><div class="kpi"><small>RISK</small><b id="homeRisk">1%</b><span>AI adjustable</span></div></div></section>
-</section>
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
 
-<section id="page-ai" class="page">
- <div class="head"><div><div class="title">AI Scan</div><div class="hint">Market evidence → specialist analysis → BETWAZ AI decision → risk/safety.</div></div><span class="tag">INTELLIGENCE</span></div>
- <section class="card"><div class="section">AI DECISION</div><div id="aiMarketTabs" class="filters"></div><div class="signal"><div><div id="decision" class="decision wait">WAIT</div><div class="notice">Confidence <b id="confidence">0%</b></div><div class="meter"><i id="meter"></i></div></div><div style="text-align:right"><div class="eyebrow">REGIME</div><b id="regime">UNKNOWN</b></div></div><div class="kv"><div><small>ENTRY</small><b id="entry">—</b></div><div><small>STOP</small><b id="stop">—</b></div><div><small>TARGET</small><b id="target">—</b></div></div><div id="reason" class="note">Run a market scan to populate the AI decision.</div><button class="btn primary" id="aiScanBtn" style="margin-top:10px">SCAN THE MARKET WITH AI AGENTS</button></section>
- <section class="card"><div class="section">AI NOTES</div><div class="grid2"><div class="kpi"><small>VOTES</small><b id="voteSplit">— / — / —</b><span>BUY / SELL / WAIT</span></div><div class="kpi"><small>CONSENSUS</small><b id="consensus">—</b><span>Structure agreement</span></div><div class="kpi"><small>TIMEFRAMES</small><b id="tfCount">—</b><span>Analytical horizons</span></div><div class="kpi"><small>RISK GATE</small><b id="aiRiskGate">EVALUATING</b><span>Final safety layer</span></div></div><div id="aiNotes" class="note">The council records market analysis, decisions, execution readiness and risk evidence after each scan.</div></section>
- <section class="card"><div class="section">BETWAZ AI COUNCIL</div><div class="hint" style="margin-bottom:10px">5,000 analytical roles across 20 specialist divisions. These are software-defined analytical roles, not separate conscious agents.</div><div id="council" class="council"></div></section>
-</section>
+public class MainActivity extends Activity {
+    private static final String WEB_APP = "https://betwazrafez.github.io/betwaz-fx-ai/";
+    private WebView webView;
+    private boolean usingFallback = false;
 
-<section id="page-portfolio" class="page">
- <div class="head"><div><div class="title">Portfolio</div><div class="hint">Balances, profit/loss and account performance in one dedicated place.</div></div><span class="tag">PRACTICE ACCOUNTS</span></div>
- <section class="card"><div class="grid2"><div class="kpi"><small>TOTAL BALANCE</small><b id="totalBalance">—</b><span id="balanceMeta">Protected account data</span></div><div class="kpi"><small>PROFIT / LOSS</small><b id="pnl">—</b><span>Broker-reported only</span></div><div class="kpi"><small>EQUITY</small><b id="equity">—</b><span>No estimates</span></div><div class="kpi"><small>OPEN RISK</small><b id="openRisk">—</b><span>Connector reported</span></div></div><button class="btn secondary" id="refreshPortfolio" style="margin-top:10px">REFRESH ACCOUNT DATA</button><p id="portfolioState" class="notice">Operator authorization is required to read protected account data.</p></section>
- <section class="card"><div class="section">ACCOUNTS</div><div id="accountRows"><div class="notice">No account data loaded.</div></div></section>
- <section class="card"><div class="section">PERFORMANCE INTEGRITY</div><div id="perfState" class="pill">NOT LOADED</div><div id="perfNote" class="note">BETWAZ FX AI does not estimate profit/loss from AI signals.</div></section>
-</section>
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-<section id="page-brokers" class="page">
- <div class="head"><div><div class="title">Brokers</div><div class="hint">Select one practice broker. BETWAZ AI controls the workflow after confirmation.</div></div><span class="tag">TWO CONNECTORS</span></div>
- <section class="card"><div class="grid2">
-  <article class="broker" id="brokerDeriv"><h3>Deriv</h3><div class="state">PRACTICE READY</div><div class="meta">AI-controlled proposal path. The current connector is demo/proposal-only and does not enable real-money execution.</div><button class="btn good brokerSelect" data-broker="Deriv">SELECT DERIV</button></article>
-  <article class="broker" id="brokerIq"><h3>IQ Option</h3><div class="state">PRACTICE READY</div><div class="meta">AI-controlled practice path. Execution parameters are managed by BETWAZ AI/backend. Real trading remains disabled.</div><button class="btn good brokerSelect" data-broker="IQ Option">SELECT IQ OPTION</button></article>
- </div><div id="brokerStatus" class="note">No broker selected.</div></section>
- <section class="card"><div class="section">PRACTICE EXECUTION</div><div class="form">
-  <label class="label">DERIV STAKE<input id="derivStake" class="input" type="number" min="1" max="1000" step="1" value="1"></label>
-  <label class="label">IQ OPTION SYMBOL<select id="iqSymbol" class="input"><option value="EURUSD">EUR/USD</option><option value="GBPUSD">GBP/USD</option><option value="USDJPY">USD/JPY</option><option value="AUDUSD">AUD/USD</option></select></label>
-  
- </div><button class="btn primary" id="brokerTrade" style="margin-top:10px">AI CONTROLLED PRACTICE TRADE</button><button class="btn ghost" id="simulation" style="margin-top:8px">AI DECISION SIMULATION • NO BROKER</button><p id="brokerExecState" class="notice">A trade request is never accepted from the browser as the decision. BETWAZ AI re-scans on the backend before any practice request.</p></section>
-</section>
+        getWindow().setStatusBarColor(Color.rgb(7, 26, 61));
+        getWindow().setNavigationBarColor(Color.rgb(6, 22, 51));
 
-<section id="page-safety" class="page">
- <div class="head"><div><div class="title">Risk & Safety</div><div class="hint">Hard safety controls stay above every AI decision.</div></div><span class="tag">MASTER CONTROL</span></div>
- <section class="card"><div class="section">SAFETY CONTROL</div><div class="grid2"><button id="safetyBtn" class="btn secondary">SAFETY: —</button><button id="autoBtn" class="btn secondary">AUTO-KILL: —</button><button id="stopBtn" class="btn danger">EMERGENCY STOP</button><button id="resumeBtn" class="btn good">RESUME</button></div><div id="safetyState" class="note">Operator authorization required.</div></section>
- <section class="card"><div class="section">AI RISK CONTROL</div><div class="notice">BETWAZ AI may lower risk when confidence, consensus or market conditions call for caution. The backend hard maximum remains 1% per trade.</div><div class="grid2" style="margin-top:10px"><label class="label">RISK / TRADE<input id="risk" class="input" type="number" value="1" min=".1" max="1" step=".1"></label><label class="label">DAILY LOSS LIMIT<input id="daily" class="input" type="number" value="3" min=".5" max="3" step=".5"></label></div><button id="aiRiskBtn" class="btn secondary" style="margin-top:10px">LET AI ADJUST RISK</button><div id="aiRiskState" class="note">Run AI Scan first.</div></section>
- <section class="card"><div class="section">BROKER LOCK</div><div class="notice">Locking keeps the selected broker fixed in this browser until you unlock it. Backend safety gates remain authoritative.</div><div class="grid2" style="margin-top:10px"><button id="lockBroker" class="btn secondary">LOCK SELECTED BROKER</button><button id="unlockBroker" class="btn ghost">UNLOCK BROKER</button></div><div id="lockState" class="note">No broker lock.</div></section>
- <section class="card"><div class="section">SAFETY NOTES</div><div class="note">LIVE TRADING IS OFF. Emergency stop, safety controls, auto-kill and backend risk gates remain in force. Practice execution is the only execution path exposed by this interface.</div></section>
-</section>
+        webView = new WebView(this);
+        webView.setBackgroundColor(Color.rgb(7, 26, 61));
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-<section id="page-activity" class="page">
- <div class="head"><div><div class="title">Activity</div><div class="hint">One audit stream for scans, AI decisions, trades, broker responses and system controls.</div></div><span class="tag">AUDIT TRAIL</span></div>
- <section class="card"><div class="filters" id="activityFilters"><button data-filter="all" class="active">ALL</button><button data-filter="analysis">ANALYSIS</button><button data-filter="trade">TRADES</button><button data-filter="system">SYSTEM</button></div><div id="activityList"><div class="notice">Loading activity…</div></div><button class="btn secondary" id="refreshActivity" style="margin-top:10px">REFRESH ACTIVITY</button></section>
-</section>
-</main>
-<div class="footer-safe">BETWAZ FX AI • PRACTICE / SAFE MODE • LIVE TRADING DISABLED</div>
-</div>
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setLoadsImagesAutomatically(true);
+        settings.setSupportZoom(false);
+        settings.setBuiltInZoomControls(false);
+        settings.setDisplayZoomControls(false);
+        settings.setLoadWithOverviewMode(false);
+        settings.setUseWideViewPort(false);
+        settings.setJavaScriptCanOpenWindowsAutomatically(false);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
-<script>
-const API="https://betwaz-fx-ai-backend.onrender.com";
-const BROKER_KEY="BETWAZ_SELECTED_BROKER", LOCK_KEY="BETWAZ_BROKER_LOCK", ACTIVITY_KEY="BETWAZ_ACTIVITY_LOG";
-let selected="XAU/USD", lastAnalysis=null, stopped=false, marketOpen=true, currentFilter="all";
-let broker=localStorage.getItem(BROKER_KEY)||"", locked=localStorage.getItem(LOCK_KEY)||"";
-const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const $=id=>document.getElementById(id);
-const pin=()=>sessionStorage.getItem("BETWAZ_OPERATOR_PIN")||"";
-function requirePin(){let p=pin();if(!p){p=prompt("Enter your BETWAZ operator PIN:");if(!p)return null;sessionStorage.setItem("BETWAZ_OPERATOR_PIN",p)}return p}
-function activity(message,type="system"){try{const a=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");a.unshift({time:new Date().toISOString(),message,type});localStorage.setItem(ACTIVITY_KEY,JSON.stringify(a.slice(0,500)))}catch(e){}renderActivity(currentFilter)}
-function renderActivity(filter=currentFilter){currentFilter=filter;const box=$("activityList");if(!box)return;let a=[];try{a=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]")}catch(e){}a=a.filter(x=>!new RegExp("\\b("+["X","M"].join("")+"|"+["H","F","M"].join("")+")\\b","i").test(x.message||""));if(filter!=="all")a=a.filter(x=>x.type===filter);box.innerHTML=a.length?a.slice(0,150).map(x=>'<div class="activity"><i class="dot"></i><div><p>'+esc(x.message)+'</p><small>'+new Date(x.time).toLocaleString()+' • '+esc(x.type)+'</small></div></div>').join(""):'<div class="notice">No activity recorded for this filter yet.</div>'}
-async function backendActivity(){const p=requirePin();if(!p)return;try{const r=await fetch(API+"/api/activity",{cache:"no-store",headers:{"X-BETWAZ-OPERATOR-PIN":p}});const d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));const items=d.activity||[];let local=[];try{local=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]")}catch(e){}const merged=[...items.map(x=>({time:x.created_at||x.time||new Date().toISOString(),message:x.message||x.event||"Backend activity",type:x.type||"system"})),...local];const seen=new Set();const clean=merged.filter(x=>{if(new RegExp("\\b("+["X","M"].join("")+"|"+["H","F","M"].join("")+")\\b","i").test(x.message||""))return false;const k=x.time+"|"+x.message;if(seen.has(k))return false;seen.add(k);return true}).slice(0,500);localStorage.setItem(ACTIVITY_KEY,JSON.stringify(clean));renderActivity(currentFilter)}catch(e){activity("Activity refresh failed: "+e.message,"system")}}
-function showPage(name){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+name));document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));if(name==="activity")backendActivity();if(name==="portfolio")refreshPortfolio();if(name==="safety")refreshSafety();window.scrollTo({top:0,behavior:"smooth"})}
-document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return false;
+            }
 
-function selectMarket(s){selected=s;$("homePair").textContent=s;document.querySelectorAll(".market").forEach(x=>x.classList.toggle("selected",x.dataset.symbol===s));document.querySelectorAll("#aiMarketTabs button").forEach(x=>x.classList.toggle("active",x.dataset.symbol===s));updatePrice(s);activity("Market selected: "+s,"system")}
-const marketSymbols=["XAU/USD","WTI/USD","USD/ZAR","BTC/USD","ETH/USD","SOL/USD"];
-async function updatePrice(s){try{const r=await fetch(API+"/api/market-data?symbol="+encodeURIComponent(s),{cache:"no-store"}),d=await r.json();const closed=d.market_status?.open===false;if(closed){const reason=d.market_status?.reason||"Market closed";if(s===selected)$("homePrice").textContent=reason;const card=document.querySelector('.market[data-symbol="'+CSS.escape(s)+'"]');if(card)card.querySelector(".px").textContent="CLOSED";return}if(!r.ok||!d.ok)throw new Error(d.error||"Market data unavailable");const price=Number(d.price);const text=Number.isFinite(price)?price.toFixed(2):"—";if(s===selected)$("homePrice").textContent=text+" • MARKET OPEN";const card=document.querySelector('.market[data-symbol="'+CSS.escape(s)+'"]');if(card)card.querySelector(".px").textContent=text}catch(e){const card=document.querySelector('.market[data-symbol="'+CSS.escape(s)+'"]');if(card)card.querySelector(".px").textContent="—";if(s===selected)$("homePrice").textContent="Market data unavailable • "+e.message}}
-function buildMarkets(){const box=$("markets"),tabs=$("aiMarketTabs");box.innerHTML="";tabs.innerHTML="";marketSymbols.forEach(s=>{const m=document.createElement("button");m.className="market"+(s===selected?" selected":"");m.dataset.symbol=s;m.innerHTML="<b>"+s+"</b><div class='px'>—</div><small>LIVE MARKET</small>";m.onclick=()=>selectMarket(s);box.appendChild(m);const t=document.createElement("button");t.textContent=s;t.dataset.symbol=s;t.onclick=()=>selectMarket(s);if(s===selected)t.classList.add("active");tabs.appendChild(t);updatePrice(s)})}
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.isForMainFrame() && !usingFallback) {
+                    usingFallback = true;
+                    view.loadUrl("file:///android_asset/index.html");
+                    Toast.makeText(MainActivity.this,
+                            "BETWAZ FX AI web service unavailable. Loaded local interface.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-function displayAnalysis(data){const a=data.analysis||data;lastAnalysis=a;const side=a.side||"WAIT",q=Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100);$("decision").textContent=side;$("decision").className="decision "+(side==="BUY"?"buy":side==="SELL"?"sell":"wait");$("confidence").textContent=q+"%";$("meter").style.width=q+"%";$("entry").textContent=a.entry??"—";$("stop").textContent=a.stop??"—";$("target").textContent=a.target??"—";$("regime").textContent=a.regime||"UNKNOWN";$("reason").textContent=a.rationale||a.reason||"AI analysis completed.";$("homeDecision").textContent=side;$("homeConfidence").textContent=q+"%";$("homeAi").textContent="AI ONLINE";const bc=a.buy_count??a.directional_buy_count??"—",sc=a.sell_count??a.directional_sell_count??"—",wc=a.wait_count??a.wait_count??"—";$("voteSplit").textContent=bc+" / "+sc+" / "+wc;$("consensus").textContent=a.consensus_percentage!=null?Math.round(Number(a.consensus_percentage))+"%":(a.structure_consensus!=null?String(a.structure_consensus):"—");$("tfCount").textContent=a.timeframes?Object.keys(a.timeframes).length+" horizons":"—";$("aiRiskGate").textContent=a.risk_gate?.approved?"APPROVED":"EVALUATING";$("aiNotes").textContent="AI decision: "+side+" • "+q+"% confidence. Evidence is reconciled before the risk and safety gates. Execution remains practice-only.";activity("AI analysis: "+side+" • "+q+"% • "+selected,"analysis");$("homeRisk").textContent=$("risk").value+"%";return a}
-async function analyze(){if(stopped){alert("Emergency stop is active.");return}$("decision").textContent="SCANNING";$("decision").className="decision wait";$("homeAi").textContent="SCANNING";try{const r=await fetch(API+"/api/ai-test?symbol="+encodeURIComponent(selected),{cache:"no-store"}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"AI scan failed");displayAnalysis(d);updatePrice(selected);showPage("ai")}catch(e){$("decision").textContent="WAIT";$("homeAi").textContent="ERROR";$("reason").textContent="AI scan failed: "+e.message;activity("AI scan failed: "+e.message,"system")}}
-function aiRiskAdjust(){const q=parseFloat(($("confidence").textContent||"0").replace("%",""))||0;const side=$("decision").textContent.trim();const next=side==="WAIT"||q<70?.5:q<85?.75:1;$("risk").value=next;$("aiRiskState").textContent="BETWAZ AI adjusted risk to "+next+"% based on the current decision/confidence. Backend maximum: 1%.";activity("AI risk adjustment: "+next+"%","analysis");$("homeRisk").textContent=next+"%"}
-async function practiceTrade(){if(stopped){alert("Emergency stop is active.");return}if(!broker){alert("Select a broker first.");showPage("brokers");return}if(!lastAnalysis||!["BUY","SELL"].includes(lastAnalysis.side)){alert("BETWAZ AI is not ready for a directional practice trade. Run a scan and respect WAIT.");return}const p=requirePin();if(!p)return;const risk=Number($("risk").value);if(!Number.isFinite(risk)||risk<.1||risk>1){alert("Risk must be between 0.1% and 1%.");return}$("brokerExecState").textContent="Sending AI-controlled practice request through backend risk and safety gates…";let url,body;if(broker==="IQ Option"){url=API+"/api/iqoption/trade-request";body={symbol:$("iqSymbol").value,stake:1,risk_pct:risk,spread_points:Number(lastAnalysis.spread_points||0),open_positions:0,daily_loss_pct:0,live_request:false}}else{url=API+"/api/deriv/trade-request";body={symbol:selected,stake:Number($("derivStake").value||1),risk_pct:risk,spread_points:Number(lastAnalysis.spread_points||0),open_positions:0,daily_loss_pct:0,live_request:false}}try{const r=await fetch(url,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify(body)}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||"Broker request failed");const approved=!!d.approved;const msg=approved?broker+" practice request approved • no live order submitted":broker+" practice request blocked • "+[...(d.risk_gate?.reasons||[]),...(d.safety_gate?.reasons||[])].join(", ");$("brokerExecState").textContent=msg;activity(msg,approved?"trade":"system");showPage("activity")}catch(e){$("brokerExecState").textContent=e.message;activity("Practice request error: "+e.message,"system")}}
-async function simulate(){const p=requirePin();if(!p)return;const sym=$("iqSymbol").value;$("brokerExecState").textContent="Running AI decision simulation — no broker call…";try{const r=await fetch(API+"/api/iqoption/simulation-test?symbol="+encodeURIComponent(sym),{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));const a=d.analysis||{};$("brokerExecState").textContent="SIMULATION ONLY • AI "+(a.side||"WAIT")+" • "+Math.round(Number(a.confidence||0)*100)+"% confidence • broker called: NO";activity("IQ Option AI simulation: "+(a.side||"WAIT"),"analysis");showPage("ai")}catch(e){$("brokerExecState").textContent=e.message}}
-async function startTrading(){if(!broker){showPage("brokers");alert("Select Deriv or IQ Option first.");return}activity("START TRADING requested • "+broker,"system");showPage("ai");await analyze();if(!lastAnalysis||!["BUY","SELL"].includes(lastAnalysis.side)){activity("AI decided WAIT • no trade request sent","analysis");return}aiRiskAdjust();showPage("brokers");await practiceTrade()}
-async function refreshPortfolio(){const p=requirePin();if(!p)return;$("portfolioState").textContent="Refreshing protected practice-account data…";try{const r=await fetch(API+"/api/account-summary",{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));const rows=d.accounts||[],balances=rows.map(x=>Number(x.balance)).filter(Number.isFinite);$("totalBalance").textContent=balances.length?balances.reduce((a,b)=>a+b,0).toFixed(2):"—";$("balanceMeta").textContent=rows.length+" practice account"+(rows.length===1?"":"s")+" reported";$("pnl").textContent=d.performance?.profit_loss==null?"—":String(d.performance.profit_loss);$("equity").textContent=d.performance?.equity==null?"—":String(d.performance.equity);$("openRisk").textContent=d.performance?.open_risk==null?"—":String(d.performance.open_risk);$("accountRows").innerHTML=rows.length?rows.map(x=>'<div class="activity"><i class="dot"></i><div><p>'+esc(x.broker)+' • '+esc(x.mode)+' • '+esc(x.currency||"")+'</p><small>Balance '+esc(x.balance==null?"—":Number(x.balance).toFixed(2))+' • '+esc(x.status||"unknown")+'</small></div></div>').join(""):'<div class="notice">No practice account balance was returned.</div>';$("perfState").textContent=d.performance?.profit_loss==null?"P/L SOURCE NOT AVAILABLE":"P/L VERIFIED FROM BROKER";$("perfNote").textContent=d.performance?.note||"No P/L estimate is generated by BETWAZ AI.";$("portfolioState").textContent="Updated "+new Date().toLocaleTimeString()+" • Live trading: OFF";activity("Portfolio account data refreshed","system")}catch(e){$("portfolioState").textContent="Account refresh failed: "+e.message;activity("Portfolio refresh failed: "+e.message,"system")}}
-async function refreshSafety(){const p=requirePin();if(!p)return;try{const r=await fetch(API+"/api/control/state",{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||"Control unavailable");renderSafety(d.state)}catch(e){$("safetyState").textContent="Control unavailable: "+e.message}}
-function renderSafety(s){$("safetyBtn").textContent="SAFETY: "+(s.safety_enabled?"ON":"OFF");$("autoBtn").textContent="AUTO-KILL: "+(s.auto_kill_enabled?"ON":"OFF");$("stopBtn").textContent=s.emergency_stop?"EMERGENCY STOP: ACTIVE":"EMERGENCY STOP";$("stopBtn").disabled=!!s.emergency_stop;$("resumeBtn").disabled=!s.emergency_stop;$("safetyState").textContent=(s.emergency_stop?"TRADING BLOCKED • ":"CONTROL READY • ")+(s.reason||"")+" • Live master switch: "+(s.live_trading_enabled?"ON":"OFF");stopped=!!s.emergency_stop;$("mode").textContent=s.emergency_stop?"SAFE MODE • STOP ACTIVE":"SAFE MODE • LIVE OFF"}
-async function control(path,body){const p=requirePin();if(!p)return;try{const r=await fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify(body),cache:"no-store"}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));renderSafety(d.state);activity(path+" updated","system")}catch(e){alert(e.message)}}
-function brokerSelect(name){if(locked&&locked!==name){alert("Broker is locked to "+locked+". Unlock it in Risk & Safety first.");return}if(!confirm("Confirm "+name+" as the broker controlled by BETWAZ FX AI?"))return;broker=name;localStorage.setItem(BROKER_KEY,broker);document.querySelectorAll(".broker").forEach(x=>x.classList.toggle("selected",x.id.toLowerCase().includes(name.toLowerCase().split(" ")[0])));$("brokerStatus").textContent="Confirmed: "+name+" • BETWAZ AI control ready. Returning you to Home.";activity("Broker selected: "+name,"system");$("homeBroker").textContent="Selected broker: "+name+" • AI control ready";showPage("home")}
-function updateLock(){locked=localStorage.getItem(LOCK_KEY)||"";$("lockState").textContent=locked?"BROKER LOCKED: "+locked:"No broker lock.";$("lockState").className=locked?"note locked":"note"}
-function initCouncil(){const roles=["Trend Sentinel","Momentum Pulse","Volatility Guard","Reversion Analyst","Breakout Hunter","Reversal Detector","Cross-Timeframe Judge","Market Location","Risk Sentinel","Anomaly Hunter","Liquidity Monitor","Microstructure Analyst","Regime Classifier","Adversarial Challenger","Sentiment Proxy","Volume Proxy","Seasonality Lens","Intermarket Analyst","Pattern Analyst","Execution Quality"];$("council").innerHTML=roles.map((r,i)=>'<div class="role"><b>'+r+'</b><small>Division '+(i+1)+' • 250 analytical missions</small></div>').join("")}
-function refreshHome(){if(broker)$("homeBroker").textContent="Selected broker: "+broker+" • AI control ready";else $("homeBroker").textContent="Select a broker in Brokers before starting.";document.querySelectorAll(".broker").forEach(x=>x.classList.toggle("selected",broker&&x.id.toLowerCase().includes(broker.toLowerCase().split(" ")[0])));updateLock()}
-$("startBtn").onclick=startTrading;$("scanBtn").onclick=()=>{showPage("ai");analyze()};$("aiScanBtn").onclick=analyze;$("aiRiskBtn").onclick=aiRiskAdjust;$("brokerTrade").onclick=practiceTrade;$("simulation").onclick=simulate;$("refreshPortfolio").onclick=refreshPortfolio;$("refreshActivity").onclick=backendActivity;$("safetyBtn").onclick=()=>{const on=$("safetyBtn").textContent.endsWith("ON");control("/api/control/safety",{enabled:!on})};$("autoBtn").onclick=()=>{const on=$("autoBtn").textContent.endsWith("ON");control("/api/control/auto-kill",{enabled:!on})};$("stopBtn").onclick=()=>{if(confirm("Activate EMERGENCY STOP?"))control("/api/control/emergency-stop",{reason:"Operator emergency stop from BETWAZ dashboard"})};$("resumeBtn").onclick=()=>control("/api/control/resume",{});$("lockBroker").onclick=()=>{if(!broker){alert("Select a broker first.");return}locked=broker;localStorage.setItem(LOCK_KEY,locked);updateLock();activity("Broker locked: "+locked,"system")};$("unlockBroker").onclick=()=>{localStorage.removeItem(LOCK_KEY);locked="";updateLock();activity("Broker lock released","system")};
-document.querySelectorAll(".brokerSelect").forEach(b=>b.onclick=()=>brokerSelect(b.dataset.broker));document.querySelectorAll("#activityFilters button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#activityFilters button").forEach(x=>x.classList.toggle("active",x===b));renderActivity(b.dataset.filter)});
-buildMarkets();initCouncil();refreshHome();renderActivity("all");setInterval(()=>{marketSymbols.forEach(updatePrice)},20000);setInterval(()=>{if($("page-activity").classList.contains("active"))backendActivity()},30000);
-</script>
-</body>
-</html>
+        setContentView(webView);
+
+        if (savedInstanceState != null) {
+            webView.restoreState(savedInstanceState);
+        } else {
+            loadWebCommandCenter();
+        }
+    }
+
+    private void loadWebCommandCenter() {
+        usingFallback = false;
+        webView.loadUrl(WEB_APP);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        webView.saveState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.stopLoading();
+            webView.destroy();
+        }
+        super.onDestroy();
+    }
+}
