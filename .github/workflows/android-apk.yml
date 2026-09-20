@@ -1,4 +1,5 @@
 name: Build BETWAZ FX AI APK
+
 on:
   push:
     paths:
@@ -8,22 +9,54 @@ on:
       - 'gradle.properties'
       - '.github/workflows/android-apk.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+
       - name: Build debug APK
         run: gradle --no-daemon :app:assembleDebug
-      - name: Upload APK
+
+      - name: Verify APK exists
+        run: |
+          test -f app/build/outputs/apk/debug/app-debug.apk
+          ls -lh app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: BETWAZ-FX-AI-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Publish APK release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-build-${{ github.run_number }}
+          name: BETWAZ FX AI Android Build ${{ github.run_number }}
+          body: |
+            BETWAZ FX AI Android command-center build.
+
+            Safety:
+            - Live trading remains disabled.
+            - Emergency-stop architecture remains enabled.
+            - This build mirrors the BETWAZ FX AI web command center.
+          files: app/build/outputs/apk/debug/app-debug.apk
+          generate_release_notes: false
