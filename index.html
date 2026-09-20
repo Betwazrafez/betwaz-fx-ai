@@ -860,6 +860,34 @@ function requestTrade(){
 }
 
 
+async function requestDerivAiPractice(){
+  const state=document.getElementById("derivAiState");
+  const button=document.getElementById("derivAiTradeBtn");
+  const symbol=document.getElementById("derivSymbol").value;
+  const stake=Number(document.getElementById("derivStake").value);
+  if(stopped){ state.textContent="Emergency Stop is active. Request blocked."; return; }
+  if(!lastAnalysis){ state.textContent="Run SCAN MARKET first so BETWAZ FX AI has a live AI decision."; return; }
+  if(!["BUY","SELL"].includes(lastAnalysis.side)){ state.textContent="AI decision is WAIT. No Deriv proposal requested."; return; }
+  if(!Number.isFinite(stake)||stake<=0||stake>1000){ state.textContent="Invalid practice stake."; return; }
+  const pin=sessionStorage.getItem("BETWAZ_OPERATOR_PIN")||"";
+  if(!pin){ alert("Operator authorization is required."); return; }
+  button.disabled=true; state.textContent="Sending AI-controlled proposal through BETWAZ risk and safety gates…";
+  try{
+    const response=await fetch(BACKEND_URL+"/api/deriv/trade-request",{method:"POST",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":pin},body:JSON.stringify({
+      side:lastAnalysis.side,symbol:symbol,confidence:Number(lastAnalysis.confidence||0),entry:lastAnalysis.entry,stop:lastAnalysis.stop,target:lastAnalysis.target,
+      risk_pct:Number(document.getElementById("risk").value||1),spread_points:Number(lastAnalysis.spread_points||0),open_positions:0,daily_loss_pct:0,live_request:false,stake:stake
+    })});
+    const data=await response.json();
+    if(!response.ok||!data.ok) throw new Error(data.error||"Deriv gateway error");
+    const reasons=[...(data.risk_gate?.reasons||[]),...(data.safety_gate?.reasons||[])];
+    state.textContent=data.approved
+      ?"AI proposal approved • broker order NOT submitted • LIVE OFF"
+      :"AI proposal blocked • "+(reasons.length?reasons.join(", "):"controls did not approve");
+    log("Deriv AI practice: "+(data.approved?"proposal approved, no order submitted":"blocked by safety/risk controls"));
+  }catch(e){ state.textContent="Deriv AI request failed: "+e.message; log("Deriv AI request error: "+e.message); }
+  finally{ button.disabled=false; }
+}
+
 /* -----------------------------
    EMERGENCY STOP
 ----------------------------- */
