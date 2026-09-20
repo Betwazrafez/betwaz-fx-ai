@@ -1929,8 +1929,7 @@ body{overflow-x:hidden}
         ...((data.diagnostic_risk_gate||{}).reasons||[]),
         ...((data.actual_safety_gate||{}).reasons||[])
       ];
-      status.textContent = "SIMULATION ONLY • AI " + (a.side||"WAIT") + " • " + confidence + "% confidence • broker called: NO" +
-        (reasons.length ? " • " + reasons.join(", ") : " • AI decision path ready");
+      const q=data.analysis_quality_gate||{};\n      status.textContent = "SIMULATION ONLY • AI " + (a.side||"WAIT") + " • " + confidence + "% confidence • broker called: NO" +\n        " • B:" + (q.bullish_timeframes??"—") + " S:" + (q.bearish_timeframes??"—") + " M:" + (q.mixed_timeframes??"—") +\n        (reasons.length ? " • " + reasons.join(", ") : " • AI decision path ready");
       status.style.color = data.execution?.ai_decision_ready ? "var(--good)" : "var(--warn)";
       if(a && a.side) displayAnalysis({analysis:Object.assign({},a,{symbol:symbol,live_market_data:true})});
       log("IQ Option AI simulation: " + (a.side||"WAIT") + " • broker called: NO");
