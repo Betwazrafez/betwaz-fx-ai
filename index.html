@@ -1480,6 +1480,185 @@ startLivePrice();
 })();
 </script>
 
+
+<style id="betwaz-mobile-pages">
+/* BETWAZ FX AI — mobile page navigation */
+:root{--nav-h:72px}
+body{overflow-x:hidden}
+.app{padding-bottom:calc(var(--nav-h) + 22px)}
+.bw-page{display:none;animation:bwFade .16s ease}
+.bw-page.active{display:block}
+@keyframes bwFade{from{opacity:.4;transform:translateY(3px)}to{opacity:1;transform:none}}
+.bw-page-title{font-size:18px;font-weight:950;margin:3px 2px 12px}
+.bw-page-sub{font-size:11px;color:var(--muted);margin:-7px 2px 14px}
+.bw-nav{
+  position:fixed;z-index:9999;left:0;right:0;bottom:0;height:var(--nav-h);
+  background:rgba(6,16,25,.97);border-top:1px solid var(--line);
+  backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(5,1fr);
+  padding:7px max(8px,calc((100vw - 700px)/2 + 8px)) 8px;gap:5px
+}
+.bw-nav button{
+  background:transparent;color:var(--muted);border:1px solid transparent;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:10px;font-weight:850;min-width:0
+}
+.bw-nav button.active{color:#fff;background:#13283a;border-color:#294b63}
+.bw-nav .ico{font-size:17px;line-height:1}
+.bw-topmenu{display:flex;gap:7px;overflow:auto;margin:0 0 12px;padding-bottom:2px}
+.bw-topmenu button{
+  flex:0 0 auto;background:#0b1720;color:var(--muted);border:1px solid var(--line);
+  border-radius:10px;padding:8px 10px;font-size:10px;font-weight:850
+}
+.bw-topmenu button.active{color:#fff;background:#13283a;border-color:#4874a5}
+.bw-statusbar{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 11px;margin-bottom:12px;border:1px solid var(--line);
+  border-radius:12px;background:#0a151e;font-size:10px
+}
+.bw-statusbar b{color:var(--good)}
+.bw-menu-card{margin-bottom:10px}
+@media(max-width:430px){
+  .bw-page-title{font-size:17px}
+  .bw-nav button{font-size:9px}
+}
+</style>
+<script id="betwaz-mobile-pages">
+(() => {
+  function bootPages(){
+    if(document.getElementById("bwNav")) return;
+
+    const app = document.querySelector(".app");
+    if(!app) return;
+
+    /* Capture the existing cards before rearranging them. */
+    const cards = [...app.querySelectorAll(":scope > .card")];
+    const hero = cards.find(x => x.classList.contains("hero"));
+    const brokerCard = cards.find(x => /BROKER CONNECTIONS/i.test(x.textContent));
+    const aiCard = cards.find(x => /AI DECISION/i.test(x.textContent));
+    const riskCard = cards.find(x => /RISK CONTROL/i.test(x.textContent));
+    const activityCard = cards.find(x => /ACTIVITY/i.test(x.textContent));
+    const connectionCard = cards.find(x => /CONNECTION/i.test(x.textContent));
+    const controls = document.getElementById("betwazControls");
+    const iqPanel = document.getElementById("bwIqOptionPanel");
+
+    /* Create a compact mobile page shell. */
+    const pages = document.createElement("div");
+    pages.id = "bwPages";
+
+    const makePage = (id,title,sub) => {
+      const p = document.createElement("section");
+      p.className = "bw-page";
+      p.id = id;
+      p.innerHTML = '<div class="bw-page-title">'+title+'</div><div class="bw-page-sub">'+sub+'</div>';
+      pages.appendChild(p);
+      return p;
+    };
+
+    const home = makePage("bwHome","Home","Market overview and current AI state");
+    const brokers = makePage("bwBrokers","Brokers","Broker connections and practice/demo tests");
+    const ai = makePage("bwAI","AI Scan","Multi-timeframe market intelligence");
+    const risk = makePage("bwRisk","Risk & Safety","Trading controls remain in safe mode");
+    const activity = makePage("bwActivity","Activity","System events and backend status");
+
+    /* Move existing content into focused pages. */
+    if(hero) home.appendChild(hero);
+    if(aiCard) { ai.appendChild(aiCard); }
+    if(brokerCard) brokers.appendChild(brokerCard);
+    if(controls) brokers.appendChild(controls);
+    if(iqPanel) { brokers.appendChild(iqPanel); }
+
+    if(riskCard) risk.appendChild(riskCard);
+
+    /* Connection belongs with Activity/diagnostics. */
+    if(connectionCard) activity.appendChild(connectionCard);
+    if(activityCard) activity.appendChild(activityCard);
+
+    /* IQ Option AI belongs on the AI page if it was injected into the panel. */
+    if(iqPanel && !ai.querySelector("#bwIqAiTest")) {
+      /* The AI button lives inside IQ panel, so show a compact duplicate status on AI page. */
+      const iqAI = iqPanel.cloneNode(true);
+      iqAI.id = "bwIqAIView";
+      iqAI.querySelectorAll("button,input").forEach(el => el.disabled = true);
+      ai.appendChild(iqAI);
+    }
+
+    app.appendChild(pages);
+
+    const nav = document.createElement("nav");
+    nav.className = "bw-nav";
+    nav.id = "bwNav";
+    nav.innerHTML = [
+      ["home","⌂","Home"],
+      ["brokers","⇄","Brokers"],
+      ["ai","◉","AI Scan"],
+      ["risk","◆","Risk"],
+      ["activity","☷","Activity"]
+    ].map(x =>
+      '<button data-page="'+x[0]+'"><span class="ico">'+x[1]+'</span>'+x[2]+'</button>'
+    ).join("");
+    document.body.appendChild(nav);
+
+    const map = {
+      home:"bwHome", brokers:"bwBrokers", ai:"bwAI", risk:"bwRisk", activity:"bwActivity"
+    };
+
+    function show(name, updateHash=true){
+      const id = map[name] || map.home;
+      document.querySelectorAll(".bw-page").forEach(p => p.classList.toggle("active", p.id===id));
+      nav.querySelectorAll("button").forEach(b => b.classList.toggle("active", b.dataset.page===name));
+      if(updateHash) history.replaceState(null,"","#"+name);
+      window.scrollTo({top:0,behavior:"instant"});
+    }
+
+    nav.querySelectorAll("button").forEach(b => b.addEventListener("click",()=>show(b.dataset.page)));
+
+    /* Optional quick menu under the header. */
+    const header = app.querySelector("header");
+    if(header){
+      const menu = document.createElement("div");
+      menu.className = "bw-topmenu";
+      menu.innerHTML = nav.innerHTML;
+      menu.querySelectorAll("button").forEach(b => {
+        b.addEventListener("click",()=>show(b.dataset.page));
+      });
+      header.insertAdjacentElement("afterend",menu);
+    }
+
+    /* Home is the landing screen. Existing action bar remains available globally. */
+    show(location.hash ? location.hash.slice(1) : "home", false);
+
+    /* Correct wording so practice analysis is not presented as live trading. */
+    const aiStatus = document.getElementById("aiStatus");
+    if(aiStatus && aiStatus.textContent==="AI LIVE") aiStatus.textContent="AI ONLINE";
+    const activityText = [...document.querySelectorAll(".activity small")];
+    activityText.forEach(x => {
+      if(x.textContent.includes("Waiting for live scan")) x.textContent="Waiting for next market scan";
+    });
+    const liveLabels = [...document.querySelectorAll(".activity p")];
+    liveLabels.forEach(x => {
+      if(x.textContent.includes("Live AI result:")) x.textContent=x.textContent.replace("Live AI result:","Latest AI result:");
+    });
+    const statusBars = document.querySelectorAll("#bwHome .hero");
+    if(statusBars.length){
+      const s=document.createElement("div");
+      s.className="bw-statusbar";
+      s.innerHTML='<span>Trading mode</span><b>SAFE MODE • LIVE OFF</b>';
+      statusBars[0].insertAdjacentElement("afterend",s);
+    }
+
+    /* Keep the existing bottom action buttons but make the labels unambiguous. */
+    document.querySelectorAll(".actionbar button").forEach(b => {
+      if(b.textContent.trim()==="SCAN MARKET") b.textContent="SCAN";
+      if(b.textContent.trim()==="AI TRADE") b.textContent="AI TRADE";
+      if(b.textContent.trim()==="EMERGENCY STOP") b.textContent="STOP";
+    });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bootPages);
+  else bootPages();
+})();
+</script>
+
 </body>
 </html>
 
