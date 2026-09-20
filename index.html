@@ -1803,6 +1803,8 @@ body{overflow-x:hidden}
     window.displayAnalysis=function(data){
       original(data);
       renderMarketDetails(data);
+      const a=data?.analysis||data||{}; const state=document.getElementById("bwCouncilState");
+      if(state){const side=["BUY","SELL","WAIT"].includes(a.side)?a.side:"WAIT"; const conf=Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100); const agreement=a.agreement==null?"—":a.agreement+"%"; state.textContent="BETWAZ AI COUNCIL • "+side+" • "+conf+"% confidence • structure consensus "+agreement+" • specialist evidence reconciled before risk/safety gates.";}
     };
     window.__bwMarketHooked=true;
   }
