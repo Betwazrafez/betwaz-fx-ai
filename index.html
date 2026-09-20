@@ -167,8 +167,8 @@ input,select{
 
 <div class="broker">
   <b>IQ Option</b>
-  <span>Official API required</span>
-  <div class="status pending">PENDING</div>
+  <span>Secure PRACTICE connector</span>
+  <div class="status">PRACTICE READY</div>
 </div>
 
   </div>
@@ -758,7 +758,7 @@ function requestTrade(){
   log(
     "AI TRADE → " +
     lastAnalysis.side +
-    " XAU/USD — sending to BETWAZ risk + safety gateway"
+    " " + selected + " — sending to BETWAZ risk + safety gateway"
   );
 
   const operatorPin =
@@ -782,7 +782,7 @@ function requestTrade(){
       },
       body: JSON.stringify({
         side: lastAnalysis.side,
-        symbol: "XAU/USD",
+        symbol: selected,
         confidence: Number(lastAnalysis.confidence || 0),
         entry: lastAnalysis.entry,
         stop: lastAnalysis.stop,
@@ -1864,6 +1864,150 @@ body{overflow-x:hidden}
     /* The function is declared in the page script scope; retry once after startup. */
     setTimeout(()=>{ cleanup(); hookAnalysis(); },50);
     setTimeout(()=>{ cleanup(); hookAnalysis(); },500);
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+</script>
+
+<script id="bw-broker-execution-ui">
+(() => {
+  function addIqPracticeCard(){
+    const brokersPage = document.getElementById("bwBrokers");
+    if(!brokersPage || document.getElementById("bwIqPracticeTrade")) return;
+
+    const card = document.createElement("section");
+    card.className = "card";
+    card.id = "bwIqPracticeTrade";
+    card.innerHTML =
+      '<div class="section-title">IQ OPTION • AI PRACTICE EXECUTION</div>' +
+      '<div class="notice">BETWAZ FX AI makes the decision. The backend re-scans the market, applies the analysis-quality, risk and safety gates, then — only in PRACTICE mode — submits the order to IQ Option. No IQ Option website is opened.</div>' +
+      '<div class="formgrid" style="margin-top:10px">' +
+        '<label class="notice">Practice symbol' +
+          '<select id="bwIqSymbol">' +
+            '<option value="EURUSD">EUR/USD</option>' +
+            '<option value="GBPUSD">GBP/USD</option>' +
+            '<option value="USDJPY">USD/JPY</option>' +
+            '<option value="AUDUSD">AUD/USD</option>' +
+          '</select>' +
+        '</label>' +
+        '<label class="notice">Practice stake' +
+          '<input id="bwIqStake" type="number" value="1" min="1" max="1000" step="1">' +
+        '</label>' +
+      '</div>' +
+      '<label class="notice" style="display:block;margin-top:9px">Expiry' +
+        '<select id="bwIqDuration">' +
+          '<option value="1">1 minute</option>' +
+          '<option value="5">5 minutes</option>' +
+        '</select>' +
+      '</label>' +
+      '<button type="button" class="primary" style="width:100%;padding:14px;border-radius:12px;margin-top:10px;font-weight:950" onclick="requestIqOptionPracticeTrade()">AI CONTROLLED IQ OPTION PRACTICE TRADE</button>' +
+      '<p id="bwIqTradeStatus" class="notice" style="margin-bottom:0"></p>';
+
+    brokersPage.appendChild(card);
+  }
+
+  window.requestIqOptionPracticeTrade = async function(){
+    const status = document.getElementById("bwIqTradeStatus");
+    const pin = sessionStorage.getItem("BETWAZ_OPERATOR_PIN") || "";
+
+    if(!pin){
+      alert("Operator authorization is required before BETWAZ FX AI can submit a practice trade request.");
+      return;
+    }
+
+    const symbol = document.getElementById("bwIqSymbol").value;
+    const stake = Number(document.getElementById("bwIqStake").value);
+    const duration = Number(document.getElementById("bwIqDuration").value);
+    const risk = Number(document.getElementById("risk").value);
+
+    if(!Number.isFinite(stake) || stake <= 0 || stake > 1000){
+      alert("Practice stake must be between 1 and 1000.");
+      return;
+    }
+
+    if(!Number.isFinite(risk) || risk < 0 || risk > 1){
+      alert("Risk cannot exceed 1% per trade.");
+      return;
+    }
+
+    status.textContent = "BETWAZ FX AI is re-scanning " + symbol + " before any practice order is allowed…";
+    status.style.color = "var(--muted)";
+
+    try{
+      const response = await fetch(
+        BACKEND_URL + "/api/iqoption/trade-request",
+        {
+          method:"POST",
+          cache:"no-store",
+          headers:{
+            "Content-Type":"application/json",
+            "X-BETWAZ-OPERATOR-PIN":pin
+          },
+          body:JSON.stringify({
+            symbol,
+            risk_pct:risk,
+            stake,
+            duration_minutes:duration,
+            spread_points:0,
+            open_positions:0,
+            daily_loss_pct:0
+          })
+        }
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if(response.status === 401){
+        sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");
+        throw new Error("Operator PIN rejected");
+      }
+
+      if(!response.ok){
+        throw new Error(data.error || ("HTTP " + response.status));
+      }
+
+      const a = data.analysis || {};
+      const side = a.side || "WAIT";
+      const confidence = Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100);
+
+      if(data.trade_submitted){
+        status.textContent =
+          "IQ Option PRACTICE order submitted by BETWAZ FX AI: " +
+          side + " " + symbol + " • " +
+          confidence + "% confidence • " +
+          data.duration_minutes + " min • order " +
+          data.order_id;
+        status.style.color = "var(--good)";
+        log("IQ Option PRACTICE order submitted: " + side + " " + symbol + " • " + data.order_id);
+      }else{
+        const reasons = [
+          ...((data.analysis_quality_gate || {}).reasons || []),
+          ...((data.risk_gate || {}).reasons || []),
+          ...((data.safety_gate || {}).reasons || [])
+        ];
+        status.textContent =
+          "IQ Option PRACTICE trade blocked: " +
+          (reasons.length ? reasons.join(", ") : (data.message || data.error || "not approved"));
+        status.style.color = "var(--warn)";
+        log("IQ Option PRACTICE trade blocked: " + (reasons.length ? reasons.join(", ") : "not approved"));
+      }
+
+      if(a && a.side){
+        displayAnalysis({analysis:Object.assign({},a,{symbol:symbol,live_market_data:true})});
+      }
+    }catch(error){
+      status.textContent = "IQ Option practice request failed: " + error.message;
+      status.style.color = "var(--bad)";
+      log("IQ Option practice request failed: " + error.message);
+    }
+  };
+
+  function boot(){
+    addIqPracticeCard();
+    setTimeout(addIqPracticeCard,50);
+    setTimeout(addIqPracticeCard,500);
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
