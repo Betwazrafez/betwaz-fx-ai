@@ -1880,6 +1880,13 @@ body{overflow-x:hidden}
     const target=a.target==null?"—":a.target;
     const risk=a.risk_pct==null?"—":a.risk_pct+"%";
     const agreement=a.agreement==null?"—":a.agreement+"%";
+    const agents=a.agent_count==null?"—":String(a.agent_count);
+    const consulted=Array.isArray(a.agents_consulted)?a.agents_consulted.join(" • "):"";
+    const selfChallenge=String(a.self_challenge||"No self-challenge returned.");
+    const contrarian=String(a.contrarian_case||"No contrarian case returned.");
+    const bullCase=String(a.bull_case||"");
+    const bearCase=String(a.bear_case||"");
+    const hypotheses=Array.isArray(a.novel_hypotheses)?a.novel_hypotheses.filter(Boolean):[];
 
     document.getElementById("bwMarketDetailsBody").innerHTML=
       '<div class="bw-signal-box">'+
@@ -1887,6 +1894,15 @@ body{overflow-x:hidden}
         '<br><span class="notice">Entry: <b>'+entry+'</b> • Stop loss: <b>'+stop+'</b> • Target/Exit: <b>'+target+'</b> • Risk: <b>'+risk+'</b> • Structure consensus: <b>'+agreement+'</b></span>'+
         '<br><span class="notice">'+escapeText(rationale)+'</span>'+
       '</div>'+
+      '<div class="section-title" style="margin-top:13px">AI INTELLIGENCE COUNCIL</div>'+
+      '<div class="bw-signal-box"><b>'+agents+'</b> specialist agents consulted'+
+        (consulted?'<br><span class="notice">'+escapeText(consulted)+'</span>':'')+
+      '</div>'+
+      '<div class="bw-signal-box"><b>SELF-CHALLENGE</b><br><span class="notice">'+escapeText(selfChallenge)+'</span>'+
+        '<br><br><b>CONTRARIAN CASE</b><br><span class="notice">'+escapeText(contrarian)+'</span>'+
+      '</div>'+
+      (bullCase||bearCase?'<div class="bw-signal-box"><b>BULL CASE</b><br><span class="notice">'+escapeText(bullCase)+'</span><br><br><b>BEAR CASE</b><br><span class="notice">'+escapeText(bearCase)+'</span></div>':'')+
+      (hypotheses.length?'<div class="bw-signal-box"><b>NEW MARKET HYPOTHESES</b><ul>'+hypotheses.map(h=>'<li class="notice">'+escapeText(h)+'</li>').join("")+'</ul></div>':'')+
       '<div class="section-title" style="margin-top:13px">TIMEFRAME MARKET DETAIL</div>'+
       '<div class="bw-detail-grid">'+rows+'</div>';
   }
