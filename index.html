@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#071018">
+<meta name="theme-color" content="#071018"><meta name="betwaz-ui-version" content="2026-09-20-linked-v2">
 <title>BETWAZ FX AI</title><style>
 :root{
   --bg:#071018;--panel:#0d1923;--panel2:#101f2b;--line:#203642;
@@ -146,21 +146,7 @@ input,select{
     <span class="chip">4h</span>
     <span class="chip">1D</span>
   </div>
-</section><section class="card">  <div class="section-title">BROKER CONNECTIONS</div>  <div class="grid" id="brokers">
-<div class="broker">
-  <b>Deriv</b>
-  <span>Official API • AI-controlled practice</span>
-  <div class="status">API READY</div>
-</div>
-
-<div class="broker">
-  <b>IQ Option</b>
-  <span>Secure PRACTICE connector • 1m / 5m</span>
-  <div class="status">PRACTICE READY</div>
-</div>
-
-  </div>
-</section><section class="card">  <div class="section-title">AI DECISION</div>  <div class="tabs" id="tabs">
+</section><section class="card" id="brokerSelection"><div class="section-title">BROKER CONTROL</div><div class="notice" style="margin-bottom:10px">Choose the broker that BETWAZ FX AI will control. Selection is confirmed here, then you return to Home to start the AI-controlled practice workflow.</div><div class="grid" id="brokers"><div class="broker" data-broker="Deriv"><b>Deriv</b><span>Official API • AI-controlled practice</span><div class="status">PRACTICE READY</div><button type="button" class="bw-broker-confirm" onclick="selectBrokerDirect('Deriv');event.stopPropagation()">SELECT DERIV</button></div><div class="broker" data-broker="IQ Option"><b>IQ Option</b><span>Secure PRACTICE connector • 1m / 5m</span><div class="status">PRACTICE READY</div><button type="button" class="bw-broker-confirm" onclick="selectBrokerDirect('IQ Option');event.stopPropagation()">SELECT IQ OPTION</button></div></div><p id="selectedBrokerStatus" class="notice" style="margin-bottom:0">No broker selected.</p></section><section class="card bw-start-card" id="bwStartTrading"><div class="section-title">AI TRADING CONTROL</div><div class="notice">Select Deriv or IQ Option above, then BETWAZ FX AI scans the market, makes the decision, applies risk and safety gates, and uses the selected PRACTICE path. LIVE TRADING remains OFF.</div><div id="bwSelectedBrokerHome" class="bw-selected-broker">No broker selected</div><button type="button" class="bw-start-btn" onclick="startTradingDirect()">START TRADING</button></section><section class="card"><div class="section-title">AI DECISION</div>  <div class="tabs" id="tabs">
     <button data-p="XAU/USD" class="active">XAU/USD</button>
     <button data-p="WTI/USD">OIL / WTI</button>
     <button data-p="USD/ZAR">USD/ZAR</button>
@@ -201,83 +187,7 @@ input,select{
 
   </div>  <p id="reason" class="notice" style="margin-bottom:0">
     Press SCAN THE MARKET WITH AI AGENTS to request live multi-timeframe analysis.
-  </p></section><section class="card">  <div class="section-title">RISK CONTROL</div>  <div class="formgrid"><label class="notice">
-  Risk / trade
-  <input id="risk" type="number" value="1" min=".1" max="1" step=".1">
-</label>
-
-<label class="notice">
-  Daily loss limit
-  <input id="daily" type="number" value="3" min=".5" max="3" step=".5">
-</label>
-
-  </div>  <div class="kv"><div>
-  <small>Max positions</small>
-  <b>3</b>
-</div>
-
-<div>
-  <small>Duplicate orders</small>
-  <b>Blocked</b>
-</div>
-
-<div>
-  <small>Kill switch</small>
-  <b id="killstate">OFF</b>
-</div>
-
-  </div></section><section class="card">  <div class="section-title">ACTIVITY</div>  <div id="activity"><div class="activity">
-  <i class="dot"></i>
-  <div>
-    <p>BETWAZ AI engine initialized</p>
-    <small>Waiting for next market scan</small>
-  </div>
-</div>
-
-<div class="activity">
-  <i class="dot"></i>
-  <div>
-    <p>Risk gate active</p>
-    <small>Maximum 1% risk per trade</small>
-  </div>
-</div>
-
-  </div></section><section class="card">  <div class="section-title">CONNECTION</div>  <p class="notice">
-    BETWAZ FX AI connects to its secure backend for live market analysis.
-    API keys and broker credentials remain server-side and are never stored
-    in this webpage.
-  </p><button
-class="secondary"
-style="width:100%;padding:12px;border-radius:10px"
-onclick="testBackend()">
-TEST BETWAZ BACKEND
-</button>
-
-  <p id="backend" class="notice"></p><section class="card" id="derivAiCard">
-  <div class="section-title">DERIV • AI CONTROLLED PRACTICE</div>
-  <div class="notice" style="margin-bottom:10px">BETWAZ FX AI controls the decision. This is a proposal-only practice path while live trading is disabled.</div>
-  <div class="formgrid">
-    <label class="notice">Symbol
-      <select id="derivSymbol">
-        <option>XAU/USD</option>
-        <option>WTI/USD</option>
-        <option>USD/ZAR</option>
-        <option>EUR/USD</option>
-      </select>
-    </label>
-    <label class="notice">Practice stake
-      <input id="derivStake" type="number" value="1" min="1" max="1000" step="1">
-    </label>
-  </div>
-  <div class="kv" style="margin-top:10px">
-    <div><small>AI decision</small><b id="derivDecision">WAIT</b></div>
-    <div><small>Confidence</small><b id="derivConfidence">0%</b></div>
-    <div><small>Execution</small><b>LIVE OFF</b></div>
-  </div>
-  <button id="derivAiTradeBtn" class="primary" style="width:100%;padding:12px;border-radius:10px;margin-top:10px" onclick="requestDerivAiPractice()">AI CONTROLLED DERIV PRACTICE</button>
-  <p id="derivAiState" class="notice" style="margin-bottom:0">Run SCAN MARKET first. BETWAZ FX AI must produce BUY or SELL and pass the backend safety gates.</p>
-</section>
-</section></div><div class="actionbar">  <button class="secondary" onclick="analyze()">
+  </p></section><section class="card" id="riskControl"><div class="section-title">RISK CONTROL • BETWAZ AI</div><div class="notice">BETWAZ AI can automatically reduce risk when confidence or market conditions call for caution. The backend hard maximum remains 1% per trade.</div><div class="formgrid" style="margin-top:10px"><label class="notice">Risk / trade<input id="risk" type="number" value="1" min=".1" max="1" step=".1"></label><label class="notice">Daily loss limit<input id="daily" type="number" value="3" min=".5" max="3" step=".5"></label></div><div class="kv"><div><small>Max positions</small><b>3</b></div><div><small>Duplicate orders</small><b>Blocked</b></div><div><small>Kill switch</small><b id="killstate">OFF</b></div></div><button type="button" class="secondary" style="width:100%;padding:12px;border-radius:10px;margin-top:10px;font-weight:900" onclick="applyAiRiskAdjustmentDirect()">APPLY AI RISK ADJUSTMENT</button><p id="aiRiskState" class="notice" style="margin-bottom:0">Run an AI scan first.</p></section><section class="card" id="activityCard"><div class="section-title">ACTIVITY • ALL TRADES & ANALYSIS</div><div class="bw-activity-tools"><button type="button" data-filter="all" class="active" onclick="filterActivityDirect('all')">ALL</button><button type="button" data-filter="analysis" onclick="filterActivityDirect('analysis')">ANALYSIS</button><button type="button" data-filter="trade" onclick="filterActivityDirect('trade')">TRADES</button><button type="button" data-filter="system" onclick="filterActivityDirect('system')">SYSTEM</button></div><div id="activity"><div class="activity"><i class="dot"></i><div><p>BETWAZ AI engine initialized</p><small>Waiting for next market scan</small></div></div></div><div id="bwFullActivity" style="margin-top:8px"></div></section></div><div class="actionbar">  <button class="secondary" onclick="analyze()">
     SCAN MARKET
   </button>  <button class="primary" onclick="requestTrade()">
     AI TRADE
@@ -1986,6 +1896,8 @@ body{overflow-x:hidden}
       if(!response.ok) throw new Error(data.error || ("HTTP " + response.status));
       const a=data.analysis||{};
       const confidence=Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100);
+<script id="bw-direct-workflow">
+(()=>{const K="BETWAZ_SELECTED_BROKER",A="BETWAZ_ACTIVITY_LOG";let broker=localStorage.getItem(K)||"",auto=localStorage.getItem("BETWAZ_AI_RISK_CONTROL")!=="off";const nav=p=>{const b=document.querySelector('#bwNav button[data-page="'+p+'"]');if(b)b.click()},esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));function save(m,t){try{let a=JSON.parse(localStorage.getItem(A)||"[]");a.unshift({time:new Date().toISOString(),message:m,type:t});localStorage.setItem(A,JSON.stringify(a.slice(0,500)))}catch(e){}render("all")}function render(f){const box=document.getElementById("bwFullActivity");if(!box)return;let a=[];try{a=JSON.parse(localStorage.getItem(A)||"[]")}catch(e){}a=f==="all"?a:a.filter(x=>x.type===f);box.innerHTML=a.length?a.map(x=>'<div class="activity"><i class="dot"></i><div><p>'+esc(x.message)+'</p><small>'+new Date(x.time).toLocaleString()+' • '+esc(x.type)+'</small></div></div>').join(""):'<div class="notice">No recorded activity for this filter yet.</div>'}window.selectBrokerDirect=n=>{if(n!=="Deriv"&&n!=="IQ Option")return;if(!confirm("Confirm "+n+" as the broker controlled by BETWAZ FX AI?"))return;broker=n;localStorage.setItem(K,n);document.getElementById("selectedBrokerStatus").textContent="Selected broker: "+n+" • AI control ready";document.getElementById("bwSelectedBrokerHome").textContent="Selected broker: "+n;save("Broker selected: "+n,"system");nav("home")};window.applyAiRiskAdjustmentDirect=()=>{const i=document.getElementById("risk");if(!i)return;const s=(document.getElementById("decision")?.textContent||"WAIT").trim(),q=parseFloat((document.getElementById("confidence")?.textContent||"0").replace("%",""))||0,r=s==="WAIT"||q<70?.5:q<85?.75:1;i.value=r;const x=document.getElementById("aiRiskState");if(x)x.textContent="BETWAZ AI risk adjustment: "+r+"% • hard backend maximum: 1%";save("AI risk adjusted to "+r+"%","analysis")};window.filterActivityDirect=f=>{document.querySelectorAll("#activityCard [data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter===f));render(f)};window.startTradingDirect=async()=>{if(!broker){alert("Select Deriv or IQ Option first.");nav("brokers");return}save("START TRADING requested • "+broker,"system");nav("ai");if(typeof window.analyze!=="function"){alert("AI scan control is not available.");return}await window.analyze();const s=(document.getElementById("decision")?.textContent||"WAIT").trim();if(s!=="BUY"&&s!=="SELL"){save("AI decided WAIT • no trade request sent","analysis");alert("BETWAZ AI decided WAIT. No trade request was sent.");return}if(auto)applyAiRiskAdjustmentDirect();if(broker==="Deriv"&&typeof window.requestDerivAiPractice==="function")return window.requestDerivAiPractice();if(broker==="IQ Option"&&typeof window.requestIqOptionPracticeTrade==="function")return window.requestIqOptionPracticeTrade();alert("Selected practice broker control is not ready yet.")};function boot(){const h=document.getElementById("bwSelectedBrokerHome"),s=document.getElementById("selectedBrokerStatus");if(h)h.textContent=broker?"Selected broker: "+broker:"No broker selected";if(s)s.textContent=broker?"Selected broker: "+broker+" • AI control ready":"No broker selected.";render("all")}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,100));else setTimeout(boot,100)})();</script>
 <!-- BETWAZ FX AI LINKED APP WORKFLOW -->
 <style id="bw-linked-workflow-style">
 .bw-start-card{border-color:#315f87;background:linear-gradient(180deg,#102638,#0d1923)}
