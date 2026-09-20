@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#071018"><meta name="betwaz-ui-version" content="2026-09-20-council-v3">
+<meta name="theme-color" content="#071018"><meta name="betwaz-ui-version" content="2026-09-20-council-v4">
 <title>BETWAZ FX AI</title><style>
 :root{
   --bg:#071018;--panel:#0d1923;--panel2:#101f2b;--line:#203642;
@@ -1606,6 +1606,13 @@ body{overflow-x:hidden}
       ["Pattern","Pattern Atlas","Structure Matcher","Pattern Validator"],
       ["ExecutionQuality","Execution Sentinel","Slippage Watch","Order Quality"]
     ];
+    const councilTelemetry=document.createElement("div"); councilTelemetry.className="bw-council-telemetry"; councilTelemetry.id="bwCouncilTelemetry";
+    councilTelemetry.innerHTML='<div class="bw-telemetry-title"><span>COUNCIL TELEMETRY</span><em id="bwCouncilClock">READY</em></div><div class="bw-telemetry-grid">'+
+      '<div><small>ROLES EVALUATED</small><b id="bwRolesEvaluated">0 / 5,000</b></div>'+
+      '<div><small>DIRECTIONAL SPLIT</small><b id="bwDirectionSplit">— / — / —</b></div>'+
+      '<div><small>CONFLICTS</small><b id="bwCouncilConflicts">—</b></div>'+
+      '<div><small>RISK GATE</small><b id="bwCouncilRisk">STANDBY</b></div></div>';
+    council.appendChild(councilTelemetry);
     const cg=document.getElementById("bwCouncilGrid");
     if(cg)cg.innerHTML=councilDivisions.map((d,i)=>'<button type="button" class="bw-council-agent" data-division="'+d[0]+'"><span class="bw-agent-index">'+String(i+1).padStart(2,"0")+'</span><span><b>'+d[0]+'</b><small>'+d[1]+' • '+d[2]+' • '+d[3]+'</small></span><em>250</em></button>').join("");
     cg?.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{const d=b.dataset.division;const st=document.getElementById("bwCouncilState");if(st)st.textContent=d+" division selected • 250 analytical roles • specialist evidence is fed into the BETWAZ AI decision process.";cg.querySelectorAll("button").forEach(x=>x.classList.toggle("selected",x===b));}));
@@ -1641,6 +1648,14 @@ body{overflow-x:hidden}
 
 
 <!-- BETWAZ FX AI UI CLEANUP + MARKET DETAIL -->
+<style id="bw-council-telemetry-style">
+.bw-council-telemetry{margin-top:10px;padding:10px;border:1px solid #1b3442;border-radius:12px;background:#061019}
+.bw-telemetry-title{display:flex;justify-content:space-between;color:#8da4af;font-size:8px;font-weight:950;letter-spacing:1px;margin-bottom:8px}
+.bw-telemetry-title em{font-style:normal;color:var(--good)}
+.bw-telemetry-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.bw-telemetry-grid>div{padding:8px;border:1px solid #142a35;border-radius:9px;background:#09151d}
+.bw-telemetry-grid small{display:block;color:#657c87;font-size:7px;font-weight:900}.bw-telemetry-grid b{display:block;margin-top:3px;font-size:10px}
+</style>
 <style id="bw-ai-council-style">
 .bw-council{border-color:#294d64;background:radial-gradient(circle at 100% 0,#12334a55,transparent 42%),linear-gradient(180deg,#0b1822,#081119)}
 .bw-council-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
