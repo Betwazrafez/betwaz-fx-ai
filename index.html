@@ -289,6 +289,7 @@ async function armTargetProfitSession(p){
 function setAiRunningUI(trading,scanning){
  const running=!!trading||!!scanning;
  $("aiScanBtn").classList.toggle("active-choice",running);
+ $("scanBtn").classList.toggle("active-choice",!!scanning||!!trading);
  $("startBtn").classList.toggle("active-choice",!!trading);
  $("demoStart").classList.toggle("active-choice",!!trading);
  $("aiSpinner").style.display=running?"inline":"none";
