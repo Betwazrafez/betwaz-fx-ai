@@ -9,7 +9,7 @@ html = Path("index.html").read_text(encoding="utf-8")
 # into the JavaScript. They must never reach production again.
 assert "\\n" not in html, "literal \\n escape found in index.html"
 
-scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", html, flags=re.S)
+scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, flags=re.S)
 assert scripts, "no inline JavaScript found"
 js = scripts[-1]
 
@@ -20,8 +20,8 @@ with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=Fal
 result = subprocess.run(["node", "--check", js_path], capture_output=True, text=True)
 assert result.returncode == 0, result.stderr
 
-ids = set(re.findall(r'\\bid="([^"]+)"', html))
-refs = set(re.findall(r'\\$\("([^"]+)"\)', js))
+ids = set(re.findall(r'\bid="([^"]+)"', html))
+refs = set(re.findall(r'\$\("([^"]+)"\)', js))
 allowed_optional = {
     "aiRiskState", "demoStart", "accountModeState", "demoMode",
     "liveMode", "executionTitle", "demoStop", "brokerTrade",
