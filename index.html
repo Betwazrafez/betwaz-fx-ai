@@ -349,30 +349,25 @@ async function armTargetProfitSession(p){
 let lastControlState=null;
 function setAiRunningUI(trading,scanning){
  const active=!!trading;
- const running=!!trading||!!scanning;
+ const running=active||!!scanning;
  $("homeTradingConfirm")?.classList.toggle("active",active);
  $("aiTradingConfirm")?.classList.toggle("active",active);
- $("homeTradingConfirmText").textContent=active
+ if($("homeTradingConfirmText"))$("homeTradingConfirmText").textContent=active
    ?"AI trading controller is ACTIVE in practice mode • continuously monitoring signals and risk gates."
    :"";
- $("aiTradingConfirmText").textContent=active
+ if($("aiTradingConfirmText"))$("aiTradingConfirmText").textContent=active
    ?"AI trading controller is ACTIVE in practice mode • continuously monitoring signals and risk gates."
    :"";
+ $("startBtn")?.classList.toggle("active-choice",active);
  $("startBtn")?.classList.toggle("trading",active);
- const startLabel=$("startBtn")?.querySelector("span");
- if(startLabel)startLabel.textContent=active?"STOP TRADING • ACTIVE":"START TRADING";
-
- $("aiScanBtn").classList.toggle("active-choice",running);
- $("scanBtn").classList.toggle("active-choice",!!scanning||!!trading);
- $("startBtn").classList.toggle("active-choice",!!trading);
- $("startBtn").classList.toggle("trading",!!trading);
- const label=$("startBtn").querySelector("span");
- if(label) label.textContent=trading?"STOP TRADING":"START TRADING";
- else $("startBtn").textContent=trading?"STOP TRADING":"START TRADING";
- $("aiSpinner").style.display=running?"inline":"none";
- $("homeAi").textContent=running?(trading?"AI TRADING • WORKING":"AI SCANNING • WORKING"):"READY";
- $("aiMonitorEngine").textContent=running?(trading?"TRADING • HTF MONITOR":"SCANNING • HTF"):"READY";
- $("aiMonitorLive").textContent=running?"AI WORKING • HTF":"STANDBY";
+ $("scanBtn")?.classList.toggle("active-choice",!!scanning||active);
+ $("aiScanBtn")?.classList.toggle("active-choice",running);
+ const label=$("startBtn")?.querySelector("span");
+ if(label)label.textContent=active?"STOP TRADING • ACTIVE":"START TRADING";
+ $("aiSpinner")?.style && ($("aiSpinner").style.display=running?"inline":"none");
+ if($("homeAi"))$("homeAi").textContent=running?(active?"AI TRADING • WORKING":"AI SCANNING • WORKING"):"READY";
+ if($("aiMonitorEngine"))$("aiMonitorEngine").textContent=running?(active?"TRADING • HTF MONITOR":"SCANNING • HTF"):"READY";
+ if($("aiMonitorLive"))$("aiMonitorLive").textContent=running?"AI WORKING • HTF":"STANDBY";
 }
 async function startContinuousScan(){
  const p=requirePin();if(!p)return;
@@ -432,7 +427,6 @@ function setAccountMode(mode){
  accountMode=mode==="LIVE"?"LIVE":"DEMO";
  localStorage.setItem("BETWAZ_ACCOUNT_MODE",accountMode);
  const live=accountMode==="LIVE";
-undefined
 }
 function syncTradeMarket(){
  const v=localStorage.getItem("BETWAZ_SELECTED_MARKET")||selected||"XAU/USD";
@@ -456,7 +450,7 @@ async function activeTradeMonitor(){
   if($("aiConfirmSignal"))$("aiConfirmSignal").textContent=String(ls.side||"WAIT").toUpperCase();
   if($("aiConfirmQuality"))$("aiConfirmQuality").textContent=q+"%";
   $("aiActiveCount").textContent=String(active.length);$("aiTradeCount").textContent=String(st.ai_trade_count||0);
-  const ls=st.ai_last_scan||{}; if(trading||scanning){finishQualityBar(String(ls.side||"WAIT").toUpperCase(),Number(ls.quality_percentage??Number(ls.confidence||0)*100)); $("qualityState").textContent="COUNCIL "+(ls.status||"VOTING")+" • BUY "+(ls.buy_votes??"—")+" • SELL "+(ls.sell_votes??"—")+" • WAIT "+(ls.wait_votes??"—");} $("aiLiveSignal").textContent=(trading||scanning)?("AI WORKING • "+(ls.symbol||selected)+" • SIGNAL "+(ls.side||"WAIT")+" • QUALITY "+Math.round(Number(ls.quality_percentage??Number(ls.confidence||0)*100))+"% • BUY "+(ls.buy_votes??"—")+" / SELL "+(ls.sell_votes??"—")+" / WAIT "+(ls.wait_votes??"—")+" • "+(ls.status||"SCANNING")+" • updated "+(ls.time?new Date(ls.time*1000).toLocaleTimeString():"—")):"AI is waiting. Manual Trading starts council signal search; Start Trading activates continuous execution control.";
+  if(trading||scanning){finishQualityBar(String(ls.side||"WAIT").toUpperCase(),Number(ls.quality_percentage??Number(ls.confidence||0)*100)); $("qualityState").textContent="COUNCIL "+(ls.status||"VOTING")+" • BUY "+(ls.buy_votes??"—")+" • SELL "+(ls.sell_votes??"—")+" • WAIT "+(ls.wait_votes??"—");} $("aiLiveSignal").textContent=(trading||scanning)?("AI WORKING • "+(ls.symbol||selected)+" • SIGNAL "+(ls.side||"WAIT")+" • QUALITY "+Math.round(Number(ls.quality_percentage??Number(ls.confidence||0)*100))+"% • BUY "+(ls.buy_votes??"—")+" / SELL "+(ls.sell_votes??"—")+" / WAIT "+(ls.wait_votes??"—")+" • "+(ls.status||"SCANNING")+" • updated "+(ls.time?new Date(ls.time*1000).toLocaleTimeString():"—")):"AI is waiting. Manual Trading starts council signal search; Start Trading activates continuous execution control.";
   $("aiMonitorLive").classList.toggle("ai-monitor-live",trading||scanning);
   $("aiActiveSummary").textContent=active.length?active.map(t=>t.symbol+" "+t.side+" • "+t.monitor_cycles+" cycles").join(" | "):"No active trades";
   $("aiActiveTrades").innerHTML=active.length?active.map(t=>'<div class="activity ai-active-row"><i class="dot"></i><div><p>'+esc(t.broker)+' • '+esc(t.symbol)+' • '+esc(t.side)+' • AI monitor: '+esc(t.last_monitor_side||"WAIT")+'</p><small>Entry '+esc(t.entry??"—")+' • Exit '+esc(t.stop??"—")+' • TP '+esc(t.target??"—")+' • Mode '+esc(t.execution_mode||t.mode||"—")+' • '+esc(String(t.monitor_cycles||0))+' one-second cycles • '+esc(t.status||"OPEN")+'</small></div></div>').join(""):'<div class="notice">No active AI trades.</div>';
