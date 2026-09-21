@@ -328,7 +328,7 @@ function renderSafety(s){
  $("safetyBtn").classList.toggle("active-choice",!!s.safety_enabled);$("autoBtn").classList.toggle("active-choice",!!s.auto_kill_enabled);
  $("stopBtn").classList.toggle("active-choice",!!s.emergency_stop);$("resumeBtn").classList.toggle("active-choice",!s.emergency_stop);
  if($("demoState"))$("demoState").textContent=accountMode==="LIVE"?(s.live_trading_enabled?"LIVE ACCOUNT READY • server connected":"LIVE ACCOUNT selected • live master switch is OFF"):(s.ai_paused?"AI PAUSED • target profit reached":(s.demo_trading_enabled&&!s.demo_emergency_stop?"DEMO READY • server connected":"DEMO STOPPED"));
- if($("demoStart"))$("demoStart").classList.toggle("active-choice",accountMode==="LIVE"?!!s.live_trading_enabled:!!s.demo_trading_enabled&&!s.demo_emergency_stop);
+ if($("demoStart"))$("demoStart").classList.toggle("active-choice",!!s.ai_trading_active);
  if($("demoStop"))$("demoStop").classList.toggle("active-choice",accountMode==="LIVE"?!!s.emergency_stop:!!s.demo_emergency_stop);
 }
 async function control(path,body){
