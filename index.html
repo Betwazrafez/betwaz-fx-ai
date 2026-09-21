@@ -238,7 +238,7 @@ async function practiceTrade(){
    try{await fetch(API+"/api/control/target-profit",{method:"POST",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify({amount:0,baseline:0,broker}),cache:"no-store"});activity("Target profit disabled for this trading session","system")}catch(e){activity("TARGET PROFIT CLEAR FAILED • "+e.message,"system");return}
  }else{
    try{
-     const ar=await fetch(API+"/api/account-summary",{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});const ad=await ar.json().catch(()=>({}));
+     const ar=await fetch(API+"/api/account-summary?broker="+encodeURIComponent(broker||""),{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});const ad=await ar.json().catch(()=>({}));
      const row=(ad.accounts||[]).find(x=>x.broker===broker);
      const baseline=Number(row?.balance);
      if(!Number.isFinite(baseline)){activity("TARGET PROFIT FAILED • no broker baseline balance available","system");return}
