@@ -229,7 +229,7 @@ function displayAnalysis(data){
  const safetyReasons=Array.isArray(data.safety_gate?.reasons)?data.safety_gate.reasons:[];
  const gateReasonText=[qualityReasons.length?"QUALITY: "+qualityReasons.join(", "):"",riskReasons.length?"RISK: "+riskReasons.join(", "):"",safetyReasons.length?"SAFETY: "+safetyReasons.join(", "):""].filter(Boolean).join(" • ");
  const rp=Number(ar.ai_risk_pct);
- if(Number.isFinite(rp)){ $("risk").value=rp;$("homeRisk").textContent=rp+"%";$("aiRiskState").textContent="Backend AI risk: "+rp+"% • requested "+(ar.requested_risk_pct??"—")+"% • hard maximum "+(ar.hard_max_pct??"5")+"% • "+(ar.reason||"Risk adjusted server-side."); }
+ if(Number.isFinite(rp)){ $("risk").value=rp;$("homeRisk").textContent=rp+"%";if($("aiRiskState"))$("aiRiskState").textContent="Backend AI risk: "+rp+"% • requested "+(ar.requested_risk_pct??"—")+"% • hard maximum "+(ar.hard_max_pct??"5")+"% • "+(ar.reason||"Risk adjusted server-side."); }
  else $("homeRisk").textContent=$("risk").value+"%";
  const gates=[];if(data.analysis_quality_gate?.approved===false)gates.push("analysis quality");if(data.risk_gate?.approved===false)gates.push("risk");if(data.safety_gate?.approved===false)gates.push("safety");
  const readiness=data.simulation?.decision_ready?"diagnostically ready":"not execution-ready";
