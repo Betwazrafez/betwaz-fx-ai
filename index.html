@@ -278,7 +278,7 @@ async function analyze(){
    activity("AI SCAN FAILED • "+selected+" • mode "+mode+" • reason: "+e.message,"system");
  }
 }
-function aiRiskAdjust(){if(!lastAnalysis){activity("AI risk adjustment blocked • scan required","system");return}const q=parseFloat(($("confidence").textContent||"0").replace("%",""))||0;const side=$("decision").textContent.trim();const next=side==="WAIT"?0:q<70?.5:q<85?1:q<92?2.5:5;$("risk").value=next;$("aiRiskState").textContent="Local preview: "+next+"%. The backend remains authoritative and can reduce risk further; hard maximum is 5%.";activity("Risk control preview: "+next+"%","analysis");$("homeRisk").textContent=next+"%"}
+function aiRiskAdjust(){if(!lastAnalysis){activity("AI risk adjustment blocked • scan required","system");return}const q=parseFloat(($("confidence").textContent||"0").replace("%",""))||0;const side=$("decision").textContent.trim();const next=side==="WAIT"?0:q<70?.5:q<85?1:q<92?2.5:5;$("risk").value=next;if($("aiRiskState"))$("aiRiskState").textContent="Local preview: "+next+"%. The backend remains authoritative and can reduce risk further; hard maximum is 5%.";activity("Risk control preview: "+next+"%","analysis");$("homeRisk").textContent=next+"%"}
 async function practiceTrade(){
  if(!broker){activity("TRADE BLOCKED • broker not selected","system");showPage("brokers");return}
  if(!lastAnalysis||!["BUY","SELL"].includes(lastAnalysis.side)){activity("TRADE BLOCKED • AI decision is WAIT/not ready","system");$("brokerExecState").textContent="Trade blocked • run AI scan and wait for BUY/SELL";return}
