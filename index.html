@@ -186,7 +186,7 @@ function displayAnalysis(data){
  else $("homeRisk").textContent=$("risk").value+"%";
  const gates=[];if(data.analysis_quality_gate?.approved===false)gates.push("analysis quality");if(data.risk_gate?.approved===false)gates.push("risk");if(data.safety_gate?.approved===false)gates.push("safety");
  const readiness=data.simulation?.decision_ready?"diagnostically ready":"not execution-ready";
- $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.trade_mode||$("tradeMode")?.value||"swing")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"");
+ $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.trade_mode||primaryMode()||"swing")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"");
  $("aiSpinner").style.display="none";
  activity("AI analysis • "+selected+" • mode "+(a.trade_mode||$("tradeMode")?.value||"swing")+" • BUY "+bc+" / SELL "+sc+" / WAIT "+wc+" • consensus "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • "+side+" • "+q+"% confidence","analysis");
  return a
