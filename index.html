@@ -173,7 +173,7 @@ const API="https://betwaz-fx-ai-backend.onrender.com";
 const BROKER_KEY="BETWAZ_SELECTED_BROKER", LOCK_KEY="BETWAZ_BROKER_LOCK", ACTIVITY_KEY="BETWAZ_ACTIVITY_LOG";
 let selected="XAU/USD", lastAnalysis=null, stopped=false, marketOpen=true, currentFilter="all", lastProfitCheck=0, lastMonitorCheck=0;
 let broker=localStorage.getItem(BROKER_KEY)||"", locked=localStorage.getItem(LOCK_KEY)||"";
-let accountMode="DEMO";
+let accountMode="DEMO"; // BETWAZ FX AI is practice-only in this build; LIVE is disabled.
 const tradeMarkets=["XAU/USD","WTI/USD","USD/ZAR","BTC/USD","ETH/USD","SOL/USD"];
 const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function getSelectedModes(){const modes=[...document.querySelectorAll(".mode-choice.selected")].map(b=>b.dataset.mode);return modes.length?modes:["swing"]}
@@ -388,7 +388,7 @@ async function startContinuousTrading(){
  if(lastControlState?.ai_trading_active){return stopContinuousTrading()}
  showPage("ai");
  if(!broker){activity("START BLOCKED • select a broker first; AI Scan opened for market analysis","system");manualSignalSweep();return}
- if(accountMode==="LIVE"){activity("LIVE TRADING START BLOCKED • live master remains disabled","system");manualSignalSweep();return}
+ accountMode="DEMO"; localStorage.setItem("BETWAZ_ACCOUNT_MODE","DEMO");
  const p=requirePin();if(!p)return;
  const risk=Number($("risk").value),lot=Number($("tradeLot").value),maxTrades=Number($("maxTrades").value);
  if(!Number.isFinite(risk)||risk<.1||risk>5){activity("START BLOCKED • risk must be 0.1%–5%","system");return}
@@ -423,11 +423,7 @@ async function control(path,body){
   return d;
  }catch(e){activity("CONTROL FAILED • "+path+" • "+e.message,"system");$("brokerExecState")?.replaceChildren(document.createTextNode("Control failed • "+e.message));return null}
 }
-function setAccountMode(mode){
- accountMode=mode==="LIVE"?"LIVE":"DEMO";
- localStorage.setItem("BETWAZ_ACCOUNT_MODE",accountMode);
- const live=accountMode==="LIVE";
-}
+function setAccountMode(){ accountMode="DEMO"; localStorage.setItem("BETWAZ_ACCOUNT_MODE","DEMO"); }
 function syncTradeMarket(){
  const v=localStorage.getItem("BETWAZ_SELECTED_MARKET")||selected||"XAU/USD";
  selected=tradeMarkets.includes(v)?v:"XAU/USD";
@@ -460,9 +456,9 @@ async function activeTradeMonitor(){
 }
 function brokerHeartbeat(){
  fetch(API+"/api/health",{cache:"no-store"}).then(async r=>{const d=await r.json().catch(()=>({}));const ok=r.ok&&d.ok;
-   const live=!!d.live_trading_enabled;
-   $("brokerStatus").textContent=(ok?"SERVER CONNECTED":"SERVER CONNECTION LOST")+" • "+(live?"LIVE MASTER ON":"LIVE MASTER OFF")+" • Refreshing continuously";
-   if($("demoState"))$("demoState").textContent=accountMode==="LIVE"?(live?"LIVE ACCOUNT READY • server connected • waiting for AI start":"LIVE ACCOUNT selected • server live switch is OFF"):(d.emergency_stop?"DEMO READY • LIVE master stop active":"DEMO SERVER CONNECTED • ready");
+   const live=false;
+   $("brokerStatus").textContent=(ok?"SERVER CONNECTED":"SERVER CONNECTION LOST")+" • LIVE MASTER OFF • PRACTICE ONLY • Refreshing continuously";
+   if($("demoState"))$("demoState").textContent="PRACTICE ACCOUNT • LIVE TRADING DISABLED";
  }).catch(()=>{if($("brokerStatus"))$("brokerStatus").textContent="SERVER CONNECTION LOST • retrying automatically"});
  const target=Number($("targetProfit")?.value||0);
  if(target>0&&pin()&&Date.now()-lastProfitCheck>=10000){lastProfitCheck=Date.now();
@@ -511,7 +507,7 @@ async function refreshBrokerBalance(){const p=requirePin();if(!p||!broker)return
 function updateLock(){locked=localStorage.getItem(LOCK_KEY)||"";$("lockState").textContent=locked?"BROKER LOCKED: "+locked:"No broker lock.";$("lockState").className=locked?"note locked":"note"}
 function initCouncil(){const roles=["Trend Sentinel","Momentum Pulse","Volatility Guard","Reversion Analyst","Breakout Hunter","Reversal Detector","Cross-Timeframe Judge","Market Location","Risk Sentinel","Anomaly Hunter","Liquidity Monitor","Microstructure Analyst","Regime Classifier","Adversarial Challenger","Sentiment Proxy","Volume Proxy","Seasonality Lens","Intermarket Analyst","Pattern Analyst","Execution Quality"];$("council").innerHTML=roles.map((r,i)=>'<div class="role"><b>'+r+'</b><small>Division '+(i+1)+' • 250 analytical missions</small></div>').join("")}
 function refreshHome(){document.querySelectorAll(".brokerSelect").forEach(b=>b.classList.toggle("active-choice",b.dataset.broker===broker));if(broker)$("homeBroker").textContent="Selected broker: "+broker+" • AI control ready";else $("homeBroker").textContent="Select a broker in Brokers before starting.";document.querySelectorAll(".broker").forEach(x=>x.classList.toggle("selected",broker&&x.id.toLowerCase().includes(broker.toLowerCase().split(" ")[0])));updateLock()}
-$("mode").onclick=()=>{const on=!!lastControlState?.safety_enabled;control("/api/control/safety",{enabled:!on})};$("modePicker").onclick=()=>{$("tradeModes").hidden=!$("tradeModes").hidden};$("modeDone").onclick=()=>{$("tradeModes").hidden=true};document.querySelectorAll(".mode-choice").forEach(b=>b.addEventListener("click",()=>{b.classList.toggle("selected");if(!document.querySelector(".mode-choice.selected"))b.classList.add("selected");updateModePicker();activity("AI mode profile updated • "+getSelectedModes().join(", "),"system")}));$("refreshBrokerBalance").onclick=refreshBrokerBalance;$("startBtn").onclick=()=>startContinuousTrading();$("scanBtn").onclick=()=>{showPage("ai");manualSignalSweep()};$("tradeMarket").onchange=e=>{selected=e.target.value;localStorage.setItem("BETWAZ_SELECTED_MARKET",selected);selectMarket(selected)};$("refreshPortfolio").onclick=refreshPortfolio;$("refreshActivity").onclick=backendActivity;$("safetyBtn").onclick=()=>{const on=!!lastControlState?.safety_enabled;control("/api/control/safety",{enabled:!on})};$("autoBtn").onclick=()=>{const on=!!lastControlState?.auto_kill_enabled;const raw=$("autoKillTime")?.value||"";if(!on){if(!raw){activity("AUTO-KILL BLOCKED • choose a future stop time first","system");$("autoKillState").textContent="Choose a future stop time before enabling AUTO-KILL.";return}const stopAt=new Date(raw).getTime()/1000;if(!Number.isFinite(stopAt)||stopAt<=Date.now()/1000){activity("AUTO-KILL BLOCKED • stop time must be in the future","system");return}control("/api/control/auto-kill",{enabled:true,stop_at:stopAt})}else control("/api/control/auto-kill",{enabled:false})};$("lockBroker").onclick=()=>{if(!broker){activity("BROKER LOCK FAILED • select a broker first","system");return}locked=broker;localStorage.setItem(LOCK_KEY,locked);updateLock();activity("Broker locked: "+locked,"system")};$("unlockBroker").onclick=()=>{localStorage.removeItem(LOCK_KEY);locked="";updateLock();activity("Broker lock released","system")};
+$("mode").onclick=async()=>{if(!lastControlState)await refreshSafety();const on=!!lastControlState?.safety_enabled;control("/api/control/safety",{enabled:!on})};$("modePicker").onclick=e=>{e.preventDefault();$("tradeModes").hidden=!$("tradeModes").hidden};$("modeDone").onclick=e=>{e.preventDefault();$("tradeModes").hidden=true};document.querySelectorAll(".mode-choice").forEach(b=>b.onclick=e=>{e.preventDefault();b.classList.toggle("selected");if(!document.querySelector(".mode-choice.selected"))b.classList.add("selected");updateModePicker();activity("AI mode profile updated • "+getSelectedModes().join(", "),"system")});$("refreshBrokerBalance").onclick=refreshBrokerBalance;$("startBtn").onclick=async()=>{pressFeedback($("startBtn"),true);if(!lastControlState)await refreshSafety();return startContinuousTrading()};$("scanBtn").onclick=()=>{showPage("ai");manualSignalSweep()};$("tradeMarket").onchange=e=>{selected=e.target.value;localStorage.setItem("BETWAZ_SELECTED_MARKET",selected);selectMarket(selected)};$("refreshPortfolio").onclick=refreshPortfolio;$("refreshActivity").onclick=backendActivity;$("safetyBtn").onclick=async()=>{if(!lastControlState)await refreshSafety();const on=!!lastControlState?.safety_enabled;const d=await control("/api/control/safety",{enabled:!on});if(d)renderSafety(d.state)};$("autoBtn").onclick=async()=>{if(!lastControlState)await refreshSafety();const on=!!lastControlState?.auto_kill_enabled;const raw=$("autoKillTime")?.value||"";if(!on){if(!raw){activity("AUTO-KILL BLOCKED • choose a future stop time first","system");$("autoKillState").textContent="Choose a future stop time before enabling AUTO-KILL.";return}const stopAt=new Date(raw).getTime()/1000;if(!Number.isFinite(stopAt)||stopAt<=Date.now()/1000){activity("AUTO-KILL BLOCKED • stop time must be in the future","system");return}control("/api/control/auto-kill",{enabled:true,stop_at:stopAt})}else control("/api/control/auto-kill",{enabled:false})};$("lockBroker").onclick=()=>{if(!broker){activity("BROKER LOCK FAILED • select a broker first","system");return}locked=broker;localStorage.setItem(LOCK_KEY,locked);updateLock();activity("Broker locked: "+locked,"system")};$("unlockBroker").onclick=()=>{localStorage.removeItem(LOCK_KEY);locked="";updateLock();activity("Broker lock released","system")};
 document.querySelectorAll(".brokerSelect").forEach(b=>b.onclick=()=>brokerSelect(b.dataset.broker));document.querySelectorAll("#activityFilters button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#activityFilters button").forEach(x=>x.classList.toggle("active",x===b));renderActivity(b.dataset.filter)});
 buildMarkets();initCouncil();syncTradeMarket();if(broker){brokerSelect(broker)}let savedModes=[];try{savedModes=JSON.parse(localStorage.getItem("BETWAZ_TRADE_MODES")||"[]")}catch(e){}setSelectedModes(savedModes.length?savedModes:["swing"]);refreshHome();renderActivity("all");brokerHeartbeat();setInterval(brokerHeartbeat,1000);setInterval(()=>{updatePrice(selected)},1000);setInterval(activeTradeMonitor,1000);setInterval(()=>{if($("page-portfolio").classList.contains("active"))refreshPortfolio()},5000);setInterval(()=>{if($("page-activity").classList.contains("active"))backendActivity()},5000);
 </script>
