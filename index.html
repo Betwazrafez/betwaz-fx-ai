@@ -232,9 +232,20 @@ async function practiceTrade(){
    if(submitted)showPage("activity");
  }catch(e){$("brokerExecState").textContent="Execution failed • "+e.message;activity("BROKER EXECUTION FAILED • "+broker+" • "+e.message,"system")}
 }
-async function simulate(){const p=requirePin();if(!p)return;const sym=$("iqSymbol").value;$("brokerExecState").textContent="Running AI decision simulation — no broker call…";try{const r=await fetch(API+"/api/iqoption/simulation-test?symbol="+encodeURIComponent(sym),{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"}),d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));const a=d.analysis||{};$("brokerExecState").textContent="SIMULATION ONLY • AI "+(a.side||"WAIT")+" • "+Math.round(Number(a.confidence||0)*100)+"% confidence • broker called: NO";activity("IQ Option AI simulation: "+(a.side||"WAIT"),"analysis");showPage("ai")}catch(e){$("brokerExecState").textContent=e.message}}
+async function simulate(){
+ const p=requirePin();if(!p){activity("SIMULATION BLOCKED • operator authorization required","system");return}
+ const sym=$("tradeMarket").value,mode=$("tradeMode").value;
+ $("brokerExecState").textContent="Running AI decision simulation • no broker call…";
+ try{
+   const r=await fetch(API+"/api/iqoption/simulation-test?symbol="+encodeURIComponent(sym)+"&mode="+encodeURIComponent(mode)+"&risk_pct="+encodeURIComponent($("risk").value),{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});
+   const d=await r.json().catch(()=>({}));if(r.status===401){sessionStorage.removeItem("BETWAZ_OPERATOR_PIN");throw new Error("Operator PIN rejected")}
+   if(!r.ok||!d.ok)throw new Error(d.error||("HTTP "+r.status));
+   const a=d.analysis||{};$("brokerExecState").textContent="SIMULATION ONLY • AI "+(a.side||"WAIT")+" • "+Math.round(Number(a.confidence||0)*100)+"% • mode "+mode+" • broker called: NO";
+   activity("AI simulation • "+sym+" • "+mode+" • "+(a.side||"WAIT")+" • "+Math.round(Number(a.confidence||0)*100)+"% confidence","analysis");showPage("ai");
+ }catch(e){$("brokerExecState").textContent=e.message;activity("AI SIMULATION FAILED • "+e.message,"system")}
+}
 async function startTrading(){
- if(!broker){showPage("brokers");alert("Select Deriv or IQ Option first.");return}
+ if(!broker){showPage("brokers");activity("START BLOCKED • select a broker first","system");return}
  syncTradeMarket();activity("START "+accountMode+" TRADING requested • "+broker+" • "+selected,"system");
  showPage("ai");await analyze();
  if(!lastAnalysis||!["BUY","SELL"].includes(lastAnalysis.side)){activity("AI decided WAIT • no trade request sent","analysis");return}
