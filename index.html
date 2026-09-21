@@ -267,7 +267,7 @@ async function practiceTrade(){
  $("brokerExecState").textContent="Server connected • "+(live?"LIVE":"DEMO")+" • "+(lastAnalysis?.execution_mode||"AI-selected mode")+" • submitting through AI/risk/safety gates…";
  const maxResult=await fetch(API+"/api/control/max-trades",{method:"POST",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify({max_trades:maxTrades}),cache:"no-store"});const maxData=await maxResult.json().catch(()=>({}));if(!maxResult.ok||!maxData.ok){activity("MAX ACTIVE TRADES FAILED • "+(maxData.error||"server rejected setting"),"system");return}
   const executionMode=String(lastAnalysis?.execution_mode||lastAnalysis?.trade_mode||"").toLowerCase(); const body={symbol,stake:lot,risk_pct:risk,spread_points:Number(lastAnalysis.spread_points||0),open_positions:0,daily_loss_pct:0,live_request:live,mode:executionMode||"swing",modes,max_open_positions:maxTrades};
- if(broker==="IQ Option")body.duration_minutes={quick:3,scalping:7,intraday:15,momentum:25,short_swing:45,swing:120,position:360}[mode]||3;
+ if(broker==="IQ Option")body.duration_minutes=({quick:1,scalping:1,intraday:5,momentum:5,short_swing:5,swing:5,position:5})[executionMode]||5;
  try{
    const url=broker==="IQ Option"?API+"/api/iqoption/trade-request":API+"/api/deriv/trade-request";
    const r=await fetch(url,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify(body)});
