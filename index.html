@@ -311,11 +311,11 @@ function syncTradeMarket(){
  const el=$("tradeMarket");if(el)el.value=selected;
 }
 async function activeTradeMonitor(){
- const p=pin();if(!p||!broker)return;
- try{const r=await fetch(API+"/api/control/monitor",{method:"POST",headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});const d=await r.json().catch(()=>({}));
+ const p=pin();if(!p)return;
+ try{const r=await fetch(API+"/api/control/state",{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});const d=await r.json().catch(()=>({}));
  if(!r.ok||!d.ok){if($("monitorState"))$("monitorState").textContent="AI active-trade monitor: ERROR • "+(d.error||("HTTP "+r.status));return}
- const n=d.monitored||0,c=d.closed||0;if($("monitorState"))$("monitorState").textContent=n?"AI active-trade monitor: RUNNING • "+n+" trade(s) scanned this cycle"+(c?" • "+c+" closed by council":""):"AI active-trade monitor: STANDBY • no active trade";
- if(c)activity("AI COUNCIL • "+c+" active trade(s) closed after live decision change","trade");
+ const st=d.state||{},trades=st.active_trade_records||[],cycles=trades.reduce((n,t)=>n+Number(t.monitor_cycles||0),0);
+ if($("monitorState"))$("monitorState").textContent=trades.length?"AI active-trade monitor: RUNNING • "+trades.length+" active • last cycles "+cycles:"AI active-trade monitor: STANDBY • no active trade";
  }catch(e){if($("monitorState"))$("monitorState").textContent="AI active-trade monitor: RETRYING • "+e.message}
 }
 function brokerHeartbeat(){
