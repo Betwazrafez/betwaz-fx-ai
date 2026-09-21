@@ -163,7 +163,8 @@ function displayAnalysis(data){
  $("reason").textContent=a.rationale||a.reason||"AI analysis completed.";$("homeDecision").textContent=side;$("homeConfidence").textContent=q+"%";$("homeAi").textContent="AI ONLINE";
  const bc=counts.BUY??a.buy_count??"—",sc=counts.SELL??a.sell_count??"—",wc=counts.WAIT??a.wait_count??"—";
  $("voteSplit").textContent=bc+" / "+sc+" / "+wc;
- const consensus=a.consensus_percentage??data.analysis_quality_gate?.consensus_percentage??(a.agreement!=null?Number(a.agreement)*100:null);
+ const consensus=a.agreement!=null?Number(a.agreement)*100:(a.consensus_percentage??data.analysis_quality_gate?.consensus_percentage??null);
+ const timeframeConsensus=data.analysis_quality_gate?.consensus_percentage??null;
  $("consensus").textContent=consensus!=null?Math.round(Number(consensus))+"%":"—";
  const horizons=a.data_horizons_used||a.local_council?.usable_horizons||[];
  $("tfCount").textContent=horizons.length?(horizons.length+" • "+horizons.join(", ")):"—";
@@ -173,7 +174,7 @@ function displayAnalysis(data){
  else $("homeRisk").textContent=$("risk").value+"%";
  const gates=[];if(data.analysis_quality_gate?.approved===false)gates.push("analysis quality");if(data.risk_gate?.approved===false)gates.push("risk");if(data.safety_gate?.approved===false)gates.push("safety");
  const readiness=data.simulation?.decision_ready?"diagnostically ready":"not execution-ready";
- $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.trade_mode||$("tradeMode")?.value||"swing")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"");
+ $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.trade_mode||$("tradeMode")?.value||"swing")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"");
  $("aiSpinner").style.display="none";
  activity("AI analysis • "+selected+" • mode "+(a.trade_mode||$("tradeMode")?.value||"swing")+" • BUY "+bc+" / SELL "+sc+" / WAIT "+wc+" • consensus "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • "+side+" • "+q+"% confidence","analysis");
  return a
