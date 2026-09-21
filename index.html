@@ -147,7 +147,7 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
     <div class="mode-option"><button type="button" class="mode-choice" data-mode="position">POSITION • 4–12H</button></div>
     <button type="button" class="btn ghost" id="modeDone" style="margin-top:8px">DONE • CLOSE MODE SELECTOR</button>
    </div>
-   <span class="notice" id="modeSelectionNote">Select one or more modes. The council combines the selected profiles; the first selected mode is the primary execution horizon.</span>
+   <span class="notice" id="modeSelectionNote">Select one or more modes. All selected modes are equal; AI chooses the strongest valid execution signal.</span>
   </div>
  </div><button class="btn primary" id="brokerTrade" style="margin-top:10px">AI CONTROLLED DEMO TRADE</button><button class="btn ghost" id="simulation" style="margin-top:8px">AI DECISION SIMULATION • NO BROKER</button><p id="brokerExecState" class="notice">Server connected • execution waits for AI analysis, market-open verification, risk and safety gates.</p></section>
 </section>
@@ -177,8 +177,8 @@ let accountMode=localStorage.getItem("BETWAZ_ACCOUNT_MODE")||"DEMO";
 const tradeMarkets=["XAU/USD","WTI/USD","USD/ZAR","BTC/USD","ETH/USD","SOL/USD"];
 const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function getSelectedModes(){const modes=[...document.querySelectorAll(".mode-choice.selected")].map(b=>b.dataset.mode);return modes.length?modes:["swing"]}
-function updateModePicker(){const modes=getSelectedModes();$("modePickerCount").textContent=modes.length+" SELECTED";$("modeSelectionNote").textContent=modes.length+" mode"+(modes.length===1?"":"s")+" selected • "+modes.join(", ")+" • first selected is primary";}
-function primaryMode(){return getSelectedModes()[0]||"swing"}
+function updateModePicker(){const modes=getSelectedModes();$("modePickerCount").textContent=modes.length+" SELECTED";$("modeSelectionNote").textContent=modes.length+" mode"+(modes.length===1?"":"s")+" selected • "+modes.join(", ")+" • all modes equal";}
+function primaryMode(){return null}
 function setSelectedModes(modes){const wanted=new Set(modes&&modes.length?modes:["swing"]);document.querySelectorAll(".mode-choice").forEach(b=>b.classList.toggle("selected",wanted.has(b.dataset.mode)));localStorage.setItem("BETWAZ_TRADE_MODES",JSON.stringify([...wanted]));updateModePicker()}
 function pressFeedback(btn,persistent=false){if(!btn)return;btn.classList.add("active-choice");if(!persistent)setTimeout(()=>btn.classList.remove("active-choice"),650)}
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.classList.contains("btn"))pressFeedback(b)});
@@ -220,13 +220,13 @@ function displayAnalysis(data){
  else $("homeRisk").textContent=$("risk").value+"%";
  const gates=[];if(data.analysis_quality_gate?.approved===false)gates.push("analysis quality");if(data.risk_gate?.approved===false)gates.push("risk");if(data.safety_gate?.approved===false)gates.push("safety");
  const readiness=data.simulation?.decision_ready?"diagnostically ready":"not execution-ready";
- $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.trade_mode||primaryMode()||"swing")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"")+(gateReasonText?" • "+gateReasonText:"");
+ $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.execution_mode||a.trade_mode||"multi")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"")+(gateReasonText?" • "+gateReasonText:"");
  $("aiSpinner").style.display="none";
- activity("AI analysis • "+selected+" • mode "+(a.trade_mode||$("tradeMode")?.value||"swing")+" • BUY "+bc+" / SELL "+sc+" / WAIT "+wc+" • consensus "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • "+side+" • "+q+"% confidence","analysis");
+ activity("AI analysis • "+selected+" • mode "+(a.execution_mode||a.trade_mode||"multi")+" • BUY "+bc+" / SELL "+sc+" / WAIT "+wc+" • consensus "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • "+side+" • "+q+"% confidence","analysis");
  return a
 }
 async function analyze(){
- const modes=getSelectedModes();const mode=modes[0]||"swing";
+ const modes=getSelectedModes();const mode="multi";
  $("decision").textContent="SCANNING";$("decision").className="decision wait";$("homeAi").textContent="SCANNING";$("aiSpinner").style.display="inline";
  activity("AI scan started • "+selected+" • modes "+modes.join(", "),"analysis");
  try{
@@ -264,9 +264,9 @@ async function practiceTrade(){
      activity("Target profit armed • "+targetProfit+" "+(row?.currency||"")+" • baseline "+baseline+" • "+broker,"system");
    }catch(e){activity("TARGET PROFIT FAILED • "+e.message,"system");return}
  }
- $("brokerExecState").textContent="Server connected • "+(live?"LIVE":"DEMO")+" • "+mode+" • submitting through AI/risk/safety gates…";
+ $("brokerExecState").textContent="Server connected • "+(live?"LIVE":"DEMO")+" • "+(lastAnalysis?.execution_mode||"AI-selected mode")+" • submitting through AI/risk/safety gates…";
  const maxResult=await fetch(API+"/api/control/max-trades",{method:"POST",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify({max_trades:maxTrades}),cache:"no-store"});const maxData=await maxResult.json().catch(()=>({}));if(!maxResult.ok||!maxData.ok){activity("MAX ACTIVE TRADES FAILED • "+(maxData.error||"server rejected setting"),"system");return}
-  const body={symbol,stake:lot,risk_pct:risk,spread_points:Number(lastAnalysis.spread_points||0),open_positions:0,daily_loss_pct:0,live_request:live,mode,modes,max_open_positions:maxTrades};
+  const executionMode=String(lastAnalysis?.execution_mode||lastAnalysis?.trade_mode||"").toLowerCase(); const body={symbol,stake:lot,risk_pct:risk,spread_points:Number(lastAnalysis.spread_points||0),open_positions:0,daily_loss_pct:0,live_request:live,mode:executionMode||"swing",modes,max_open_positions:maxTrades};
  if(broker==="IQ Option")body.duration_minutes={quick:3,scalping:7,intraday:15,momentum:25,short_swing:45,swing:120,position:360}[mode]||3;
  try{
    const url=broker==="IQ Option"?API+"/api/iqoption/trade-request":API+"/api/deriv/trade-request";
