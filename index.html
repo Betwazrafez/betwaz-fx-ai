@@ -209,7 +209,7 @@ function displayAnalysis(data){
  lastAnalysis=a;
  const side=a.side||"WAIT",q=Math.round(Math.max(0,Math.min(1,Number(a.confidence||0)))*100),quality=Math.round(councilQuality(a)),ar=data.ai_risk||{};
  $("decision").textContent=side;$("decision").className="decision "+(side==="BUY"?"buy":side==="SELL"?"sell":"wait");
- $("confidence").textContent=q+"%";$("meter").style.width=q+"%";finishQualityBar(side,q);$("entry").textContent=a.entry??"—";$("stop").textContent=a.stop??"—";$("target").textContent=a.target??"—";$("regime").textContent=a.market_state||a.regime||"UNKNOWN";
+ $("confidence").textContent=q+"%";$("meter").style.width=q+"%";finishQualityBar(side,quality);$("entry").textContent=a.entry??"—";$("stop").textContent=a.stop??"—";$("target").textContent=a.target??"—";$("regime").textContent=a.market_state||a.regime||"UNKNOWN";
  $("reason").textContent=a.rationale||a.reason||"AI analysis completed.";$("homeDecision").textContent=side;$("homeConfidence").textContent=q+"%";$("homeAi").textContent="AI ONLINE";
  const bc=counts.BUY??a.buy_count??"—",sc=counts.SELL??a.sell_count??"—",wc=counts.WAIT??a.wait_count??"—";
  $("voteSplit").textContent=bc+" / "+sc+" / "+wc;
