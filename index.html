@@ -137,7 +137,7 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
   <div class="label">AI TRADE MODES
    <button type="button" class="btn secondary mode-picker" id="modePicker">SELECT AI TRADE MODES <span id="modePickerCount">1 SELECTED</span></button>
    <div id="tradeModes" class="mode-options" hidden>
-    <div class="mode-option"><button type="button" class="mode-choice" data-mode="quick">QUICK • 1–5M</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice htf-mode" data-mode="quick">QUICK • 1–5M • HIGH TRADING FREQUENCY</button></div>
     <div class="mode-option"><button type="button" class="mode-choice" data-mode="scalping">SCALPING • 5–10M</button></div>
     <div class="mode-option"><button type="button" class="mode-choice" data-mode="intraday">INTRADAY • 10–20M</button></div>
     <div class="mode-option"><button type="button" class="mode-choice" data-mode="momentum">MOMENTUM • 20–30M</button></div>
@@ -177,7 +177,7 @@ let accountMode="DEMO"; // BETWAZ FX AI is practice-only in this build; LIVE is 
 const tradeMarkets=["XAU/USD","WTI/USD","USD/ZAR","BTC/USD","ETH/USD","SOL/USD"];
 const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function getSelectedModes(){const modes=[...document.querySelectorAll(".mode-choice.selected")].map(b=>b.dataset.mode);return modes.length?modes:["swing"]}
-function updateModePicker(){const modes=getSelectedModes();$("modePickerCount").textContent=modes.length+" SELECTED";$("modeSelectionNote").textContent=modes.length+" mode"+(modes.length===1?"":"s")+" selected • "+modes.join(", ")+" • all modes equal";}
+function updateModePicker(){const modes=getSelectedModes();$("modePickerCount").textContent=modes.length+" SELECTED";$("modeSelectionNote").textContent=modes.length+" mode"+(modes.length===1?"":"s")+" selected • "+modes.join(", ")+" • QUICK = HIGH TRADING FREQUENCY • all selected modes are equal";}
 function primaryMode(){return null}
 function setSelectedModes(modes){const wanted=new Set(modes&&modes.length?modes:["swing"]);document.querySelectorAll(".mode-choice").forEach(b=>b.classList.toggle("selected",wanted.has(b.dataset.mode)));localStorage.setItem("BETWAZ_TRADE_MODES",JSON.stringify([...wanted]));updateModePicker()}
 function pressFeedback(btn,persistent=false){if(!btn)return;btn.classList.add("active-choice");if(!persistent)setTimeout(()=>btn.classList.remove("active-choice"),650)}
