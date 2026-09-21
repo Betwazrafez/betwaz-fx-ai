@@ -220,7 +220,9 @@ function displayAnalysis(data){
  else $("homeRisk").textContent=$("risk").value+"%";
  const gates=[];if(data.analysis_quality_gate?.approved===false)gates.push("analysis quality");if(data.risk_gate?.approved===false)gates.push("risk");if(data.safety_gate?.approved===false)gates.push("safety");
  const readiness=data.simulation?.decision_ready?"diagnostically ready":"not execution-ready";
- $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.execution_mode||a.trade_mode||"multi")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"")+(gateReasonText?" • "+gateReasonText:"");
+ const xp=a.exit_plan||{};const candidates=Array.isArray(xp.target_candidates)?xp.target_candidates.join(", "):"—";
+ const exitText=xp.method?(" • Dynamic exits: stop "+(xp.initial_stop??"—")+" • target candidates "+candidates+" • BE +"+(xp.break_even_trigger_r??1)+"R • adaptive profit locking"): "";
+ $("aiNotes").textContent="Votes BUY/SELL/WAIT: "+bc+" / "+sc+" / "+wc+" • Consensus: "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • TF consensus: "+(timeframeConsensus!=null?Math.round(Number(timeframeConsensus))+"%":"—")+" • Timeframes: "+(horizons.length?horizons.join(", "):"—")+" • Mode: "+(a.execution_mode||a.trade_mode||"multi")+" • "+readiness+(gates.length?" • Blocked by: "+gates.join(", "):"")+(gateReasonText?" • "+gateReasonText:"")+exitText;
  $("aiSpinner").style.display="none";
  activity("AI analysis • "+selected+" • mode "+(a.execution_mode||a.trade_mode||"multi")+" • BUY "+bc+" / SELL "+sc+" / WAIT "+wc+" • consensus "+(consensus!=null?Math.round(Number(consensus))+"%":"—")+" • "+side+" • "+q+"% confidence","analysis");
  return a
