@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05090d">
-<meta name="betwaz-ui-version" content="2026-09-20-build8-restored">
+<meta name="betwaz-ui-version" content="2026-09-21-build9-trading-confirmation">
 <title>BETWAZ FX AI</title>
 <style>
 :root{--bg:#05090d;--panel:#0b141c;--panel2:#0e1b25;--line:#1b3441;--text:#f3f8fa;--muted:#8199a5;--good:#45e0a0;--warn:#f5c85b;--bad:#ff626d;--blue:#31c7ff;--purple:#a56cff}
@@ -42,7 +42,7 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
 .footer-safe{color:#78aeca}
 .nav button:nth-child(1){border-color:#00c8ff}.nav button:nth-child(2){border-color:#9b5cff}.nav button:nth-child(3){border-color:#20f0b5}.nav button:nth-child(4){border-color:#218cff}.nav button:nth-child(5){border-color:#ff4f68}.nav button:nth-child(6){border-color:#ffd84a}
 </style>
-</head>
+<style id="betwaz-trading-confirm">.ai-trading-confirm{display:none;margin-top:10px;padding:13px 14px;border:1px solid #20f0b5;border-radius:14px;background:linear-gradient(145deg,#0b4b3d,#092d3b);box-shadow:0 0 24px #20f0b533}.ai-trading-confirm.active{display:block;animation:tradeConfirm .45s ease}@keyframes tradeConfirm{from{opacity:.4;transform:translateY(-3px)}to{opacity:1;transform:none}}.ai-trading-confirm .confirm-top{display:flex;align-items:center;gap:9px;font-weight:950;font-size:12px}.live-dot{width:10px;height:10px;border-radius:50%;background:#20f0b5;box-shadow:0 0 12px #20f0b5;animation:livePulse 1s ease-in-out infinite}@keyframes livePulse{50%{opacity:.35;transform:scale(.75)}}.ai-trading-confirm small{display:block;color:#b8e8dc;font-size:9px;margin-top:6px;line-height:1.5}.ai-trading-confirm .confirm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.ai-trading-confirm .confirm-stats div{padding:7px;border:1px solid #1c725e;border-radius:9px;background:#061f27}.ai-trading-confirm .confirm-stats b{display:block;font-size:10px}.ai-trading-confirm .confirm-stats span{display:block;color:#83b9ae;font-size:8px;margin-top:2px}</style></head>
 <body>
 <div class="app">
 <header class="top">
@@ -75,7 +75,7 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
   <div class="eyebrow">CURRENT MARKET</div>
   <div class="row"><div><div id="homePair" class="big">XAU/USD</div><div id="homePrice" class="notice">Loading live price…</div></div><div style="text-align:right"><div class="eyebrow">AI STATUS</div><b id="homeAi" style="color:var(--good)">READY</b></div></div>
   <div class="grid2" style="margin-top:13px"><button class="btn primary trading-btn" id="startBtn"><i class="trade-ring" aria-hidden="true"></i><span>START TRADING</span></button><button class="btn secondary" id="scanBtn">MANUAL TRADING</button></div>
-  <div id="homeBroker" class="notice" style="margin-top:9px">Select a broker in Brokers before starting.</div>
+  <div id="homeBroker" class="notice" style="margin-top:9px">Select a broker in Brokers before starting.</div><div id="homeTradingConfirm" class="ai-trading-confirm"><div class="confirm-top"><i class="live-dot"></i><span>AI AUTO TRADING ACTIVE • PRACTICE MODE</span></div><small id="homeTradingConfirmText">AI is actively monitoring the selected market and looking for approved practice trades.</small><div class="confirm-stats"><div><b id="homeTradeCycle">0</b><span>AI SCANS</span></div><div><b id="homeTradeSignal">WAIT</b><span>LAST SIGNAL</span></div><div><b id="homeTradeQuality">0%</b><span>QUALITY</span></div></div></div>
  </section>
  <section class="card"><div class="section">MARKETS</div><div id="markets" class="market-grid"></div></section>
  <section class="card"><div class="section">AI COMMAND STATUS</div><div class="grid3"><div class="kpi"><small>DECISION</small><b id="homeDecision">WAIT</b><span>AI controlled</span></div><div class="kpi"><small>CONFIDENCE</small><b id="homeConfidence">0%</b><span>Current scan</span></div><div class="kpi"><small>RISK</small><b id="homeRisk">5%</b><span>AI adjustable</span></div></div></section>
@@ -92,7 +92,7 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
   <div class="kpi"><small>ACTIVE TRADES</small><b id="aiActiveCount">0</b><span id="aiActiveSummary">No active trades</span></div>
   <div class="kpi"><small>AI TRADES</small><b id="aiTradeCount">0</b><span>Submitted this session</span></div>
  </div>
- <div id="aiLiveSignal" class="note" style="margin-top:10px">AI is waiting. Manual Trading starts council signal search; Start Trading activates continuous execution control.</div>
+ <div id="aiLiveSignal" class="note" style="margin-top:10px">AI is waiting. Manual Trading starts council signal search; Start Trading activates continuous execution control.</div><div id="aiTradingConfirm" class="ai-trading-confirm"><div class="confirm-top"><i class="live-dot"></i><span>AI AUTO TRADING ACTIVE • PRACTICE MODE</span></div><small id="aiTradingConfirmText">AI is running continuous analysis. New trades are only attempted when broker, risk, safety and AI quality gates pass.</small><div class="confirm-stats"><div><b id="aiConfirmCycle">0</b><span>AI SCANS</span></div><div><b id="aiConfirmSignal">WAIT</b><span>LAST SIGNAL</span></div><div><b id="aiConfirmQuality">0%</b><span>SIGNAL QUALITY</span></div></div></div>
  <div class="section" style="margin-top:14px">ACTIVE TRADE DECISIONS</div>
  <div id="aiActiveTrades" class="activity-list"><div class="notice">No active AI trades.</div></div>
  <div class="section" style="margin-top:14px">CLOSED TRADES</div>
@@ -348,6 +348,10 @@ async function armTargetProfitSession(p){
 }
 let lastControlState=null;
 function setAiRunningUI(trading,scanning){
+ const active=!!trading;
+ $("homeTradingConfirm")?.classList.toggle("active",active);
+ $("aiTradingConfirm")?.classList.toggle("active",active);
+
  const running=!!trading||!!scanning;
  $("aiScanBtn").classList.toggle("active-choice",running);
  $("scanBtn").classList.toggle("active-choice",!!scanning||!!trading);
