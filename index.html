@@ -241,11 +241,12 @@ function displayAnalysis(data){
  return a
 }
 async function manualSignalSweep(){
+ const p=requirePin();if(!p)return;
  const modes=getSelectedModes(); startQualityPulse(); $("aiSpinner").style.display="inline"; $("homeAi").textContent="SCANNING"; $("decision").textContent="SCANNING";
  activity("MANUAL TRADING • AI council searching available markets • "+modes.join(", "),"analysis");
  const results=await Promise.all(marketSymbols.map(async symbol=>{
    try{
-    const r=await fetch(API+"/api/ai-test?symbol="+encodeURIComponent(symbol)+"&mode=multi&modes="+encodeURIComponent(modes.join(","))+"&risk_pct="+encodeURIComponent($("risk").value),{cache:"no-store"});
+    const r=await fetch(API+"/api/ai-test?symbol="+encodeURIComponent(symbol)+"&mode=multi&modes="+encodeURIComponent(modes.join(","))+"&risk_pct="+encodeURIComponent($("risk").value),{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});
     const d=await r.json().catch(()=>({})); if(!r.ok||!d.ok) throw new Error(d.error||"scan failed");
     return {symbol,ok:true,data:d};
    }catch(e){return {symbol,ok:false,error:e.message}}
