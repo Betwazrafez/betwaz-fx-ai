@@ -122,17 +122,19 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
   <label class="label">LOT SIZE / STAKE<input id="tradeLot" class="input" type="number" min=".01" max="1000" step=".01" value=".01"></label>
   <label class="label">TARGET PROFIT<input id="targetProfit" class="input" type="number" min="0" step=".01" value="0"></label>
   <label class="label">MAX ACTIVE TRADES<input id="maxTrades" class="input" type="number" min="1" max="3" step="1" value="3"></label>
-  <div class="label">AI TRADE MODES <span style="color:var(--blue)">MULTI-SELECT</span>
-   <div id="tradeModes" class="filters" style="margin-top:7px">
-    <button type="button" class="mode-choice" data-mode="quick">QUICK • 1–5M</button>
-    <button type="button" class="mode-choice" data-mode="scalping">SCALPING • 5–10M</button>
-    <button type="button" class="mode-choice" data-mode="intraday">INTRADAY • 10–20M</button>
-    <button type="button" class="mode-choice" data-mode="momentum">MOMENTUM • 20–30M</button>
-    <button type="button" class="mode-choice" data-mode="short_swing">SHORT SWING • 30M–1H</button>
-    <button type="button" class="mode-choice" data-mode="swing">SWING • 1–4H</button>
-    <button type="button" class="mode-choice" data-mode="position">POSITION • 4–12H</button>
+  <div class="label">AI TRADE MODES
+   <button type="button" class="btn secondary mode-picker" id="modePicker">SELECT AI TRADE MODES <span id="modePickerCount">1 SELECTED</span></button>
+   <div id="tradeModes" class="mode-options" hidden>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="quick">QUICK • 1–5M</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="scalping">SCALPING • 5–10M</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="intraday">INTRADAY • 10–20M</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="momentum">MOMENTUM • 20–30M</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="short_swing">SHORT SWING • 30M–1H</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="swing">SWING • 1–4H</button></div>
+    <div class="mode-option"><button type="button" class="mode-choice" data-mode="position">POSITION • 4–12H</button></div>
+    <button type="button" class="btn ghost" id="modeDone" style="margin-top:8px">DONE • CLOSE MODE SELECTOR</button>
    </div>
-   <span class="notice">Select one or more. The council uses the combined mode profile; the first selected mode is the primary execution horizon.</span>
+   <span class="notice" id="modeSelectionNote">Select one or more modes. The council combines the selected profiles; the first selected mode is the primary execution horizon.</span>
   </div>
  </div><button class="btn primary" id="brokerTrade" style="margin-top:10px">AI CONTROLLED DEMO TRADE</button><button class="btn ghost" id="simulation" style="margin-top:8px">AI DECISION SIMULATION • NO BROKER</button><p id="brokerExecState" class="notice">Server connected • execution waits for AI analysis, market-open verification, risk and safety gates.</p></section>
 </section>
