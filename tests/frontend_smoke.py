@@ -30,7 +30,7 @@ allowed_optional = {
 missing = sorted((refs - ids) - allowed_optional)
 assert not missing, f"JavaScript references missing DOM ids: {missing}"
 
-for required in ["startBtn", "scanBtn", "markets", "aiMarketTabs", "nav", "mode", "safetyBtn", "autoBtn"]:
+for required in ["activateAiBtn", "aiScanBtn", "markets", "aiMarketTabs", "nav", "mode", "modePicker", "demoStressTest"]:
     assert required in ids, f"required UI element missing: {required}"
 
 for market in ["XAU/USD", "WTI/USD", "USD/ZAR", "BTC/USD", "ETH/USD", "SOL/USD"]:
