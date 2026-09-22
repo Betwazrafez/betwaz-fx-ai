@@ -357,7 +357,7 @@ async function demoStressTest(){
    if(state)state.textContent="STRESS TEST BLOCKED • operator PIN required";
    return;
   }
-  if(!confirm("FORCE 3 RANDOM DEMO TRADES?\n\nThis submits real orders to the selected Deriv PRACTICE account.\nStake: 0.01 each • Duration: 1 minute • Maximum: 3 orders.\n\nLIVE trading is not used.")){
+  if(!confirm("FORCE 3 RANDOM DEMO TRADES?  This submits real orders to the selected Deriv PRACTICE account. Stake: 0.01 each • Duration: 1 minute • Maximum: 3 orders.  LIVE trading is not used.")){
    if(state)state.textContent="STRESS TEST CANCELLED • no orders submitted";
    return;
   }
