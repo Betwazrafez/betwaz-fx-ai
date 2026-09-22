@@ -612,7 +612,7 @@ function renderAgentCouncil(r){
  const fam=c.family_stats||{};$("agentFamilies").innerHTML=["Trend","Momentum","Volatility","Structure","Sentiment"].map(n=>{const x=fam[n]||{};return '<div class="role"><b>'+n+'</b><small>BUY '+(x.BUY||0)+'<br>SELL '+(x.SELL||0)+'<br>WAIT '+(x.WAIT||0)+'</small></div>'}).join("");
  $("agentSamples").innerHTML=(c.sample_agents||[]).map(x=>'<div class="agent-sample-row"><b>#'+x.id+'</b><small>'+esc(x.family||"Agent")+'</small><b>'+esc(x.vote||"WAIT")+'</b><span>'+esc(x.reason||"Analyzing market evidence")+' • weight '+esc(x.weight??"—")+'</span></div>').join("")||'<div class="notice">No sample reasoning returned.</div>';
  $("agentForeshadow").textContent=c.foreshadow||"No foreshadow returned.";
- $("agentDialogSub").textContent="LIVE • "+esc(c.generated_from||"supplied market snapshot")+" • "+(selected||"XAU/USD");
+ $("agentDialogSub").textContent="LIVE • "+(c.generated_from||"supplied market snapshot")+" • "+(selected||"XAU/USD");
 }
 async function refreshAgentCouncil(){
  const sub=agentCouncilSnapshot(); $("agentDialogStatus").textContent="ANALYZING"; 
