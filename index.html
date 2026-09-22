@@ -392,7 +392,6 @@ function setAiRunningUI(trading,scanning){
    :"";
  $("activateAiBtn")?.classList.toggle("active-choice",active);
  $("activateAiBtn")?.classList.toggle("trading",active);
- $("scanBtn")?.classList.toggle("active-choice",!!scanning||active);
  $("aiScanBtn")?.classList.toggle("active-choice",running);
  const label=$("activateAiBtn")?.querySelector("span");
  if(label)label.textContent=active?"AI ACTIVATED":"ACTIVATE AI";
@@ -527,7 +526,7 @@ async function activeTradeMonitor(){
   if($("aiConfirmSignal"))$("aiConfirmSignal").textContent=String(ls.side||"WAIT").toUpperCase();
   if($("aiConfirmQuality"))$("aiConfirmQuality").textContent=q+"%";
   $("aiActiveCount").textContent=String(active.length);$("aiTradeCount").textContent=String(st.ai_trade_count||0);
-  if(trading||scanning){finishQualityBar(String(ls.side||"WAIT").toUpperCase(),Number(ls.quality_percentage??Number(ls.confidence||0)*100)); $("qualityState").textContent="COUNCIL "+(ls.status||"VOTING")+" • BUY "+(ls.buy_votes??"—")+" • SELL "+(ls.sell_votes??"—")+" • WAIT "+(ls.wait_votes??"—");} $("aiLiveSignal").textContent=(trading||scanning)?("AI WORKING • "+(ls.symbol||selected)+" • SIGNAL "+(ls.side||"WAIT")+" • QUALITY "+Math.round(Number(ls.quality_percentage??Number(ls.confidence||0)*100))+"% • BUY "+(ls.buy_votes??"—")+" / SELL "+(ls.sell_votes??"—")+" / WAIT "+(ls.wait_votes??"—")+" • "+(ls.status||"SCANNING")+" • updated "+(ls.time?new Date(ls.time*1000).toLocaleTimeString():"—")):"AI is waiting. Manual Trading starts council signal search; Start Trading activates continuous execution control.";
+  if(trading||scanning){finishQualityBar(String(ls.side||"WAIT").toUpperCase(),Number(ls.quality_percentage??Number(ls.confidence||0)*100)); $("qualityState").textContent="COUNCIL "+(ls.status||"VOTING")+" • BUY "+(ls.buy_votes??"—")+" • SELL "+(ls.sell_votes??"—")+" • WAIT "+(ls.wait_votes??"—");} $("aiLiveSignal").textContent=(trading||scanning)?("AI WORKING • "+(ls.symbol||selected)+" • SIGNAL "+(ls.side||"WAIT")+" • QUALITY "+Math.round(Number(ls.quality_percentage??Number(ls.confidence||0)*100))+"% • BUY "+(ls.buy_votes??"—")+" / SELL "+(ls.sell_votes??"—")+" / WAIT "+(ls.wait_votes??"—")+" • "+(ls.status||"SCANNING")+" • updated "+(ls.time?new Date(ls.time*1000).toLocaleTimeString():"—")) :"AI is waiting. ACTIVATE AI starts continuous practice monitoring; approved signals are evaluated through all safety gates.";
   $("aiMonitorLive").classList.toggle("ai-monitor-live",trading||scanning);
   $("aiActiveSummary").textContent=active.length?active.map(t=>t.symbol+" "+t.side+" • "+t.monitor_cycles+" cycles").join(" | "):"No active trades";
   $("aiActiveTrades").innerHTML=active.length?active.map(t=>'<div class="activity ai-active-row"><i class="dot"></i><div><p>'+esc(t.broker)+' • '+esc(t.symbol)+' • '+esc(t.side)+' • AI monitor: '+esc(t.last_monitor_side||"WAIT")+'</p><small>Entry '+esc(t.entry??"—")+' • Exit '+esc(t.stop??"—")+' • TP '+esc(t.target??"—")+' • Mode '+esc(t.execution_mode||t.mode||"—")+' • '+esc(String(t.monitor_cycles||0))+' one-second cycles • '+esc(t.status||"OPEN")+'</small></div></div>').join(""):'<div class="notice">No active AI trades.</div>';
