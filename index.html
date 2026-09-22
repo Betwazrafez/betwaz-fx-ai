@@ -174,7 +174,7 @@ body{background:radial-gradient(circle at 15% -10%,#0b78b866,transparent 34%),ra
  </section>
  <section class="card"><div class="section">CURRENT INTERFACE INVENTORY</div><div class="grid3"><div class="kpi"><small>NAVIGATION</small><b id="testNavCount">0</b><span>tabs found</span></div><div class="kpi"><small>BUTTONS</small><b id="testButtonCount">0</b><span>interactive controls</span></div><div class="kpi"><small>FORMS</small><b id="testFormCount">0</b><span>inputs/selects</span></div></div></section>
  <section class="card"><div class="section">TEST RESULTS</div><div id="testResults"><div class="notice">No tests run yet.</div></div></section>
- <section class="card"><div class="section">SAFE TEST POLICY</div><div class="note">The module checks the current DOM, navigation, handlers, UI controls and backend health. START TRADING, MANUAL TRADING and broker execution are never automatically clicked. LIVE TRADING remains disabled.</div></section>
+ <section class="card"><div class="section">SAFE TEST POLICY</div><div class="note">The module checks the current DOM, navigation, handlers, UI controls and backend health. ACTIVATE AI and broker execution are never automatically triggered by the TEST module. LIVE TRADING remains disabled.</div></section>
 </section>
 </main>
 <div class="footer-safe">BETWAZ FX AI • PRACTICE / SAFE MODE • LIVE TRADING DISABLED</div>
@@ -274,7 +274,7 @@ function displayAnalysis(data){
 async function manualSignalSweep(){
  const p=requirePin();if(!p)return;
  const modes=getSelectedModes(); startQualityPulse(); $("aiSpinner").style.display="inline"; $("homeAi").textContent="SCANNING"; $("decision").textContent="SCANNING";
- activity("MANUAL TRADING • AI council searching available markets • "+modes.join(", "),"analysis");
+ activity("AI SCAN • AI council searching available markets • "+modes.join(", "),"analysis");
  const results=await Promise.all(marketSymbols.map(async symbol=>{
    try{
     const r=await fetch(API+"/api/ai-test?symbol="+encodeURIComponent(symbol)+"&mode=multi&modes="+encodeURIComponent(modes.join(","))+"&risk_pct="+encodeURIComponent($("risk").value),{headers:{"X-BETWAZ-OPERATOR-PIN":p},cache:"no-store"});
