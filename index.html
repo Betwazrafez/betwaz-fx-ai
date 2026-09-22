@@ -623,7 +623,7 @@ buildMarkets();initCouncil();syncTradeMarket();if(broker){brokerSelect(broker)}l
  <div class="agent-dialog">
   <div class="agent-dialog-head"><div><div id="agentDialogTitle" class="agent-dialog-title">5,000 AI AGENT COUNCIL</div><div id="agentDialogSub" class="agent-dialog-sub">Live analytical process • one backend committee computation • no MT5</div></div><button class="btn ghost agent-dialog-close" onclick="closeAgentCouncil()" aria-label="Close">×</button></div>
   <div class="agent-summary">
-   <div class="kpi"><small>AGENTS</small><b id="agentDialogTotal">5,000</b><span>Virtual analytical roles</span></div>
+   <div class="kpi"><small>AGENTS</small><b id="agentDialogTotal">5,000</b><span>Deterministic analytical agents</span></div>
    <div class="kpi"><small>DECISION</small><b id="agentDialogSide">WAIT</b><span id="agentDialogConfidence">0% confidence</span></div>
    <div class="kpi"><small>COMMITTEE</small><b id="agentDialogScore">0</b><span>Weighted score</span></div>
    <div class="kpi"><small>STATUS</small><b id="agentDialogStatus">READY</b><span id="agentDialogTime">—</span></div>
@@ -633,6 +633,7 @@ buildMarkets();initCouncil();syncTradeMarket();if(broker){brokerSelect(broker)}l
    <div class="agent-count"><small>BUY</small><b id="agentBuy">—</b></div><div class="agent-count"><small>SELL</small><b id="agentSell">—</b></div><div class="agent-count"><small>WAIT</small><b id="agentWait">—</b></div>
   </div>
   <div class="section" style="margin-top:14px">SPECIALIST FAMILIES</div><div id="agentFamilies" class="agent-family"></div><div class="section" style="margin-top:14px">20 AGENT DIVISIONS • 250 AGENTS EACH</div><div id="agentDivisions" class="agent-divisions"></div>
+  <div class="section" style="margin-top:14px">MULTI-TIMEFRAME ANALYSIS</div><div id="agentTimeframes" class="agent-divisions"><div class="notice">Waiting for timeframe evidence.</div></div><div id="agentTimeframeNote" class="note">Waiting for live timeframe diagnostics.</div>
   <div class="section" style="margin-top:14px">AGENT REASONING SAMPLES</div><div id="agentSamples" class="agent-sample"><div class="notice">Open the council to run the live analysis.</div></div>
   <div class="section" style="margin-top:14px">FORESHADOW / INVALIDATION</div><div id="agentForeshadow" class="agent-foreshadow">Waiting for committee analysis.</div>
  </div>
@@ -641,13 +642,17 @@ let agentCouncilTimer=null;
 function closeAgentCouncil(){const el=$("agentCouncilDialog");if(el)el.classList.remove("open");if(agentCouncilTimer){clearInterval(agentCouncilTimer);agentCouncilTimer=null}}
 function agentCouncilSnapshot(){
  const a=lastAnalysis||{}; const side=document.getElementById("decision")?.textContent?.trim()||"WAIT";
- return {symbol:selected||"XAU/USD",price:a.price??a.entry??0,change_pct:a.change_pct??a.change??0,trend:a.trend??a.trend_score??0,momentum:a.momentum??a.momentum_score??0,volatility:a.volatility??a.volatility_score??0,structure:a.structure??a.structure_score??0,sentiment:a.sentiment??a.sentiment_score??0,side};
+ const diagnostics=a.timeframe_diagnostics||{};
+ const horizons=Object.keys(diagnostics).filter(tf=>diagnostics[tf]&&!diagnostics[tf].error);
+ const current=horizons[0]?diagnostics[horizons[0]]:{};
+ return {symbol:selected||"XAU/USD",price:a.entry??current.price??0,change_pct:a.change_pct??a.change??0,trend:a.trend??a.trend_score??0,momentum:a.momentum??a.momentum_score??0,volatility:a.volatility??a.volatility_score??0,structure:a.structure??a.structure_score??0,sentiment:a.sentiment??a.sentiment_score??0,timeframe_diagnostics:diagnostics,agent_count:5000,side};
 }
 function renderAgentCouncil(r){
  const c=r.committee||r; const q=Number(c.confidence||0)*100; const counts=c.direction_counts||{};
  $("agentDialogTotal").textContent=Number(c.agent_count||5000).toLocaleString();$("agentDialogSide").textContent=c.side||"WAIT";$("agentDialogConfidence").textContent=Math.round(q)+"% confidence";$("agentDialogScore").textContent=c.committee_score??"0";$("agentDialogStatus").textContent="LIVE";$("agentDialogTime").textContent=new Date((r.timestamp||Date.now()/1000)*1000).toLocaleTimeString();
  $("agentBuy").textContent=Number(counts.BUY||0).toLocaleString();$("agentSell").textContent=Number(counts.SELL||0).toLocaleString();$("agentWait").textContent=Number(counts.WAIT||0).toLocaleString();
  const fam=c.family_stats||{};$("agentFamilies").innerHTML=["Trend","Momentum","Volatility","Structure","Sentiment"].map(n=>{const x=fam[n]||{};return '<div class="role"><b>'+n+'</b><small>BUY '+(x.BUY||0)+'<br>SELL '+(x.SELL||0)+'<br>WAIT '+(x.WAIT||0)+'</small></div>'}).join("");
+ const tfs=c.timeframe_stats||{};$("agentTimeframes").innerHTML=Object.keys(tfs).map(tf=>{const x=tfs[tf]||{};return '<div class="agent-division"><b>'+esc(tf)+'</b><small>'+esc(String(x.agent_count||0))+' agents<br>BUY '+(x.BUY||0)+' • SELL '+(x.SELL||0)+' • WAIT '+(x.WAIT||0)+'</small></div>'}).join("")||'<div class="notice">No timeframe diagnostics received.</div>';if($("agentTimeframeNote"))$("agentTimeframeNote").textContent=c.timeframe_note||"No timeframe analysis note returned.";
  const div=c.division_stats||{};$("agentDivisions").innerHTML=Object.keys(div).map(n=>{const x=div[n]||{};return '<div class="agent-division"><b>'+esc(n)+'</b><small>'+esc(x.family||"Specialist")+' • '+(x.agent_count||0)+' agents<br>BUY '+(x.BUY||0)+' • SELL '+(x.SELL||0)+' • WAIT '+(x.WAIT||0)+'</small></div>'}).join("")||'<div class="notice">No division data returned.</div>';
  $("agentSamples").innerHTML=(c.sample_agents||[]).map(x=>'<div class="agent-sample-row"><b>#'+x.id+'</b><small>'+esc(x.division||x.family||"Agent")+'</small><b>'+esc(x.vote||"WAIT")+'</b><span>'+esc(x.reason||"Analyzing market evidence")+' • weight '+esc(x.weight??"—")+'</span></div>').join("")||'<div class="notice">No sample reasoning returned.</div>';
  $("agentForeshadow").textContent=c.foreshadow||"No foreshadow returned.";
