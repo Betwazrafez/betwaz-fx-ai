@@ -361,7 +361,8 @@ async function demoStressTest(){
    return;
   }
   if(btn){btn.disabled=true;btn.textContent="⏳ SUBMITTING 5 IQ OPTION DEMO TRADES…";}
-  if(state)state.textContent="SUBMITTING • sending 5 IQ Option XAU/USD (GOLD) PRACTICE orders…";
+  if(state)state.textContent="SUBMITTING • sending 5 IQ Option XAU/USD (GOLD) PRACTICE requests…";
+  activity("IQ OPTION DEMO STRESS STARTED • 5 requests • XAU/USD • "+new Date().toLocaleTimeString(),"system");
   const side=["BUY","SELL"].includes(String(lastAnalysis?.side||"").toUpperCase())?String(lastAnalysis.side).toUpperCase():"BUY";
   const r=await fetch(API+"/api/iqoption/demo-stress-test",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","X-BETWAZ-OPERATOR-PIN":p},body:JSON.stringify({count:5,symbol:"XAU/USD",side,stake:1})});
   const d=await r.json().catch(()=>({}));
