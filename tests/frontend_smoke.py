@@ -25,12 +25,12 @@ refs = set(re.findall(r'\$\("([^"]+)"\)', js))
 allowed_optional = {
     "aiRiskState", "demoStart", "accountModeState", "demoMode",
     "liveMode", "executionTitle", "demoStop", "brokerTrade",
-    "demoState", "monitorState",
+    "demoState", "monitorState", "mt5BridgeState", "mt5BridgeAccount", "chatStatus", "chatMessages",
 }
 missing = sorted((refs - ids) - allowed_optional)
 assert not missing, f"JavaScript references missing DOM ids: {missing}"
 
-for required in ["activateAiBtn", "aiScanBtn", "markets", "aiMarketTabs", "nav", "mode", "modePicker", "demoStressTest"]:
+for required in ["activateAiBtn", "aiScanBtn", "markets", "aiMarketTabs", "nav", "modePicker", "brokerXM", "brokerVantage", "chatStatus", "chatMessages", "chatSend", "chatMic"]:
     assert required in ids, f"required UI element missing: {required}"
 
 for market in ["XAU/USD", "WTI/USD", "USD/ZAR", "BTC/USD", "ETH/USD", "SOL/USD"]:
@@ -38,5 +38,5 @@ for market in ["XAU/USD", "WTI/USD", "USD/ZAR", "BTC/USD", "ETH/USD", "SOL/USD"]
 
 print("FRONTEND SMOKE TEST: PASS")
 print("JavaScript syntax: PASS")
-print("Required controls: PASS")
+print("Broker controls and AI chat controls: PASS")
 print("Required markets: PASS")
